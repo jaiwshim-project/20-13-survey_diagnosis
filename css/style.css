@@ -14,9 +14,9 @@
     --gold-color: #d4a853;
     --gold-light: #f0d78c;
     --light-blue: #eff6ff;
-    --text-dark: #1e293b;
-    --text-medium: #475569;
-    --text-light: #64748b;
+    --text-dark: #0f172a;
+    --text-medium: #1e293b;
+    --text-light: #334155;
     --white: #ffffff;
     --gray-50: #f8fafc;
     --gray-100: #f1f5f9;
@@ -43,16 +43,17 @@
 
 html {
     scroll-behavior: smooth;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 body {
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    line-height: 1.8;
-    color: var(--text-dark);
+    line-height: 1.9;
+    color: #0f172a;
     background-color: var(--white);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 a {
@@ -80,14 +81,12 @@ img {
 
 /* ==================== HEADER & NAVIGATION ==================== */
 header {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: linear-gradient(135deg, #e8f0fe 0%, #f0f7ff 100%);
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #c7d9f5;
     transition: var(--transition-normal);
 }
 
@@ -102,6 +101,7 @@ nav {
     padding: 18px 60px;
     max-width: 1440px;
     margin: 0 auto;
+    overflow: visible !important;
 }
 
 .logo {
@@ -111,7 +111,14 @@ nav {
     letter-spacing: -0.5px;
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 10px;
+}
+
+.logo-img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .logo span {
@@ -121,9 +128,35 @@ nav {
     background-clip: text;
 }
 
+/* Footer logo */
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.footer-logo-img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+}
+
+.footer-logo span {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
 .nav-links {
     display: flex;
     gap: 8px;
+    overflow: visible !important;
 }
 
 .nav-links a {
@@ -145,6 +178,55 @@ nav {
     color: var(--accent-color);
     background: var(--light-blue);
     font-weight: 600;
+}
+
+/* Dropdown Menu */
+.nav-links li.has-dropdown {
+    position: static;
+}
+
+.nav-links li.has-dropdown > a::after {
+    content: ' ▾';
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+.dropdown-menu {
+    display: none;
+    position: fixed;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    min-width: 200px;
+    z-index: 99999;
+    padding: 6px;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dropdown-menu.show {
+    display: flex;
+}
+
+.dropdown-menu li {
+    display: block;
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-medium);
+    white-space: nowrap;
+}
+
+.dropdown-menu li a:hover,
+.dropdown-menu li a.active {
+    background: var(--light-blue);
+    color: var(--accent-color);
 }
 
 .mobile-menu-btn {
@@ -173,7 +255,7 @@ nav {
 .hero {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--primary-light) 100%);
     color: var(--white);
-    padding: 200px 60px 140px;
+    padding: 90px 40px 60px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -217,11 +299,11 @@ nav {
     gap: 8px;
     background: linear-gradient(135deg, rgba(212, 168, 83, 0.2) 0%, rgba(212, 168, 83, 0.1) 100%);
     border: 1px solid rgba(212, 168, 83, 0.3);
-    padding: 10px 24px;
+    padding: 6px 16px;
     border-radius: 50px;
     font-size: 0.9rem;
     font-weight: 500;
-    margin-bottom: 32px;
+    margin-bottom: 14px;
     backdrop-filter: blur(10px);
     color: var(--gold-light);
 }
@@ -234,7 +316,7 @@ nav {
 .hero h1 {
     font-size: 3.5rem;
     font-weight: 800;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
     line-height: 1.25;
     letter-spacing: -1px;
     text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
@@ -250,7 +332,7 @@ nav {
 .hero p {
     font-size: 1.25rem;
     opacity: 0.9;
-    margin-bottom: 48px;
+    margin-bottom: 20px;
     line-height: 1.9;
     font-weight: 300;
 }
@@ -341,12 +423,12 @@ nav {
 
 /* ==================== SECTIONS ==================== */
 section {
-    padding: 120px 60px;
+    padding: 50px 40px;
 }
 
 .section-header {
     text-align: center;
-    margin-bottom: 70px;
+    margin-bottom: 30px;
 }
 
 .section-subtitle {
@@ -387,7 +469,7 @@ section {
 .background-content {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
-    gap: 80px;
+    gap: 36px;
     align-items: start;
 }
 
@@ -408,8 +490,8 @@ section {
 .highlight-box {
     background: linear-gradient(135deg, var(--light-blue) 0%, rgba(37, 99, 235, 0.05) 100%);
     border-left: 4px solid var(--accent-color);
-    padding: 28px 32px;
-    margin: 32px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
     border-radius: 0 16px 16px 0;
     position: relative;
 }
@@ -444,7 +526,7 @@ section {
 
 .feature-card {
     background: var(--white);
-    padding: 40px 36px;
+    padding: 22px 24px;
     border-radius: 20px;
     box-shadow: var(--shadow-md);
     transition: var(--transition-normal);
@@ -983,9 +1065,10 @@ section {
 
 /* ==================== FOOTER ==================== */
 footer {
-    background: linear-gradient(180deg, #0a1628 0%, #050d18 100%);
-    color: var(--white);
+    background: linear-gradient(180deg, #e8f0fe 0%, #ddeaf8 100%);
+    color: var(--text-dark);
     padding: 80px 60px 40px;
+    border-top: 1px solid #c7d9f5;
 }
 
 .footer-content {
@@ -1010,7 +1093,7 @@ footer {
 }
 
 .footer-desc {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-medium);
     line-height: 1.8;
     font-size: 0.95rem;
 }
@@ -1019,7 +1102,7 @@ footer {
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 24px;
-    color: var(--white);
+    color: var(--primary-color);
 }
 
 .footer-links ul li {
@@ -1027,22 +1110,22 @@ footer {
 }
 
 .footer-links ul li a {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-medium);
     transition: var(--transition-normal);
     font-size: 0.95rem;
 }
 
 .footer-links ul li a:hover {
-    color: var(--accent-light);
+    color: var(--accent-color);
     padding-left: 5px;
 }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #c7d9f5;
     margin-top: 60px;
     padding-top: 30px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-light);
     font-size: 0.9rem;
 }
 
@@ -1050,7 +1133,7 @@ footer {
 .page-header {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--primary-light) 100%);
     color: var(--white);
-    padding: 180px 60px 100px;
+    padding: 80px 40px 50px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -1072,7 +1155,7 @@ footer {
 .page-header h1 {
     font-size: 3rem;
     font-weight: 800;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     position: relative;
     letter-spacing: -0.5px;
 }
@@ -1101,7 +1184,7 @@ footer {
 
 /* ==================== PAGE CONTENT ==================== */
 .page-content {
-    padding: 100px 60px;
+    padding: 40px 40px;
     max-width: 1000px;
     margin: 0 auto;
 }
@@ -1157,7 +1240,7 @@ footer {
     background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
     color: var(--white);
     text-align: center;
-    padding: 100px 60px;
+    padding: 50px 40px;
     position: relative;
     overflow: hidden;
 }

@@ -3,6 +3,33 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
+    // ==================== DROPDOWN MENU ====================
+    document.querySelectorAll('.nav-links li.has-dropdown').forEach(function(item) {
+        var menu = item.querySelector('.dropdown-menu');
+        if (!menu) return;
+
+        function showMenu() {
+            var rect = item.getBoundingClientRect();
+            menu.style.top  = (rect.bottom + 4) + 'px';
+            menu.style.left = rect.left + 'px';
+            menu.classList.add('show');
+        }
+        function hideMenu() {
+            menu.classList.remove('show');
+        }
+
+        item.addEventListener('mouseenter', showMenu);
+        item.addEventListener('mouseleave', function(e) {
+            if (!menu.contains(e.relatedTarget)) hideMenu();
+        });
+        menu.addEventListener('mouseleave', function(e) {
+            if (!item.contains(e.relatedTarget)) hideMenu();
+        });
+        menu.addEventListener('mouseenter', function() {
+            menu.classList.add('show');
+        });
+    });
+
     // ==================== MOBILE MENU ====================
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const navLinks = document.querySelector('.nav-links');
