@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>조직진단 사전설문 | 대한치과위생사협회</title>
+    <meta name="description" content="대한치과위생사협회 조직진단 사전설문">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="../index.html" class="logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="logo-img"><span>조직진단 AI플랫폼</span></a>
+            <ul class="nav-links">
+                <li><a href="kdha.html">위생사협회</a></li>
+                <li class="has-dropdown">
+                    <a href="../index.html">진단</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="../index.html">대한치과위생사협회</a></li>
+                        <li><a href="../home.html">에스비컨설팅</a></li>
+                    </ul>
+                </li>
+                <li><a href="diagnosis.html">진단시스템</a></li>
+                <li><a href="areas.html">진단영역</a></li>
+                <li class="has-dropdown">
+                    <a href="roadmap.html">실행로드맵</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="roadmap.html">일반 로드맵</a></li>
+                        <li><a href="kdha-roadmap.html">협회 로드맵</a></li>
+                        <li><a href="workshop.html">워크숍 안내</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="outcomes.html">산출물</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="report.html">진단 결과 리포트</a></li>
+                    </ul>
+                </li>
+                <li><a href="contact.html">문의하기</a></li>
+            </ul>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Survey Form Section -->
+    <section class="survey-form-section">
+        <div class="container">
+            <div class="form-header">
+                <h1>조직진단 사전설문</h1>
+                <p>귀 협회의 조직 현황을 파악하기 위한 중요한 설문입니다.<br>성실하게 응답해주시면 정확한 진단에 큰 도움이 됩니다.</p>
+
+                <div class="survey-progress">
+                    <div class="progress-info">
+                        <span class="progress-label">진행상황</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressBar"></div>
+                        </div>
+                        <span class="progress-text"><span id="currentQuestion">1</span> / <span id="totalQuestions">15</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="surveyForm" class="survey-form">
+                <!-- Question 1 -->
+                <div class="question-block" data-question="1">
+                    <div class="question-header">
+                        <span class="question-number">Q1</span>
+                        <h3>협회의 전체적인 조직 방향성이 명확하다고 생각하십니까?</h3>
+                    </div>
+                    <div class="answer-group">
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="5" required>
+                            <span class="radio-text">① 매우 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="4">
+                            <span class="radio-text">② 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="3">
+                            <span class="radio-text">③ 보통이다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="2">
+                            <span class="radio-text">④ 그렇지 않다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q1" value="1">
+                            <span class="radio-text">⑤ 매우 그렇지 않다</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-block" data-question="2">
+                    <div class="question-header">
+                        <span class="question-number">Q2</span>
+                        <h3>의사결정 과정이 명확하고 투명하다고 생각하십니까?</h3>
+                    </div>
+                    <div class="answer-group">
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="5" required>
+                            <span class="radio-text">① 매우 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="4">
+                            <span class="radio-text">② 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="3">
+                            <span class="radio-text">③ 보통이다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="2">
+                            <span class="radio-text">④ 그렇지 않다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q2" value="1">
+                            <span class="radio-text">⑤ 매우 그렇지 않다</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-block" data-question="3">
+                    <div class="question-header">
+                        <span class="question-number">Q3</span>
+                        <h3>각 부서/직무의 역할과 책임이 명확한가요?</h3>
+                    </div>
+                    <div class="answer-group">
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="5" required>
+                            <span class="radio-text">① 매우 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="4">
+                            <span class="radio-text">② 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="3">
+                            <span class="radio-text">③ 보통이다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="2">
+                            <span class="radio-text">④ 그렇지 않다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q3" value="1">
+                            <span class="radio-text">⑤ 매우 그렇지 않다</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="question-block" data-question="4">
+                    <div class="question-header">
+                        <span class="question-number">Q4</span>
+                        <h3>협회 내 소통과 정보 공유가 잘 이루어지고 있나요?</h3>
+                    </div>
+                    <div class="answer-group">
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="5" required>
+                            <span class="radio-text">① 매우 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="4">
+                            <span class="radio-text">② 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="3">
+                            <span class="radio-text">③ 보통이다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="2">
+                            <span class="radio-text">④ 그렇지 않다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q4" value="1">
+                            <span class="radio-text">⑤ 매우 그렇지 않다</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="question-block" data-question="5">
+                    <div class="question-header">
+                        <span class="question-number">Q5</span>
+                        <h3>협회의 의사결정 기준이 일관되게 유지되나요?</h3>
+                    </div>
+                    <div class="answer-group">
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="5" required>
+                            <span class="radio-text">① 매우 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="4">
+                            <span class="radio-text">② 그렇다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="3">
+                            <span class="radio-text">③ 보통이다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="2">
+                            <span class="radio-text">④ 그렇지 않다</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="q5" value="1">
+                            <span class="radio-text">⑤ 매우 그렇지 않다</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-submit">
+                    <button type="submit" class="submit-btn">설문 제출</button>
+                    <p class="submit-notice">✅ 모든 항목을 응답하신 후 제출해주시기 바랍니다.</p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-about">
+                <div class="footer-logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="footer-logo-img"><span>조직진단 AI플랫폼</span></div>
+                <p class="footer-desc">전문직 자율성과 공공성을 동시에 작동시키는 협회 전용 조직진단 시스템을 제공합니다.</p>
+            </div>
+            <div class="footer-links">
+                <h4>메뉴</h4>
+                <ul>
+                    <li><a href="kdha.html">위생사협회</a></li>
+                    <li><a href="diagnosis.html">진단 시스템</a></li>
+                    <li><a href="areas.html">진단 영역</a></li>
+                    <li><a href="kdha-roadmap.html">로드맵</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>회사</h4>
+                <ul>
+                    <li><a href="about.html">회사 소개</a></li>
+                    <li><a href="contact.html">문의하기</a></li>
+                    <li><a href="../home.html">에스비컨설팅</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>연락처</h4>
+                <ul>
+                    <li>이메일: jaiwshim@gmail.com</li>
+                    <li>전화: 010-2397-5734</li>
+                    <li>홈페이지: www.sbconsulting.co.kr</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 에스비컨설팅 조직진단. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        /* Survey Form Section */
+        .survey-form-section {
+            padding: 60px 30px;
+            background: #f8fafc;
+            min-height: calc(100vh - 200px);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .form-header h1 {
+            font-size: 32px;
+            color: #0f2744;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .form-header p {
+            font-size: 15px;
+            color: #334155;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* Progress Bar */
+        .survey-progress {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .progress-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 7%;
+        }
+
+        .progress-text {
+            display: block;
+            font-size: 13px;
+            color: #0f2744;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* Survey Form */
+        .survey-form {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Question Block */
+        .question-block {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .question-block:last-of-type {
+            border-bottom: none;
+            margin-bottom: 30px;
+            padding-bottom: 0;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+
+        .question-header h3 {
+            font-size: 15px;
+            color: #0f2744;
+            font-weight: 600;
+            line-height: 1.5;
+            margin: 0;
+            padding-top: 2px;
+        }
+
+        /* Answer Group */
+        .answer-group {
+            margin-left: 55px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .radio-label:hover {
+            background: #f1f5f9;
+        }
+
+        .radio-label input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .radio-text {
+            font-size: 14px;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        /* Form Submit */
+        .form-submit {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 14px 50px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .submit-notice {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .survey-form-section {
+                padding: 40px 20px;
+            }
+
+            .form-header h1 {
+                font-size: 24px;
+            }
+
+            .survey-form {
+                padding: 25px 20px;
+            }
+
+            .question-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .question-number {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+
+            .answer-group {
+                margin-left: 0;
+            }
+
+            .question-header h3 {
+                font-size: 14px;
+            }
+        }
+    </style>
+
+    <script>
+        // Progress Bar Update
+        const form = document.getElementById('surveyForm');
+        const totalQuestions = document.querySelectorAll('.question-block').length;
+        document.getElementById('totalQuestions').textContent = totalQuestions;
+
+        // Update progress when any radio button changes
+        document.querySelectorAll('input[type="radio"]').forEach(input => {
+            input.addEventListener('change', updateProgress);
+        });
+
+        function updateProgress() {
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            const percentage = (answered / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('currentQuestion').textContent = answered;
+        }
+
+        // Form Submit
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Check if all questions are answered
+            const unanswered = document.querySelectorAll('.question-block').length -
+                               document.querySelectorAll('input[type="radio"]:checked').length;
+
+            if (unanswered > 0) {
+                alert(`${unanswered}개의 질문에 아직 응답하지 않으셨습니다.`);
+                return;
+            }
+
+            // Form submission
+            alert('설문이 성공적으로 제출되었습니다.\n진단 결과는 향후 안내될 예정입니다.');
+            // 실제로는 서버로 데이터 전송
+            // form.submit();
+        });
+    </script>
+</body>
+</html>
