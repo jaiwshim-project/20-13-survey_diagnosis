@@ -1281,26 +1281,26 @@ ${item.focus}
 
             const sheets = interviewSheets[role] || interviewSheets.executive;
 
-            let html = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            let html = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
     <h3 style="color: #0a0e27; margin: 0; font-size: 13px; font-weight: 700;">📋 인터뷰 시트${roleLabel}</h3>
-    <button onclick="downloadInterviewSheetPDF()" style="padding: 6px 12px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);">
+    <button onclick="downloadInterviewSheetPDF()" style="padding: 4px 10px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 3px; font-size: 10px; font-weight: 600; cursor: pointer;">
         📥 PDF
     </button>
 </div>`;
 
             sheets.forEach(section => {
-                html += `<div class="question-section" style="padding: 12px; margin-bottom: 10px;">
-                    <div class="question-title" style="border-bottom: none; margin-bottom: 8px; font-size: 12px;">
+                html += `<div class="question-section" style="padding: 8px; margin-bottom: 4px;">
+                    <div class="question-title" style="border-bottom: none; margin-bottom: 4px; font-size: 12px;">
                         <strong>${section.category}</strong>
                     </div>
                     <div class="response-cards">
                 `;
 
                 section.questions.forEach(item => {
-                    html += `<div class="response-card" style="padding: 8px; gap: 8px;">
-                        <p style="margin: 0 0 4px 0; font-size: 11px;"><strong>Q${item.num}. ${item.q}</strong></p>
-                        <div style="padding: 6px; background: #faf5ff; border-radius: 2px; font-size: 10px;">
-                            <p style="margin: 0; color: #334155; white-space: pre-wrap; line-height: 1.3;">
+                    html += `<div class="response-card" style="padding: 6px; gap: 4px;">
+                        <p style="margin: 0 0 2px 0; font-size: 11px; line-height: 1.3;"><strong>Q${item.num}. ${item.q}</strong></p>
+                        <div style="padding: 4px; background: #faf5ff; border-radius: 2px; font-size: 10px;">
+                            <p style="margin: 0; color: #334155; white-space: pre-wrap; line-height: 1.2;">
                                 <strong>포인트:</strong>
 ${item.focus}
                             </p>
@@ -1315,13 +1315,13 @@ ${item.focus}
             });
 
             html += `
-                <div class="question-section" style="padding: 12px; margin-bottom: 8px;">
-                    <div class="question-title" style="border-bottom: none; margin-bottom: 6px; font-size: 12px;">
+                <div class="question-section" style="padding: 8px; margin-bottom: 3px;">
+                    <div class="question-title" style="border-bottom: none; margin-bottom: 3px; font-size: 12px;">
                         <strong>💡 진행 팁</strong>
                     </div>
                     <div class="response-cards">
-                        <div class="response-card" style="padding: 8px; grid-column: 1 / -1;">
-                            <ul style="margin: 0; padding-left: 16px; font-size: 10px; line-height: 1.3;">
+                        <div class="response-card" style="padding: 5px; grid-column: 1 / -1;">
+                            <ul style="margin: 0; padding-left: 14px; font-size: 10px; line-height: 1.2;">
                                 <li><strong>사례:</strong> 구체적 사례 확보</li>
                                 <li><strong>Why:</strong> 근본 원인 파악</li>
                                 <li><strong>감정:</strong> 심리적 안전감 확보</li>
@@ -1330,14 +1330,14 @@ ${item.focus}
                     </div>
                 </div>
 
-                <div class="question-section" style="padding: 12px;">
-                    <div class="question-title" style="border-bottom: none; margin-bottom: 6px; font-size: 12px;">
+                <div class="question-section" style="padding: 8px; margin-bottom: 0;">
+                    <div class="question-title" style="border-bottom: none; margin-bottom: 3px; font-size: 12px;">
                         <strong>📝 유의사항</strong>
                     </div>
                     <div class="response-cards">
-                        <div class="response-card" style="padding: 8px; grid-column: 1 / -1;">
-                            <ul style="margin: 0; padding-left: 16px; font-size: 10px; line-height: 1.3;">
-                                <li><strong>준비:</strong> 시트 인쇄 후 메모 공간 마련</li>
+                        <div class="response-card" style="padding: 5px; grid-column: 1 / -1;">
+                            <ul style="margin: 0; padding-left: 14px; font-size: 10px; line-height: 1.2;">
+                                <li><strong>준비:</strong> 시트 인쇄 후 메모 공간</li>
                                 <li><strong>시간:</strong> 인당 45분~1시간</li>
                                 <li><strong>녹음:</strong> 동의 후 음성 녹음</li>
                             </ul>
