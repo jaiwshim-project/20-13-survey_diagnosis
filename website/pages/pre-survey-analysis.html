@@ -803,6 +803,171 @@
                             `;
                         }).join('')}
                     </div>
+
+                    ${generateDiagnosisGuide(data, labels)}
+                </div>
+            `;
+        }
+
+        // 조직 진단 가이드 생성
+        function generateDiagnosisGuide(data, labels) {
+            // 문제 이슈 정의
+            const issueMapping = {
+                executive: [
+                    {
+                        category: '🔴 의사결정 체계',
+                        issues: [
+                            '의사결정 구조가 명확하지 않음',
+                            '의사결정 지연으로 인한 실행 차질',
+                            '회장단과 사무처 간 권한 분산'
+                        ],
+                        relatedQuestions: 'Q2, Q3, Q5',
+                        diagnosisArea: '거버넌스 구조 & 의사결정 프로세스'
+                    },
+                    {
+                        category: '🟡 조직 문화',
+                        issues: [
+                            '반복되는 갈등 (구조적 원인)',
+                            '합의 중심 문화로 인한 책임 분산',
+                            '의견 제시의 어려움'
+                        ],
+                        relatedQuestions: 'Q6, Q8',
+                        diagnosisArea: '조직 문화 & 소통 체계'
+                    },
+                    {
+                        category: '🟠 전략 실행',
+                        issues: [
+                            '단기 이슈 대응 중심의 운영',
+                            '장기 전략 수립의 어려움',
+                            '정책 연속성 부재'
+                        ],
+                        relatedQuestions: 'Q1, Q4, Q7',
+                        diagnosisArea: '전략 수립 & 리더십 연속성'
+                    }
+                ],
+                employee: [
+                    {
+                        category: '🔴 업무 프로세스',
+                        issues: [
+                            '의사결정 지연으로 인한 업무 병목',
+                            '중복 보고 및 비효율한 프로세스',
+                            '권한과 책임의 불일치'
+                        ],
+                        relatedQuestions: 'Q2, Q3, Q7',
+                        diagnosisArea: '업무 프로세스 최적화'
+                    },
+                    {
+                        category: '🟡 평가 및 보상',
+                        issues: [
+                            '평가 기준이 명확하지 않음',
+                            '정량적 기준 부재',
+                            '관계에 따른 평가 차이 인식'
+                        ],
+                        relatedQuestions: 'Q5, Q6',
+                        diagnosisArea: '평가 체계 & 보상 정책'
+                    },
+                    {
+                        category: '🟠 소통 및 정보 관리',
+                        issues: [
+                            '의사결정 배경과 과정의 공개 부족',
+                            '정보 공유 체계 미흡',
+                            '의견 제시 환경 개선 필요'
+                        ],
+                        relatedQuestions: 'Q6, Q8, Q9',
+                        diagnosisArea: '내부 소통 & 투명성'
+                    }
+                ]
+            };
+
+            const role = currentRole;
+            const issues = issueMapping[role] || issueMapping.executive;
+
+            return `
+                <hr style="margin: 40px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                <h3 style="color: #0a0e27; margin-top: 30px;">⚙️ 주요 문제 및 이슈 (항목별)</h3>
+                <div style="margin-bottom: 30px;">
+                    ${issues.map((item, idx) => `
+                        <div style="
+                            background: white;
+                            border: 2px solid #e2e8f0;
+                            border-left: 5px solid #8b5cf6;
+                            border-radius: 8px;
+                            padding: 20px;
+                            margin-bottom: 15px;
+                        ">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                                <h4 style="color: #0a0e27; margin: 0; font-size: 15px;">
+                                    ${item.category}
+                                </h4>
+                                <span style="background: #e0e7ff; color: #4f46e5; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+                                    ${item.relatedQuestions}
+                                </span>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <p style="margin: 0 0 8px 0; font-size: 12px; color: #64748b; font-weight: 600;">주요 이슈:</p>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    ${item.issues.map(issue => `
+                                        <li style="font-size: 13px; color: #334155; margin: 4px 0; line-height: 1.5;">${issue}</li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; font-size: 13px;">
+                                <strong style="color: #2d3748;">진단 영역:</strong> <span style="color: #8b5cf6;">${item.diagnosisArea}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <hr style="margin: 30px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                <h3 style="color: #0a0e27;">🎯 사전 진단의 목적 및 활용</h3>
+                <div style="background: #f0f9ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
+                    <h4 style="color: #1e40af; margin-top: 0; margin-bottom: 15px;">📋 사전 진단 결과의 의미</h4>
+                    <p style="color: #334155; line-height: 1.8; margin: 0 0 15px 0;">
+                        이 <strong>사전 진단 결과</strong>는 다음 단계인 <strong>'조직 진단 설문지' 개발</strong>을 위한 기초 자료입니다.
+                        회장단과 직원들이 인식하는 <strong>조직의 주요 문제와 이슈</strong>를 파악하여,
+                        본 조직 진단에서 깊이 있게 다루어야 할 영역을 특정합니다.
+                    </p>
+
+                    <h4 style="color: #1e40af; margin: 20px 0 10px 0;">🔍 조직 진단으로 확인할 내용</h4>
+                    <ul style="color: #334155; line-height: 1.8; margin: 0; padding-left: 20px;">
+                        <li><strong>근본 원인 분석:</strong> 식별된 각 이슈의 구조적/문화적 원인이 무엇인지</li>
+                        <li><strong>조직 운영 방식:</strong> 현재 의사결정, 소통, 평가 시스템이 어떻게 작동하는지</li>
+                        <li><strong>이해관계자 관점:</strong> 각 계층/부서별 인식의 차이 및 갈등 지점</li>
+                        <li><strong>개선 방향:</strong> 각 이슈 해결을 위한 구체적인 조직 설계 및 운영 기준</li>
+                    </ul>
+                </div>
+
+                <h3 style="color: #0a0e27;">💡 다음 단계 조직 진단을 위한 시사점</h3>
+                <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 25px;">
+                    <h4 style="color: #92400e; margin-top: 0;">✓ 조직 진단 설문 개발 시 중점</h4>
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                            <p style="margin: 0; font-weight: 600; color: #0a0e27; margin-bottom: 5px;">1. 의사결정 및 거버넌스</p>
+                            <p style="margin: 0; font-size: 13px; color: #334155;">
+                                → 의사결정 프로세스의 명확성, 권한 위임 기준, 책임 소재 규정에 대한 심층 질문 필요
+                            </p>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                            <p style="margin: 0; font-weight: 600; color: #0a0e27; margin-bottom: 5px;">2. 조직 문화 및 소통</p>
+                            <p style="margin: 0; font-size: 13px; color: #334155;">
+                                → 심화된 갈등의 원인, 상호 신뢰 수준, 의견 제시 환경에 대한 구체적 조사 필요
+                            </p>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                            <p style="margin: 0; font-weight: 600; color: #0a0e27; margin-bottom: 5px;">3. 평가 및 보상 체계</p>
+                            <p style="margin: 0; font-size: 13px; color: #334155;">
+                                → 평가 기준의 명확성, 공정성 인식, 보상 연계성에 대한 세부 진단 필요
+                            </p>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                            <p style="margin: 0; font-weight: 600; color: #0a0e27; margin-bottom: 5px;">4. 전략 및 실행력</p>
+                            <p style="margin: 0; font-size: 13px; color: #334155;">
+                                → 장기 전략 vs 단기 대응의 우선순위, 리더십 연속성, 정책 일관성에 대한 심화 질문 필요
+                            </p>
+                        </div>
+                    </div>
                 </div>
             `;
         }
