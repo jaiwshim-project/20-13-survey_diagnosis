@@ -728,7 +728,7 @@
             contentDiv.innerHTML = inputHtml;
 
             // ===== TAB 2: 결과 분석 =====
-            const resultHtml = generateResultAnalysis(data, labels, average, distribution, scales);
+            const resultHtml = generateResultAnalysis(data, labels, average, distribution, scales, role);
             resultDiv.innerHTML = resultHtml;
 
             // ===== TAB 3: 인사이트 =====
@@ -737,7 +737,7 @@
         }
 
         // 결과 분석 생성
-        function generateResultAnalysis(data, labels, average, distribution, scales) {
+        function generateResultAnalysis(data, labels, average, distribution, scales, role) {
             // 키워드 추출 (간단한 구현)
             const allText = Object.keys(data[0])
                 .filter(k => k.startsWith('q') && k !== 'q10')
@@ -804,13 +804,13 @@
                         }).join('')}
                     </div>
 
-                    ${generateDiagnosisGuide(data, labels)}
+                    ${generateDiagnosisGuide(data, labels, role)}
                 </div>
             `;
         }
 
         // 조직 진단 가이드 생성
-        function generateDiagnosisGuide(data, labels) {
+        function generateDiagnosisGuide(data, labels, role) {
             // 문제 이슈 정의
             const issueMapping = {
                 executive: [
@@ -879,7 +879,6 @@
                 ]
             };
 
-            const role = currentRole;
             const issues = issueMapping[role] || issueMapping.executive;
 
             return `
