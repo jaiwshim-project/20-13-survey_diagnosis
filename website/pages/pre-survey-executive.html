@@ -539,7 +539,7 @@
                 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
                 const formData = {
-                    q1: document.querySelector('input[name="q1"]').value || document.querySelector('textarea[name="q1"]').value,
+                    q1: document.querySelector('textarea[name="q1"]').value,
                     q2: document.querySelector('textarea[name="q2"]').value,
                     q3: document.querySelector('textarea[name="q3"]').value,
                     q4: document.querySelector('textarea[name="q4"]').value,
