@@ -530,8 +530,14 @@
         console.log('Supabase URL:', SUPABASE_URL);
         console.log('Supabase Key:', SUPABASE_ANON_KEY ? 'Loaded' : 'NOT LOADED');
 
-        const { createClient } = window.supabase;
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Use existing supabase or create new one
+        let supabase;
+        if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+            const { createClient } = window.supabase;
+            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } else {
+            console.error('Supabase library not loaded');
+        }
         console.log('Supabase Client:', supabase ? 'Initialized' : 'Failed');
 
         // Tab switching
