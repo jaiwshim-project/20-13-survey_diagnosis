@@ -1247,26 +1247,26 @@ ${item.focus}
 
             const sheets = interviewSheets[role] || interviewSheets.executive;
 
-            let html = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-    <h3 style="color: #0a0e27; margin: 0; font-size: 15px; font-weight: 700;">📋 인터뷰 시트${roleLabel}</h3>
-    <button onclick="downloadInterviewSheetPDF()" style="padding: 8px 16px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(37, 99, 235, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(37, 99, 235, 0.2)';">
-        📥 PDF 다운로드
+            let html = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+    <h3 style="color: #0a0e27; margin: 0; font-size: 13px; font-weight: 700;">📋 인터뷰 시트${roleLabel}</h3>
+    <button onclick="downloadInterviewSheetPDF()" style="padding: 6px 12px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);">
+        📥 PDF
     </button>
 </div>`;
 
             sheets.forEach(section => {
-                html += `<div class="question-section">
-                    <div class="question-title" style="border-bottom: none; margin-bottom: 12px;">
+                html += `<div class="question-section" style="padding: 12px; margin-bottom: 10px;">
+                    <div class="question-title" style="border-bottom: none; margin-bottom: 8px; font-size: 12px;">
                         <strong>${section.category}</strong>
                     </div>
                     <div class="response-cards">
                 `;
 
                 section.questions.forEach(item => {
-                    html += `<div class="response-card">
-                        <p><strong>Q${item.num}. ${item.q}</strong></p>
-                        <div style="padding: 8px; background: #faf5ff; border-radius: 4px; margin-top: 6px; font-size: 11px;">
-                            <p style="margin: 0; color: #334155; white-space: pre-wrap; line-height: 1.4;">
+                    html += `<div class="response-card" style="padding: 8px; gap: 8px;">
+                        <p style="margin: 0 0 4px 0; font-size: 11px;"><strong>Q${item.num}. ${item.q}</strong></p>
+                        <div style="padding: 6px; background: #faf5ff; border-radius: 2px; font-size: 10px;">
+                            <p style="margin: 0; color: #334155; white-space: pre-wrap; line-height: 1.3;">
                                 <strong>포인트:</strong>
 ${item.focus}
                             </p>
@@ -1281,36 +1281,31 @@ ${item.focus}
             });
 
             html += `
-                <div class="question-section">
-                    <div class="question-title">
-                        <span class="q-number">💡 진행 팁</span>
+                <div class="question-section" style="padding: 12px; margin-bottom: 8px;">
+                    <div class="question-title" style="border-bottom: none; margin-bottom: 6px; font-size: 12px;">
+                        <strong>💡 진행 팁</strong>
                     </div>
                     <div class="response-cards">
-                        <div class="response-card">
-                            <ul style="margin: 0; padding-left: 18px; font-size: 11px;">
+                        <div class="response-card" style="padding: 8px; grid-column: 1 / -1;">
+                            <ul style="margin: 0; padding-left: 16px; font-size: 10px; line-height: 1.3;">
                                 <li><strong>사례:</strong> 구체적 사례 확보</li>
                                 <li><strong>Why:</strong> 근본 원인 파악</li>
                                 <li><strong>감정:</strong> 심리적 안전감 확보</li>
-                                <li><strong>개방형:</strong> 자유로운 응답 유도</li>
-                                <li><strong>맥락:</strong> 상황 정보 파악</li>
-                                <li><strong>개선:</strong> 문제 해결책도 수집</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <div class="question-section">
-                    <div class="question-title">
-                        <span class="q-number">📝 유의사항</span>
+                <div class="question-section" style="padding: 12px;">
+                    <div class="question-title" style="border-bottom: none; margin-bottom: 6px; font-size: 12px;">
+                        <strong>📝 유의사항</strong>
                     </div>
                     <div class="response-cards">
-                        <div class="response-card">
-                            <ul style="margin: 0; padding-left: 18px; font-size: 11px;">
+                        <div class="response-card" style="padding: 8px; grid-column: 1 / -1;">
+                            <ul style="margin: 0; padding-left: 16px; font-size: 10px; line-height: 1.3;">
                                 <li><strong>준비:</strong> 시트 인쇄 후 메모 공간 마련</li>
                                 <li><strong>시간:</strong> 인당 45분~1시간</li>
                                 <li><strong>녹음:</strong> 동의 후 음성 녹음</li>
-                                <li><strong>기록:</strong> 경청에 집중 후 정리</li>
-                                <li><strong>후속:</strong> 1-2일 내 정리 및 분석</li>
                             </ul>
                         </div>
                     </div>
@@ -1335,10 +1330,10 @@ ${item.focus}
             element.style.padding = '0';
 
             const opt = {
-                margin: [0, 8, 8, 8],
+                margin: [3, 5, 5, 5],
                 filename: fileName,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, allowTaint: true, windowWidth: 794 },
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: { scale: 1.5, useCORS: true, allowTaint: true, windowWidth: 750 },
                 jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
             };
 
