@@ -333,6 +333,40 @@
         /* Interview Sheet - 2 Column Layout */
         #insightsContent .response-cards {
             grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        /* PDF Print - Single Column */
+        @media print {
+            #insightsContent .response-cards {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            #insightsContent .question-section {
+                padding: 8px !important;
+                margin-bottom: 6px !important;
+            }
+            #insightsContent .question-title {
+                margin-bottom: 4px !important;
+                font-size: 11px !important;
+            }
+            #insightsContent .response-card {
+                padding: 6px !important;
+            }
+            #insightsContent .response-card p {
+                font-size: 10px !important;
+                margin: 0 0 2px 0 !important;
+            }
+            #insightsContent ul {
+                margin: 0 !important;
+                padding-left: 14px !important;
+                font-size: 9px !important;
+                line-height: 1.2 !important;
+            }
+            #insightsContent li {
+                margin: 1px 0 !important;
+                padding: 0 !important;
+            }
         }
 
         .response-card {
@@ -1330,11 +1364,11 @@ ${item.focus}
             element.style.padding = '0';
 
             const opt = {
-                margin: [3, 5, 5, 5],
+                margin: [2, 4, 2, 4],
                 filename: fileName,
-                image: { type: 'jpeg', quality: 0.95 },
-                html2canvas: { scale: 1.5, useCORS: true, allowTaint: true, windowWidth: 750 },
-                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+                image: { type: 'jpeg', quality: 0.92 },
+                html2canvas: { scale: 1.2, useCORS: true, allowTaint: true, windowWidth: 700 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4', compress: true }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
