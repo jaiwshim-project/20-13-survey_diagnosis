@@ -695,43 +695,42 @@
 
         // Update Timeline
         function updateTimeline(execData, empData, timelineId) {
-            // Group by date
-            const dateMap = {};
+            // Combine all data with timestamps
+            const allResponses = [
+                ...execData.map(item => ({ ...item, type: 'exec' })),
+                ...empData.map(item => ({ ...item, type: 'emp' }))
+            ];
 
-            execData.forEach(item => {
-                const date = formatDate(item.submitted_at);
-                if (!dateMap[date]) {
-                    dateMap[date] = { exec: 0, emp: 0 };
-                }
-                dateMap[date].exec++;
-            });
+            // Sort by submitted_at descending
+            allResponses.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
 
-            empData.forEach(item => {
-                const date = formatDate(item.submitted_at);
-                if (!dateMap[date]) {
-                    dateMap[date] = { exec: 0, emp: 0 };
-                }
-                dateMap[date].emp++;
-            });
-
-            // Sort dates
-            const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(b) - new Date(a));
-
-            if (sortedDates.length === 0) {
+            if (allResponses.length === 0) {
                 document.getElementById(timelineId).innerHTML = '<div style="text-align: center; color: #999; padding: 2rem;">응답 데이터 없음</div>';
                 return;
             }
 
             const timeline = document.getElementById(timelineId);
-            timeline.innerHTML = sortedDates.map(date => `
-                <div class="timeline-item">
-                    <div class="timeline-date">${date}</div>
-                    <div class="timeline-count">
-                        <span class="exec">회장단: ${dateMap[date].exec}명</span> |
-                        <span class="emp">직원: ${dateMap[date].emp}명</span>
+            timeline.innerHTML = allResponses.map(item => {
+                const date = new Date(item.submitted_at);
+                const dateStr = date.toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+                const timeStr = date.toLocaleTimeString('ko-KR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+                const roleLabel = item.type === 'exec' ? '👔 회장단' : '👩‍💼 직원';
+
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-date">${dateStr} ${timeStr}</div>
+                        <div class="timeline-count">${roleLabel}</div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Helper Functions
