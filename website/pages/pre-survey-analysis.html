@@ -12,6 +12,8 @@
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabase-config.js"></script>
+    <!-- html2pdf for PDF download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -1241,7 +1243,23 @@ ${item.focus}
 
             return `
                 <div style="background: white; font-size: 12px;">
-                    <h3 style="color: #0a0e27; margin: 0 0 6px 0; font-size: 15px; font-weight: 700;">📋 인터뷰 시트</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="color: #0a0e27; margin: 0; font-size: 15px; font-weight: 700;">📋 인터뷰 시트</h3>
+                        <button onclick="downloadInterviewSheetPDF()" style="
+                            padding: 8px 16px;
+                            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 6px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(37, 99, 235, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(37, 99, 235, 0.2)';">
+                            📥 PDF 다운로드
+                        </button>
+                    </div>
 
                     ${sheets.map(section => `
                         <div style="margin-bottom: 6px; page-break-inside: avoid;">
@@ -1326,6 +1344,23 @@ ${item.focus}
                     }
                 </style>
             `;
+        }
+
+        // PDF 다운로드 함수
+        function downloadInterviewSheetPDF() {
+            const element = document.getElementById('insightsContent');
+            const role = currentRole === 'executive' ? '회장단' : '직원';
+            const fileName = `인터뷰시트_${role}_${new Date().toISOString().split('T')[0]}.pdf`;
+
+            const opt = {
+                margin: 8,
+                filename: fileName,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+
+            html2pdf().set(opt).from(element).save();
         }
 
         // 페이지 로드 시 데이터 로드
