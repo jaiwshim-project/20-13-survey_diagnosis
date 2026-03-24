@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드 | 대한치과위생사협회</title>
+    <meta name="description" content="조직진단 관리자 대시보드">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <style>
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Dashboard Tabs */
+        .dashboard-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .dashboard-tab-btn {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-tab-btn:hover {
+            color: #0066cc;
+        }
+
+        .dashboard-tab-btn.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+        }
+
+        .dashboard-tab-content {
+            display: none;
+        }
+
+        .dashboard-tab-content.active {
+            display: block;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0066cc;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .stat-subtitle {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        /* Survey Statistics */
+        .survey-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .survey-category {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .survey-category h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .response-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .response-table th {
+            background: #f0f0f0;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .response-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .response-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .date-col {
+            color: #0066cc;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* Timeline View */
+        .timeline-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .timeline-section h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ddd;
+        }
+
+        .timeline-item {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 80px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 16px;
+            top: 6px;
+            width: 28px;
+            height: 28px;
+            background: #0066cc;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px #ddd;
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .timeline-count .exec {
+            color: #d32f2f;
+            font-weight: 500;
+        }
+
+        .timeline-count .emp {
+            color: #1976d2;
+            font-weight: 500;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .survey-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .dashboard-tabs {
+                flex-direction: column;
+                border-bottom: none;
+                gap: 0;
+            }
+
+            .dashboard-tab-btn {
+                border-bottom: 2px solid #ddd;
+                padding: 0.75rem 1rem;
+            }
+
+            .dashboard-tab-btn.active {
+                border-left: 3px solid #0066cc;
+            }
+
+            .stat-card .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="../index.html" class="logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="logo-img"><span>조직진단 AI플랫폼</span></a>
+            <ul class="nav-links">
+                <li><a href="kdha.html">위생사협회</a></li>
+                <li class="has-dropdown">
+                    <a href="../index.html">진단</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="../index.html">대한치과위생사협회</a></li>
+                        <li><a href="../home.html">에스비컨설팅</a></li>
+                    </ul>
+                </li>
+                <li><a href="diagnosis.html">진단시스템</a></li>
+                <li><a href="areas.html">진단영역</a></li>
+                <li class="has-dropdown">
+                    <a href="roadmap.html">실행로드맵</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="roadmap.html">일반 로드맵</a></li>
+                        <li><a href="kdha-roadmap.html">협회 로드맵</a></li>
+                        <li><a href="workshop.html">워크숍 안내</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="outcomes.html">산출물</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="report.html">진단 결과 리포트</a></li>
+                    </ul>
+                </li>
+                <li><a href="contact.html">문의하기</a></li>
+            </ul>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>📊 관리자 대시보드</h1>
+            <p>설문 응답 현황을 확인하고 관리합니다</p>
+        </div>
+
+        <!-- Dashboard Tabs -->
+        <div class="dashboard-tabs">
+            <button class="dashboard-tab-btn active" data-tab="pre-survey">
+                📋 사전 설문 통계
+            </button>
+            <button class="dashboard-tab-btn" data-tab="main-survey">
+                📊 조직진단 통계
+            </button>
+        </div>
+
+        <!-- Tab 1: Pre-Survey Statistics -->
+        <div class="dashboard-tab-content active" id="tab-pre-survey">
+            <!-- Overall Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>전체 응답</h3>
+                    <div class="stat-number" id="preTotalCount">-</div>
+                    <div class="stat-subtitle">명</div>
+                </div>
+                <div class="stat-card">
+                    <h3>회장단 응답</h3>
+                    <div class="stat-number" id="preExecCount">-</div>
+                    <div class="stat-subtitle">명</div>
+                </div>
+                <div class="stat-card">
+                    <h3>직원 응답</h3>
+                    <div class="stat-number" id="preEmpCount">-</div>
+                    <div class="stat-subtitle">명</div>
+                </div>
+                <div class="stat-card">
+                    <h3>최근 응답</h3>
+                    <div class="stat-number" id="preLastDate">-</div>
+                    <div class="stat-subtitle">응답일시</div>
+                </div>
+            </div>
+
+            <!-- Survey Response Details -->
+            <div class="survey-stats">
+                <!-- Executive Responses -->
+                <div class="survey-category">
+                    <h3>👔 회장단 응답 현황</h3>
+                    <table class="response-table">
+                        <thead>
+                            <tr>
+                                <th>응답일시</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preExecTable">
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: #999;">데이터 로딩 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Employee Responses -->
+                <div class="survey-category">
+                    <h3>👩‍💼 직원 응답 현황</h3>
+                    <table class="response-table">
+                        <thead>
+                            <tr>
+                                <th>응답일시</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preEmpTable">
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: #999;">데이터 로딩 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Timeline View -->
+            <div class="timeline-section">
+                <h3>📅 응답 타임라인</h3>
+                <div class="timeline" id="preTimeline">
+                    <div style="text-align: center; color: #999; padding: 2rem;">
+                        타임라인 데이터 로딩 중...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Main Survey Statistics -->
+        <div class="dashboard-tab-content" id="tab-main-survey">
+            <!-- Overall Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>전체 응답</h3>
+                    <div class="stat-number" id="mainTotalCount">-</div>
+                    <div class="stat-subtitle">명</div>
+                </div>
+                <div class="stat-card">
+                    <h3>회장단 응답</h3>
+                    <div class="stat-number" id="mainExecCount">-</div>
+                    <div class="stat-subtitle">명</div>
+                </div>
+                <div class="stat-card">
+                    <h3>직원 응답</h3>
+                    <div class="stat-number" id="mainEmpCount">-</div>
+                    <div class="stat-subtitle">명</div>
+                </div>
+                <div class="stat-card">
+                    <h3>최근 응답</h3>
+                    <div class="stat-number" id="mainLastDate">-</div>
+                    <div class="stat-subtitle">응답일시</div>
+                </div>
+            </div>
+
+            <!-- Survey Response Details -->
+            <div class="survey-stats">
+                <!-- Executive Responses -->
+                <div class="survey-category">
+                    <h3>👔 회장단 응답 현황</h3>
+                    <table class="response-table">
+                        <thead>
+                            <tr>
+                                <th>응답일시</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mainExecTable">
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: #999;">데이터 로딩 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Employee Responses -->
+                <div class="survey-category">
+                    <h3>👩‍💼 직원 응답 현황</h3>
+                    <table class="response-table">
+                        <thead>
+                            <tr>
+                                <th>응답일시</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mainEmpTable">
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: #999;">데이터 로딩 중...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Timeline View -->
+            <div class="timeline-section">
+                <h3>📅 응답 타임라인</h3>
+                <div class="timeline" id="mainTimeline">
+                    <div style="text-align: center; color: #999; padding: 2rem;">
+                        타임라인 데이터 로딩 중...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>에스비컨설팅</h4>
+                <p>전문직 자율성과 공공성을 동시에 작동시키는 협회 전용 조직진단 시스템</p>
+            </div>
+            <div class="footer-section">
+                <h4>빠른 링크</h4>
+                <ul>
+                    <li><a href="diagnosis.html">진단시스템</a></li>
+                    <li><a href="kdha-roadmap.html">협회 로드맵</a></li>
+                    <li><a href="report.html">진단 결과</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>문의</h4>
+                <ul>
+                    <li><a href="contact.html">문의하기</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 대한치과위생사협회. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // Initialize Supabase
+        console.log('Supabase URL:', SUPABASE_URL);
+        console.log('Supabase Key:', SUPABASE_ANON_KEY ? 'Loaded' : 'NOT LOADED');
+
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('Supabase Client:', supabase ? 'Initialized' : 'Failed');
+
+        // Tab switching
+        document.querySelectorAll('.dashboard-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class
+                document.querySelectorAll('.dashboard-tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.dashboard-tab-content').forEach(c => c.classList.remove('active'));
+
+                // Add active class
+                btn.classList.add('active');
+                const tabId = 'tab-' + btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+
+                // Load data for the tab
+                if (btn.getAttribute('data-tab') === 'pre-survey') {
+                    loadPreSurveyData();
+                } else {
+                    loadMainSurveyData();
+                }
+            });
+        });
+
+        // Load Pre-Survey Data
+        async function loadPreSurveyData() {
+            console.log('Loading Pre-Survey Data...');
+            try {
+                // Fetch Executive Survey
+                const { data: execData, error: execError } = await supabase
+                    .from('pre_survey_executive')
+                    .select('id, submitted_at')
+                    .order('submitted_at', { ascending: false });
+
+                // Fetch Employee Survey
+                const { data: empData, error: empError } = await supabase
+                    .from('pre_survey_employee')
+                    .select('id, submitted_at')
+                    .order('submitted_at', { ascending: false });
+
+                if (execError) {
+                    console.error('Executive Survey Error:', execError);
+                }
+                if (empError) {
+                    console.error('Employee Survey Error:', empError);
+                }
+
+                console.log('Executive Data:', execData);
+                console.log('Employee Data:', empData);
+
+                // Update statistics
+                const totalCount = (execData?.length || 0) + (empData?.length || 0);
+                const execCount = execData?.length || 0;
+                const empCount = empData?.length || 0;
+
+                document.getElementById('preTotalCount').textContent = totalCount;
+                document.getElementById('preExecCount').textContent = execCount;
+                document.getElementById('preEmpCount').textContent = empCount;
+
+                // Get latest date
+                const allDates = [
+                    ...((execData || []).map(d => new Date(d.submitted_at))),
+                    ...((empData || []).map(d => new Date(d.submitted_at)))
+                ];
+                if (allDates.length > 0) {
+                    const lastDate = new Date(Math.max(...allDates.map(d => d.getTime())));
+                    document.getElementById('preLastDate').textContent = formatDate(lastDate);
+                } else {
+                    document.getElementById('preLastDate').textContent = '-';
+                }
+
+                // Update tables
+                updateTable(execData || [], 'preExecTable');
+                updateTable(empData || [], 'preEmpTable');
+
+                // Update timeline
+                updateTimeline(execData || [], empData || [], 'preTimeline');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Load Main Survey Data
+        async function loadMainSurveyData() {
+            console.log('Loading Main Survey Data...');
+            try {
+                // Fetch Executive Survey
+                const { data: execData, error: execError } = await supabase
+                    .from('executive_survey')
+                    .select('id, submitted_at')
+                    .order('submitted_at', { ascending: false });
+
+                // Fetch Employee Survey
+                const { data: empData, error: empError } = await supabase
+                    .from('employee_survey')
+                    .select('id, submitted_at')
+                    .order('submitted_at', { ascending: false });
+
+                if (execError) {
+                    console.error('Executive Survey Error:', execError);
+                }
+                if (empError) {
+                    console.error('Employee Survey Error:', empError);
+                }
+
+                console.log('Executive Data:', execData);
+                console.log('Employee Data:', empData);
+
+                // Update statistics
+                const totalCount = (execData?.length || 0) + (empData?.length || 0);
+                const execCount = execData?.length || 0;
+                const empCount = empData?.length || 0;
+
+                document.getElementById('mainTotalCount').textContent = totalCount;
+                document.getElementById('mainExecCount').textContent = execCount;
+                document.getElementById('mainEmpCount').textContent = empCount;
+
+                // Get latest date
+                const allDates = [
+                    ...((execData || []).map(d => new Date(d.submitted_at))),
+                    ...((empData || []).map(d => new Date(d.submitted_at)))
+                ];
+                if (allDates.length > 0) {
+                    const lastDate = new Date(Math.max(...allDates.map(d => d.getTime())));
+                    document.getElementById('mainLastDate').textContent = formatDate(lastDate);
+                } else {
+                    document.getElementById('mainLastDate').textContent = '-';
+                }
+
+                // Update tables
+                updateTable(execData || [], 'mainExecTable');
+                updateTable(empData || [], 'mainEmpTable');
+
+                // Update timeline
+                updateTimeline(execData || [], empData || [], 'mainTimeline');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Update Table
+        function updateTable(data, tableId) {
+            const tbody = document.getElementById(tableId);
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #999;">응답 데이터 없음</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    <td class="date-col">${formatDateTime(item.submitted_at)}</td>
+                    <td><span class="status-badge status-completed">✓ 완료</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Update Timeline
+        function updateTimeline(execData, empData, timelineId) {
+            // Group by date
+            const dateMap = {};
+
+            execData.forEach(item => {
+                const date = formatDate(item.submitted_at);
+                if (!dateMap[date]) {
+                    dateMap[date] = { exec: 0, emp: 0 };
+                }
+                dateMap[date].exec++;
+            });
+
+            empData.forEach(item => {
+                const date = formatDate(item.submitted_at);
+                if (!dateMap[date]) {
+                    dateMap[date] = { exec: 0, emp: 0 };
+                }
+                dateMap[date].emp++;
+            });
+
+            // Sort dates
+            const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(b) - new Date(a));
+
+            if (sortedDates.length === 0) {
+                document.getElementById(timelineId).innerHTML = '<div style="text-align: center; color: #999; padding: 2rem;">응답 데이터 없음</div>';
+                return;
+            }
+
+            const timeline = document.getElementById(timelineId);
+            timeline.innerHTML = sortedDates.map(date => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${date}</div>
+                    <div class="timeline-count">
+                        <span class="exec">회장단: ${dateMap[date].exec}명</span> |
+                        <span class="emp">직원: ${dateMap[date].emp}명</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Helper Functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Initial load
+        window.addEventListener('load', () => {
+            console.log('Page loaded, calling loadPreSurveyData');
+            loadPreSurveyData();
+        });
+    </script>
+</body>
+</html>
