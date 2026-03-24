@@ -536,7 +536,11 @@
 
             // Supabase에 데이터 저장
             try {
+                console.log('SUPABASE_URL:', SUPABASE_URL);
+                console.log('SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? '설정됨' : '미설정');
+
                 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('Supabase 클라이언트 생성됨');
 
                 const formData = {
                     q1: document.querySelector('textarea[name="q1"]').value,
@@ -551,12 +555,17 @@
                     q10: parseInt(document.querySelector('input[name="q10"]:checked').value)
                 };
 
-                const { error } = await supabase
+                console.log('제출할 데이터:', formData);
+
+                const { data, error } = await supabase
                     .from('pre_survey_executive')
                     .insert([formData]);
 
+                console.log('Insert 결과 - data:', data, 'error:', error);
+
                 if (error) {
                     alert('설문 저장 중 오류가 발생했습니다.\n' + error.message);
+                    console.error('Insert 에러:', error);
                     return;
                 }
 
@@ -567,6 +576,7 @@
                 }, 1000);
             } catch (err) {
                 alert('오류 발생: ' + err.message);
+                console.error('예외 발생:', err);
             }
         });
     </script>
