@@ -1176,6 +1176,8 @@ ${item.focus}
 
         // 인터뷰 시트 생성
         function generateInsights(data, labels, average, role) {
+            const roleLabel = role === 'executive' ? '(회장단)' : '(직원)';
+
             // 인터뷰 질문 데이터
             const interviewSheets = {
                 executive: [
@@ -1239,14 +1241,11 @@ ${item.focus}
             };
 
             const sheets = interviewSheets[role] || interviewSheets.executive;
-            let questionNum = 1;
-
             const roleLabel = role === 'executive' ? '(회장단)' : '(직원)';
 
-            return `
-                <div style="background: white; font-size: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <h3 style="color: #0a0e27; margin: 0; font-size: 15px; font-weight: 700;">📋 인터뷰 시트${roleLabel}</h3>
+            let html = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="color: #0a0e27; margin: 0; font-size: 15px; font-weight: 700;">📋 인터뷰 시트${roleLabel}</h3>
                         <button onclick="downloadInterviewSheetPDF()" style="
                             padding: 8px 16px;
                             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
@@ -1261,91 +1260,75 @@ ${item.focus}
                         " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(37, 99, 235, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(37, 99, 235, 0.2)';">
                             📥 PDF 다운로드
                         </button>
-                    </div>
+                </div>
+            `;
 
-                    ${sheets.map(section => `
-                        <div style="margin-bottom: 4px; page-break-inside: avoid;">
-                            <h4 style="color: #0a0e27; margin: 0 0 3px 0; font-size: 12px; font-weight: 700;">
-                                ${section.category}
-                            </h4>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px;">
-                                ${section.questions.map(item => `
-                                    <div style="
-                                        background: #f8fafc;
-                                        border: 1px solid #e2e8f0;
-                                        border-radius: 2px;
-                                        padding: 5px;
-                                        border-left: 2px solid #a855f7;
-                                        page-break-inside: avoid;
-                                    ">
-                                        <p style="margin: 0 0 2px 0; font-weight: 600; color: #0a0e27; font-size: 12px; line-height: 1.3;">
-                                            Q${item.num}. ${item.q}
-                                        </p>
-                                        <div style="padding: 3px; background: #faf5ff; border-radius: 2px;">
-                                            <p style="margin: 0; font-size: 12px; color: #334155; white-space: pre-wrap; line-height: 1.2;">
-                                                <strong>포인트:</strong>
+            sheets.forEach(section => {
+                html += `<div class="question-section">
+                    <div class="question-title">
+                        <span class="q-number">${section.category}</span>
+                    </div>
+                    <div class="response-cards">
+                `;
+
+                section.questions.forEach(item => {
+                    html += `
+                        <div class="response-card">
+                            <p><strong>Q${item.num}. ${item.q}</strong></p>
+                            <div style="padding: 8px; background: #faf5ff; border-radius: 4px; margin-top: 6px; font-size: 11px;">
+                                <p style="margin: 0; color: #334155; white-space: pre-wrap; line-height: 1.4;">
+                                    <strong>포인트:</strong>
 ${item.focus}
-                                            </p>
-                                        </div>
-                                    </div>
-                                `).join('')}
+                                </p>
                             </div>
                         </div>
-                    `).join('')}
+                    `;
+                });
 
-                    <div style="margin-top: 4px; page-break-inside: avoid;">
-                        <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 2px; padding: 5px;">
-                            <h4 style="color: #1e40af; margin: 0 0 2px 0; font-size: 12px; font-weight: 700;">💡 진행 팁</h4>
-                            <ul style="color: #334155; margin: 0 0 0 0; padding-left: 16px; line-height: 1.2; font-size: 12px;">
-                                <li style="margin: 1px 0;"><strong>사례:</strong> 구체적 사례 확보</li>
-                                <li style="margin: 1px 0;"><strong>Why:</strong> 근본 원인 파악</li>
-                                <li style="margin: 1px 0;"><strong>감정:</strong> 심리적 안전감 확보</li>
-                                <li style="margin: 1px 0;"><strong>개방형:</strong> 자유로운 응답 유도</li>
-                                <li style="margin: 1px 0;"><strong>맥락:</strong> 상황 정보 파악</li>
-                                <li style="margin: 1px 0;"><strong>개선:</strong> 문제 해결책도 수집</li>
-                            </ul>
-                        </div>
+                html += `
+                    </div>
+                </div>
+                `;
+            });
 
-                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 2px; padding: 5px; margin-top: 3px;">
-                            <h4 style="color: #92400e; margin: 0 0 2px 0; font-size: 12px; font-weight: 700;">📝 유의사항</h4>
-                            <ul style="color: #334155; margin: 0 0 0 0; padding-left: 16px; line-height: 1.2; font-size: 12px;">
-                                <li style="margin: 1px 0;"><strong>준비:</strong> 시트 인쇄 후 메모 공간 마련</li>
-                                <li style="margin: 1px 0;"><strong>시간:</strong> 인당 45분~1시간</li>
-                                <li style="margin: 1px 0;"><strong>녹음:</strong> 동의 후 음성 녹음</li>
-                                <li style="margin: 1px 0;"><strong>기록:</strong> 경청에 집중 후 정리</li>
-                                <li style="margin: 1px 0;"><strong>후속:</strong> 1-2일 내 정리 및 분석</li>
+            html += `
+                <div class="question-section">
+                    <div class="question-title">
+                        <span class="q-number">💡 진행 팁</span>
+                    </div>
+                    <div class="response-cards">
+                        <div class="response-card">
+                            <ul style="margin: 0; padding-left: 18px; font-size: 11px;">
+                                <li><strong>사례:</strong> 구체적 사례 확보</li>
+                                <li><strong>Why:</strong> 근본 원인 파악</li>
+                                <li><strong>감정:</strong> 심리적 안전감 확보</li>
+                                <li><strong>개방형:</strong> 자유로운 응답 유도</li>
+                                <li><strong>맥락:</strong> 상황 정보 파악</li>
+                                <li><strong>개선:</strong> 문제 해결책도 수집</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <style>
-                    div[style*="grid-template-columns"] {
-                        grid-template-columns: repeat(2, 1fr) !important;
-                    }
-                    @media print {
-                        body {
-                            margin: 0;
-                            padding: 10px;
-                            font-size: 12px;
-                        }
-                        #insightsContent {
-                            margin: 0;
-                            padding: 0;
-                        }
-                        h3 { margin: 0 0 8px 0 !important; font-size: 14px !important; }
-                        h4 { margin: 0 0 4px 0 !important; font-size: 12px !important; }
-                        p { margin: 0 0 2px 0 !important; line-height: 1.2 !important; }
-                        ul { margin: 2px 0 !important; padding-left: 16px !important; line-height: 1.3 !important; }
-                        li { margin: 2px 0 !important; padding: 0 !important; }
-                        div[style*="margin-bottom"] { margin-bottom: 8px !important; }
-                        div[style*="grid-template-columns"] { grid-template-columns: repeat(2, 1fr) !important; }
-                        .analysis-content { background: white !important; }
-                        header, nav, footer, .analysis-tabs, .role-tabs, .response-info { display: none !important; }
-                        .analysis-section { padding: 0 !important; background: white !important; }
-                    }
-                </style>
+                <div class="question-section">
+                    <div class="question-title">
+                        <span class="q-number">📝 유의사항</span>
+                    </div>
+                    <div class="response-cards">
+                        <div class="response-card">
+                            <ul style="margin: 0; padding-left: 18px; font-size: 11px;">
+                                <li><strong>준비:</strong> 시트 인쇄 후 메모 공간 마련</li>
+                                <li><strong>시간:</strong> 인당 45분~1시간</li>
+                                <li><strong>녹음:</strong> 동의 후 음성 녹음</li>
+                                <li><strong>기록:</strong> 경청에 집중 후 정리</li>
+                                <li><strong>후속:</strong> 1-2일 내 정리 및 분석</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             `;
+
+            return html;
         }
 
         // PDF 다운로드 함수
