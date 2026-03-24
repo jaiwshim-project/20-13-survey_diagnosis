@@ -1355,7 +1355,7 @@ ${item.focus}
             const fileName = `인터뷰시트_${role}_${new Date().toISOString().split('T')[0]}.pdf`;
 
             const opt = {
-                margin: 8,
+                margin: [2, 8, 8, 8],
                 filename: fileName,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
