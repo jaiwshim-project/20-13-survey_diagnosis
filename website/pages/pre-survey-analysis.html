@@ -1240,29 +1240,29 @@ ${item.focus}
             let questionNum = 1;
 
             return `
-                <div style="background: white; font-size: 13px;">
-                    <h3 style="color: #0a0e27; margin: 0 0 12px 0; font-size: 16px; font-weight: 700;">📋 대면 미팅 인터뷰 시트</h3>
+                <div style="background: white; font-size: 12px;">
+                    <h3 style="color: #0a0e27; margin: 0 0 6px 0; font-size: 15px; font-weight: 700;">📋 인터뷰 시트</h3>
 
                     ${sheets.map(section => `
-                        <div style="margin-bottom: 12px; page-break-inside: avoid;">
-                            <h4 style="color: #0a0e27; margin: 0 0 8px 0; font-size: 13px; font-weight: 700;">
-                                ${section.category} (${section.count}개)
+                        <div style="margin-bottom: 6px; page-break-inside: avoid;">
+                            <h4 style="color: #0a0e27; margin: 0 0 4px 0; font-size: 12px; font-weight: 700;">
+                                ${section.category}
                             </h4>
-                            <div style="display: grid; gap: 8px;">
+                            <div style="display: grid; gap: 5px;">
                                 ${section.questions.map(item => `
                                     <div style="
                                         background: #f8fafc;
                                         border: 1px solid #e2e8f0;
-                                        border-radius: 4px;
-                                        padding: 10px;
-                                        border-left: 3px solid #a855f7;
+                                        border-radius: 2px;
+                                        padding: 6px;
+                                        border-left: 2px solid #a855f7;
                                         page-break-inside: avoid;
                                     ">
-                                        <p style="margin: 0 0 6px 0; font-weight: 600; color: #0a0e27; font-size: 12px; line-height: 1.4;">
+                                        <p style="margin: 0 0 3px 0; font-weight: 600; color: #0a0e27; font-size: 11px; line-height: 1.3;">
                                             Q${item.num}. ${item.q}
                                         </p>
-                                        <div style="padding: 7px; background: #faf5ff; border-radius: 4px;">
-                                            <p style="margin: 0; font-size: 11px; color: #334155; white-space: pre-wrap; line-height: 1.4;">
+                                        <div style="padding: 4px; background: #faf5ff; border-radius: 2px;">
+                                            <p style="margin: 0; font-size: 10px; color: #334155; white-space: pre-wrap; line-height: 1.2;">
                                                 <strong>포인트:</strong>
 ${item.focus}
                                             </p>
@@ -1273,27 +1273,27 @@ ${item.focus}
                         </div>
                     `).join('')}
 
-                    <div style="margin-top: 10px; page-break-inside: avoid;">
-                        <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 4px; padding: 10px;">
-                            <h4 style="color: #1e40af; margin: 0 0 6px 0; font-size: 12px; font-weight: 700;">💡 진행 팁</h4>
-                            <ul style="color: #334155; margin: 0; padding-left: 18px; line-height: 1.4; font-size: 11px;">
-                                <li><strong>구체적 사례:</strong> 일반적 답변보다 최근 구체적 사례 확보</li>
-                                <li><strong>Why 질문:</strong> "왜 그렇다고 생각하세요?"를 반복하여 근본 원인 파악</li>
-                                <li><strong>감정 이입:</strong> 응답 인정 및 심리적 안전감 확보</li>
-                                <li><strong>개방형 질문:</strong> "어떻게 생각하세요?"로 자유로운 응답 유도</li>
-                                <li><strong>상황 복원:</strong> 참여자, 순서 등으로 맥락 파악</li>
-                                <li><strong>해결책:</strong> 문제뿐 아니라 개선 방안도 수집</li>
+                    <div style="margin-top: 6px; page-break-inside: avoid;">
+                        <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 2px; padding: 6px;">
+                            <h4 style="color: #1e40af; margin: 0 0 3px 0; font-size: 11px; font-weight: 700;">💡 진행 팁</h4>
+                            <ul style="color: #334155; margin: 0; padding-left: 16px; line-height: 1.2; font-size: 10px;">
+                                <li><strong>사례:</strong> 구체적 사례 확보</li>
+                                <li><strong>Why:</strong> 근본 원인 파악</li>
+                                <li><strong>감정:</strong> 심리적 안전감 확보</li>
+                                <li><strong>개방형:</strong> 자유로운 응답 유도</li>
+                                <li><strong>맥락:</strong> 상황 정보 파악</li>
+                                <li><strong>개선:</strong> 문제 해결책도 수집</li>
                             </ul>
                         </div>
 
-                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 4px; padding: 10px; margin-top: 8px;">
-                            <h4 style="color: #92400e; margin: 0 0 6px 0; font-size: 12px; font-weight: 700;">📝 유의사항</h4>
-                            <ul style="color: #334155; margin: 0; padding-left: 18px; line-height: 1.4; font-size: 11px;">
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 2px; padding: 6px; margin-top: 4px;">
+                            <h4 style="color: #92400e; margin: 0 0 3px 0; font-size: 11px; font-weight: 700;">📝 유의사항</h4>
+                            <ul style="color: #334155; margin: 0; padding-left: 16px; line-height: 1.2; font-size: 10px;">
                                 <li><strong>준비:</strong> 시트 인쇄 후 메모 공간 마련</li>
-                                <li><strong>시간:</strong> 인당 45분~1시간 예상</li>
-                                <li><strong>녹음:</strong> 가능하면 음성 녹음 동의 확보</li>
-                                <li><strong>기록:</strong> 경청에 집중, 나중에 정리</li>
-                                <li><strong>후속:</strong> 인터뷰 후 1-2일 내 내용 정리 및 분석</li>
+                                <li><strong>시간:</strong> 인당 45분~1시간</li>
+                                <li><strong>녹음:</strong> 동의 후 음성 녹음</li>
+                                <li><strong>기록:</strong> 경청에 집중 후 정리</li>
+                                <li><strong>후속:</strong> 1-2일 내 정리 및 분석</li>
                             </ul>
                         </div>
                     </div>
