@@ -1240,31 +1240,30 @@ ${item.focus}
             let questionNum = 1;
 
             return `
-                <div style="background: white;">
-                    <h3 style="color: #0a0e27; margin-top: 0; margin-bottom: 20px;">📋 대면 미팅 인터뷰 시트</h3>
+                <div style="background: white; font-size: 13px;">
+                    <h3 style="color: #0a0e27; margin: 0 0 12px 0; font-size: 16px; font-weight: 700;">📋 대면 미팅 인터뷰 시트</h3>
 
                     ${sheets.map(section => `
-                        <div style="margin-bottom: 30px;">
-                            <h4 style="color: #0a0e27; margin: 0 0 15px 0; font-size: 15px;">
+                        <div style="margin-bottom: 12px; page-break-inside: avoid;">
+                            <h4 style="color: #0a0e27; margin: 0 0 8px 0; font-size: 13px; font-weight: 700;">
                                 ${section.category} (${section.count}개)
                             </h4>
-                            <div style="display: grid; gap: 12px; margin-bottom: 20px;">
+                            <div style="display: grid; gap: 8px;">
                                 ${section.questions.map(item => `
                                     <div style="
                                         background: #f8fafc;
                                         border: 1px solid #e2e8f0;
-                                        border-radius: 8px;
-                                        padding: 16px;
-                                        border-left: 4px solid #a855f7;
+                                        border-radius: 4px;
+                                        padding: 10px;
+                                        border-left: 3px solid #a855f7;
+                                        page-break-inside: avoid;
                                     ">
-                                        <div style="margin-bottom: 10px;">
-                                            <p style="margin: 0; font-weight: 600; color: #0a0e27; font-size: 14px; line-height: 1.6;">
-                                                Q${item.num}. ${item.q}
-                                            </p>
-                                        </div>
-                                        <div style="padding: 10px; background: #faf5ff; border-radius: 6px;">
-                                            <p style="margin: 0; font-size: 12px; color: #334155; white-space: pre-wrap; line-height: 1.6;">
-                                                <strong>주요 포인트:</strong>
+                                        <p style="margin: 0 0 6px 0; font-weight: 600; color: #0a0e27; font-size: 12px; line-height: 1.4;">
+                                            Q${item.num}. ${item.q}
+                                        </p>
+                                        <div style="padding: 7px; background: #faf5ff; border-radius: 4px;">
+                                            <p style="margin: 0; font-size: 11px; color: #334155; white-space: pre-wrap; line-height: 1.4;">
+                                                <strong>포인트:</strong>
 ${item.focus}
                                             </p>
                                         </div>
@@ -1274,31 +1273,55 @@ ${item.focus}
                         </div>
                     `).join('')}
 
-                    <hr style="margin: 30px 0; border: none; border-top: 2px solid #e2e8f0;">
+                    <div style="margin-top: 10px; page-break-inside: avoid;">
+                        <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 4px; padding: 10px;">
+                            <h4 style="color: #1e40af; margin: 0 0 6px 0; font-size: 12px; font-weight: 700;">💡 진행 팁</h4>
+                            <ul style="color: #334155; margin: 0; padding-left: 18px; line-height: 1.4; font-size: 11px;">
+                                <li><strong>구체적 사례:</strong> 일반적 답변보다 최근 구체적 사례 확보</li>
+                                <li><strong>Why 질문:</strong> "왜 그렇다고 생각하세요?"를 반복하여 근본 원인 파악</li>
+                                <li><strong>감정 이입:</strong> 응답 인정 및 심리적 안전감 확보</li>
+                                <li><strong>개방형 질문:</strong> "어떻게 생각하세요?"로 자유로운 응답 유도</li>
+                                <li><strong>상황 복원:</strong> 참여자, 순서 등으로 맥락 파악</li>
+                                <li><strong>해결책:</strong> 문제뿐 아니라 개선 방안도 수집</li>
+                            </ul>
+                        </div>
 
-                    <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px;">
-                        <h4 style="color: #1e40af; margin-top: 0;">💡 인터뷰 진행 팁</h4>
-                        <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-                            <li><strong>구체적 사례 확보:</strong> "일반적으로"보다 "최근에 구체적으로 어떤 사례가" 있었는지 묻기</li>
-                            <li><strong>왜(Why) 질문:</strong> 문제의 표면이 아닌 근본 원인을 파악하기 위해 "왜 그렇다고 생각하세요?"를 반복</li>
-                            <li><strong>감정 이입:</strong> 응답자의 답변을 인정하고 이해하는 반응 보이기 (심리적 안전감 확보)</li>
-                            <li><strong>개방형 질문:</strong> "맞나요?"보다 "어떻게 생각하세요?"로 자유로운 응답 유도</li>
-                            <li><strong>상황 복원:</strong> "그때 누가 참여했나요?", "어떤 순서로 진행되었나요?" 등으로 상황 맥락 파악</li>
-                            <li><strong>해결 아이디어:</strong> 문제만 묻지 말고 "해결하려면 어떻게 해야 할까요?"로 개선 방안도 수집</li>
-                        </ul>
-                    </div>
-
-                    <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin-top: 20px;">
-                        <h4 style="color: #92400e; margin-top: 0;">📝 인터뷰 진행 시 유의사항</h4>
-                        <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-                            <li><strong>준비:</strong> 이 시트를 미리 인쇄하여 인터뷰 중 메모할 공간 마련</li>
-                            <li><strong>시간 배분:</strong> 각 인터뷰는 최소 45분~1시간 예상 (심화 질문 포함)</li>
-                            <li><strong>녹음:</strong> 가능하면 음성 녹음 동의를 받아 나중에 검토</li>
-                            <li><strong>기록:</strong> 직접 기록보다는 경청에 집중하고 나중에 요약 정리</li>
-                            <li><strong>후속:</strong> 인터뷰 후 1-2일 내에 주요 내용 정리 및 패턴 분석</li>
-                        </ul>
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 4px; padding: 10px; margin-top: 8px;">
+                            <h4 style="color: #92400e; margin: 0 0 6px 0; font-size: 12px; font-weight: 700;">📝 유의사항</h4>
+                            <ul style="color: #334155; margin: 0; padding-left: 18px; line-height: 1.4; font-size: 11px;">
+                                <li><strong>준비:</strong> 시트 인쇄 후 메모 공간 마련</li>
+                                <li><strong>시간:</strong> 인당 45분~1시간 예상</li>
+                                <li><strong>녹음:</strong> 가능하면 음성 녹음 동의 확보</li>
+                                <li><strong>기록:</strong> 경청에 집중, 나중에 정리</li>
+                                <li><strong>후속:</strong> 인터뷰 후 1-2일 내 내용 정리 및 분석</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+
+                <style>
+                    @media print {
+                        body {
+                            margin: 0;
+                            padding: 10px;
+                            font-size: 12px;
+                        }
+                        #insightsContent {
+                            margin: 0;
+                            padding: 0;
+                        }
+                        h3 { margin: 0 0 8px 0 !important; font-size: 14px !important; }
+                        h4 { margin: 0 0 4px 0 !important; font-size: 12px !important; }
+                        p { margin: 0 0 2px 0 !important; line-height: 1.2 !important; }
+                        ul { margin: 2px 0 !important; padding-left: 16px !important; line-height: 1.3 !important; }
+                        li { margin: 2px 0 !important; padding: 0 !important; }
+                        div[style*="margin-bottom"] { margin-bottom: 8px !important; }
+                        div[style*="padding"] { padding: 8px !important; }
+                        .analysis-content { background: white !important; }
+                        header, nav, footer, .analysis-tabs, .role-tabs, .response-info { display: none !important; }
+                        .analysis-section { padding: 0 !important; background: white !important; }
+                    }
+                </style>
             `;
         }
 
