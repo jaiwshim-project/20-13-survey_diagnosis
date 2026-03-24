@@ -340,31 +340,33 @@
         @media print {
             #insightsContent .response-cards {
                 grid-template-columns: 1fr;
-                gap: 6px;
+                gap: 4px;
             }
             #insightsContent .question-section {
-                padding: 8px !important;
-                margin-bottom: 6px !important;
+                padding: 6px !important;
+                margin-bottom: 3px !important;
             }
             #insightsContent .question-title {
-                margin-bottom: 4px !important;
-                font-size: 11px !important;
+                margin-bottom: 2px !important;
+                font-size: 10px !important;
             }
             #insightsContent .response-card {
-                padding: 6px !important;
+                padding: 4px !important;
+                border-radius: 1px !important;
             }
             #insightsContent .response-card p {
-                font-size: 10px !important;
-                margin: 0 0 2px 0 !important;
+                font-size: 9px !important;
+                margin: 0 0 1px 0 !important;
+                line-height: 1.2 !important;
             }
             #insightsContent ul {
                 margin: 0 !important;
-                padding-left: 14px !important;
-                font-size: 9px !important;
-                line-height: 1.2 !important;
+                padding-left: 12px !important;
+                font-size: 8px !important;
+                line-height: 1.1 !important;
             }
             #insightsContent li {
-                margin: 1px 0 !important;
+                margin: 0 !important;
                 padding: 0 !important;
             }
         }
@@ -1352,7 +1354,8 @@ ${item.focus}
         // PDF 다운로드 함수
         function downloadInterviewSheetPDF() {
             const element = document.getElementById('insightsContent');
-            const role = currentRole === 'executive' ? '회장단' : '직원';
+            const isExecutive = currentRole === 'executive';
+            const role = isExecutive ? '회장단' : '직원';
             const fileName = `인터뷰시트_${role}_${new Date().toISOString().split('T')[0]}.pdf`;
 
             // 임시 스타일 저장
@@ -1363,11 +1366,17 @@ ${item.focus}
             element.style.margin = '0';
             element.style.padding = '0';
 
-            const opt = {
+            const opt = isExecutive ? {
                 margin: [2, 4, 2, 4],
                 filename: fileName,
                 image: { type: 'jpeg', quality: 0.92 },
                 html2canvas: { scale: 1.2, useCORS: true, allowTaint: true, windowWidth: 700 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4', compress: true }
+            } : {
+                margin: [1, 3, 1, 3],
+                filename: fileName,
+                image: { type: 'jpeg', quality: 0.90 },
+                html2canvas: { scale: 1.0, useCORS: true, allowTaint: true, windowWidth: 650 },
                 jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4', compress: true }
             };
 
