@@ -571,7 +571,7 @@
                     .order('submitted_at', { ascending: false });
 
                 // Fetch Employee Survey
-                const { data: empData, error: empError } = await supabase
+                const { data: empData, error: empError } = await window.supabaseClient
                     .from('pre_survey_employee')
                     .select('id, submitted_at')
                     .order('submitted_at', { ascending: false });
@@ -629,7 +629,7 @@
                     .order('submitted_at', { ascending: false });
 
                 // Fetch Employee Survey
-                const { data: empData, error: empError } = await supabase
+                const { data: empData, error: empError } = await window.supabaseClient
                     .from('employee_survey')
                     .select('id, submitted_at')
                     .order('submitted_at', { ascending: false });
