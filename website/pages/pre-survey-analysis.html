@@ -969,6 +969,207 @@
                         </div>
                     </div>
                 </div>
+
+                <hr style="margin: 40px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                <h3 style="color: #0a0e27;">🎤 대면 미팅 & 인터뷰 가이드</h3>
+                <div style="background: #f3e8ff; border: 2px solid #a855f7; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
+                    <h4 style="color: #6b21a8; margin-top: 0;">📍 대면 미팅의 목적</h4>
+                    <p style="color: #334155; line-height: 1.8; margin: 0;">
+                        사전 설문 조사에서 도출된 <strong>문제와 이슈들을 사전 검증</strong>하고,
+                        그 뒤에 있는 <strong>근본 원인과 맥락</strong>을 깊이 있게 이해하기 위해 선정된 회장단과 직원들과
+                        <strong>직접 대면 인터뷰</strong>를 실시합니다. 이를 통해 <strong>본격적인 조직 진단 설문지 개발</strong>의
+                        방향과 내용을 확실히 합니다.
+                    </p>
+                </div>
+
+                ${generateInterviewGuide(role)}
+            `;
+        }
+
+        // 인터뷰 가이드 생성
+        function generateInterviewGuide(role) {
+            const interviewGuides = {
+                executive: [
+                    {
+                        category: '🔴 의사결정 구조 및 프로세스',
+                        questions: [
+                            {
+                                q: '최근 가장 어려웠던 의사결정 사례를 구체적으로 설명해 주시겠어요?',
+                                purpose: '의사결정 프로세스의 실제 작동 방식 파악',
+                                focus: '• 의사결정까지 소요된 시간\n• 참여자 및 승인 단계\n• 지연 원인'
+                            },
+                            {
+                                q: '의사결정 과정에서 "누가 최종 판단을 내리는가"가 명확한가요?',
+                                purpose: '책임과 권한의 명확성 확인',
+                                focus: '• 최종 결정권자의 명확성\n• 회장단과 사무처의 역할 경계\n• 권한 위임 기준의 유무'
+                            },
+                            {
+                                q: '회장단 내에서 의견이 다를 때는 어떻게 합의를 도출하나요?',
+                                purpose: '내부 합의 메커니즘과 갈등 해결 방식 파악',
+                                focus: '• 합의 도출 과정 소요 시간\n• 갈등 상황에서의 대응 방식\n• 소수 의견 처리 방식'
+                            },
+                            {
+                                q: '의사결정이 충분히 신속하지 않다면, 주된 원인이 무엇일까요?',
+                                purpose: '의사결정 지연의 구조적 원인 파악',
+                                focus: '• 정보 수집/검토 단계의 과다\n• 과도한 협의 요구\n• 책임 회피 경향'
+                            }
+                        ]
+                    },
+                    {
+                        category: '🟡 조직 문화 및 소통',
+                        questions: [
+                            {
+                                q: '반복되는 갈등이 있다고 했는데, 구체적으로 어떤 상황에서 발생하나요?',
+                                purpose: '조직 갈등의 패턴과 구조적 원인 파악',
+                                focus: '• 갈등의 발생 패턴\n• 핵심 쟁점\n• 이전에 해결되지 않은 이유'
+                            },
+                            {
+                                q: '회장단과 사무처 간 신뢰 수준은 어느 정도라고 생각하세요?',
+                                purpose: '조직 간 신뢰도와 협력 관계 평가',
+                                focus: '• 신뢰 부족의 구체적 사례\n• 협력 시 발생하는 문제\n• 예방을 위한 제안'
+                            },
+                            {
+                                q: '의견 제시가 자유로운 분위기라고 생각하세요?',
+                                purpose: '심리적 안전감과 개방적 소통 문화 수준',
+                                focus: '• 상향식 의견 제시의 용이성\n• 다른 의견 제시 시의 반응\n• 의견 수렴 과정의 투명성'
+                            }
+                        ]
+                    },
+                    {
+                        category: '🟠 전략과 실행',
+                        questions: [
+                            {
+                                q: '현재 협회의 장기 전략이 명확하게 수립되어 있나요?',
+                                purpose: '전략 수립 수준과 공유도 파악',
+                                focus: '• 전략의 명확성\n• 회장단 간 합의 수준\n• 사무처와의 공유 정도'
+                            },
+                            {
+                                q: '새로운 리더십이 들어올 때 기존 정책과 사업이 어떻게 변하나요?',
+                                purpose: '정책 연속성과 리더십 전환의 영향 파악',
+                                focus: '• 정책 중단/변경 사례\n• 중단으로 인한 손실\n• 연속성 확보 방안'
+                            }
+                        ]
+                    }
+                ],
+                employee: [
+                    {
+                        category: '🔴 업무 프로세스',
+                        questions: [
+                            {
+                                q: '의사결정 지연으로 인해 실제로 겪은 업무 병목 사례가 있나요?',
+                                purpose: '의사결정 지연의 실제 업무 영향 파악',
+                                focus: '• 구체적 사례와 소요 시간\n• 업무 차질로 인한 손실\n• 해결 방안의 아이디어'
+                            },
+                            {
+                                q: '업무 보고 체계에서 중복이나 비효율이 있다면?',
+                                purpose: '현재 업무 프로세스의 비효율 부분 파악',
+                                focus: '• 중복 보고 단계\n• 각 단계별 소요 시간\n• 개선 제안'
+                            },
+                            {
+                                q: '현재 권한과 책임이 일치하고 있다고 생각하세요?',
+                                purpose: '권한-책임 체계의 명확성과 공정성 평가',
+                                focus: '• 권한 부족으로 인한 어려움\n• 책임 회피 현상\n• 명확한 기준의 필요성'
+                            }
+                        ]
+                    },
+                    {
+                        category: '🟡 평가 및 보상',
+                        questions: [
+                            {
+                                q: '현재 평가 기준이 어떻게 되는지 알고 계세요?',
+                                purpose: '평가 기준의 명확성과 공개 수준 파악',
+                                focus: '• 평가 기준 인지도\n• 기준의 객관성\n• 평가 결과 설명 방식'
+                            },
+                            {
+                                q: '평가가 공정하게 이루어진다고 느끼세요?',
+                                purpose: '평가 공정성에 대한 인식도 파악',
+                                focus: '• 불공정하다고 느낀 사례\n• 예상 원인\n• 개선 필요 영역'
+                            },
+                            {
+                                q: '좋은 평가를 받았을 때와 그렇지 않을 때, 보상이나 처우에 차이가 있나요?',
+                                purpose: '평가-보상 연계성과 동기부여 수준',
+                                focus: '• 평가와 보상의 연계 여부\n• 성과 인정 방식\n• 동기부여 수준'
+                            }
+                        ]
+                    },
+                    {
+                        category: '🟠 소통 및 정보 관리',
+                        questions: [
+                            {
+                                q: '조직의 주요 결정이나 정책이 어떻게 결정되었는지 알 수 있나요?',
+                                purpose: '의사결정 과정의 투명성 수준 파악',
+                                focus: '• 정보 공개 정도\n• 배경과 근거 설명 여부\n• 이해도 수준'
+                            },
+                            {
+                                q: '새로운 업무 지시가 내려올 때, 그 배경을 충분히 이해할 수 있나요?',
+                                purpose: '상향식 소통과 맥락 전달의 충분성',
+                                focus: '• 지시의 배경 설명 여부\n• 이해 부족으로 인한 문제\n• 소통 방식 개선 제안'
+                            },
+                            {
+                                q: '의견이나 건의를 자유롭게 제시할 수 있나요?',
+                                purpose: '심리적 안전감과 개방적 문화 수준',
+                                focus: '• 의견 제시의 용이성\n• 제시 후 받은 반응\n• 의견 반영 여부'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const guides = interviewGuides[role] || interviewGuides.executive;
+
+            return `
+                <div style="background: white; border-radius: 8px;">
+                    <div style="margin-bottom: 30px;">
+                        ${guides.map(section => `
+                            <div style="margin-bottom: 25px;">
+                                <h4 style="color: #0a0e27; margin: 0 0 15px 0; font-size: 15px;">
+                                    ${section.category}
+                                </h4>
+                                <div style="display: grid; gap: 15px;">
+                                    ${section.questions.map((item, idx) => `
+                                        <div style="
+                                            background: #f8fafc;
+                                            border: 1px solid #e2e8f0;
+                                            border-radius: 8px;
+                                            padding: 16px;
+                                            border-left: 4px solid #a855f7;
+                                        ">
+                                            <div style="margin-bottom: 12px;">
+                                                <p style="margin: 0; font-weight: 600; color: #0a0e27; font-size: 14px; line-height: 1.6;">
+                                                    Q${idx + 1}. ${item.q}
+                                                </p>
+                                            </div>
+                                            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border-left: 3px solid #a855f7;">
+                                                <p style="margin: 0; font-size: 12px; color: #64748b;">
+                                                    <strong>인터뷰 의도:</strong> ${item.purpose}
+                                                </p>
+                                            </div>
+                                            <div style="padding: 10px; background: #faf5ff; border-radius: 6px;">
+                                                <p style="margin: 0; font-size: 12px; color: #334155; white-space: pre-wrap; line-height: 1.6;">
+                                                    <strong>주요 포인트:</strong>
+${item.focus}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 20px; margin-top: 30px;">
+                        <h4 style="color: #1e40af; margin-top: 0;">💡 인터뷰 진행 팁</h4>
+                        <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+                            <li><strong>구체적 사례 확보:</strong> "일반적으로"보다 "최근에 구체적으로 어떤 사례가" 있었는지 묻기</li>
+                            <li><strong>왜(Why) 질문:</strong> 문제의 표면이 아닌 근본 원인을 파악하기 위해 "왜 그렇다고 생각하세요?"를 반복</li>
+                            <li><strong>감정 이입:</strong> 응답자의 답변을 인정하고 이해하는 반응 보이기 (심리적 안전감 확보)</li>
+                            <li><strong>개방형 질문:</strong> "맞나요?"보다 "어떻게 생각하세요?"로 자유로운 응답 유도</li>
+                            <li><strong>상황 복원:</strong> "그때 누가 참여했나요?", "어떤 순서로 진행되었나요?" 등으로 상황 맥락 파악</li>
+                            <li><strong>해결 아이디어:</strong> 문제만 묻지 말고 "해결하려면 어떻게 해야 할까요?"로 개선 방안도 수집</li>
+                        </ul>
+                    </div>
+                </div>
             `;
         }
 
