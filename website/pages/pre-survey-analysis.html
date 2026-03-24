@@ -330,6 +330,11 @@
             gap: 15px;
         }
 
+        /* Interview Sheet - 2 Column Layout */
+        #insightsContent .response-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
         .response-card {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -1258,17 +1263,15 @@ ${item.focus}
                 `;
 
                 section.questions.forEach(item => {
-                    html += `
-                        <div class="response-card">
-                            <p><strong>Q${item.num}. ${item.q}</strong></p>
-                            <div style="padding: 8px; background: #faf5ff; border-radius: 4px; margin-top: 6px; font-size: 11px;">
-                                <p style="margin: 0; color: #334155; white-space: pre-wrap; line-height: 1.4;">
-                                    <strong>포인트:</strong>
+                    html += `<div class="response-card">
+                        <p><strong>Q${item.num}. ${item.q}</strong></p>
+                        <div style="padding: 8px; background: #faf5ff; border-radius: 4px; margin-top: 6px; font-size: 11px;">
+                            <p style="margin: 0; color: #334155; white-space: pre-wrap; line-height: 1.4;">
+                                <strong>포인트:</strong>
 ${item.focus}
-                                </p>
-                            </div>
+                            </p>
                         </div>
-                    `;
+                    </div>`;
                 });
 
                 html += `
