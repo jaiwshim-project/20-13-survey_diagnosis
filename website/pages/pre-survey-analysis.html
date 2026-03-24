@@ -76,9 +76,28 @@
                 <p>데이터 로딩 중...</p>
             </div>
 
-            <!-- Analysis Content -->
-            <div class="analysis-content" id="analysisContent">
-                <!-- 동적으로 생성됨 -->
+            <!-- Analysis Tabs -->
+            <div class="analysis-tabs" id="analysisTabs" style="display: none;">
+                <div class="analysis-tab-buttons">
+                    <button class="analysis-tab-btn active" data-tab="input-content">📝 입력 내용</button>
+                    <button class="analysis-tab-btn" data-tab="result-analysis">📊 결과 분석</button>
+                    <button class="analysis-tab-btn" data-tab="insights">💡 인사이트</button>
+                </div>
+
+                <!-- Tab 1: Input Content -->
+                <div class="analysis-tab-content active" id="tab-input-content">
+                    <div id="analysisContent" class="analysis-content"></div>
+                </div>
+
+                <!-- Tab 2: Result Analysis -->
+                <div class="analysis-tab-content" id="tab-result-analysis">
+                    <div id="resultAnalysisContent" class="analysis-content"></div>
+                </div>
+
+                <!-- Tab 3: Insights -->
+                <div class="analysis-tab-content" id="tab-insights">
+                    <div id="insightsContent" class="analysis-content"></div>
+                </div>
             </div>
 
             <!-- Back Link -->
@@ -185,6 +204,65 @@
             color: white;
             border-color: #8b5cf6;
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Analysis Tabs */
+        .analysis-tabs {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .analysis-tab-buttons {
+            display: flex;
+            gap: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .analysis-tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #2d3748;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .analysis-tab-btn:hover {
+            color: #8b5cf6;
+            border-bottom-color: #d4c5f9;
+        }
+
+        .analysis-tab-btn.active {
+            color: #8b5cf6;
+            border-bottom-color: #8b5cf6;
+        }
+
+        .analysis-tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .analysis-tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Response Info */
@@ -479,7 +557,7 @@
         let currentRole = 'executive';
         let allData = {};
 
-        // 탭 버튼 이벤트
+        // Role 탭 버튼 이벤트
         document.querySelectorAll('.role-tab').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const role = this.dataset.role;
@@ -491,6 +569,21 @@
 
                 // 데이터 표시
                 renderAnalysis(role);
+            });
+        });
+
+        // Analysis 탭 버튼 이벤트
+        document.querySelectorAll('.analysis-tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+
+                // 탭 버튼 활성화
+                document.querySelectorAll('.analysis-tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // 탭 내용 표시
+                document.querySelectorAll('.analysis-tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(`tab-${tabName}`).classList.add('active');
             });
         });
 
@@ -533,29 +626,35 @@
             const data = allData[role] || [];
             const labels = questionLabels[role];
             const contentDiv = document.getElementById('analysisContent');
+            const resultDiv = document.getElementById('resultAnalysisContent');
+            const insightsDiv = document.getElementById('insightsContent');
             const infoDiv = document.getElementById('responseInfo');
+            const tabsDiv = document.getElementById('analysisTabs');
 
             if (data.length === 0) {
                 contentDiv.innerHTML = '<div class="empty-state"><p>아직 제출된 설문이 없습니다.</p></div>';
+                resultDiv.innerHTML = '<div class="empty-state"><p>아직 제출된 설문이 없습니다.</p></div>';
+                insightsDiv.innerHTML = '<div class="empty-state"><p>아직 제출된 설문이 없습니다.</p></div>';
                 infoDiv.innerHTML = '<p>응답자: 0명</p>';
+                tabsDiv.style.display = 'none';
                 return;
             }
+
+            tabsDiv.style.display = 'block';
 
             // 응답 정보
             const lastSubmit = new Date(data[0].submitted_at).toLocaleDateString('ko-KR');
             infoDiv.innerHTML = `<p>✅ 응답자: ${data.length}명 / 마지막 제출: ${lastSubmit}</p>`;
 
-            // HTML 생성
-            let html = '';
-
-            // Q1-Q9: 텍스트 응답
+            // ===== TAB 1: 입력 내용 =====
+            let inputHtml = '';
             for (let i = 1; i <= 9; i++) {
                 const qKey = `q${i}`;
                 const responses = data
                     .map(item => item[qKey])
                     .filter(r => r && r.trim());
 
-                html += `
+                inputHtml += `
                     <div class="question-section">
                         <div class="question-title">
                             <span class="q-number">Q${i}</span>
@@ -572,7 +671,7 @@
                 `;
             }
 
-            // Q10: 척도
+            // Q10 척도
             const scales = data
                 .map(item => item.q10)
                 .filter(s => s !== null && s !== undefined)
@@ -582,13 +681,12 @@
                 ? (scales.reduce((a, b) => a + b, 0) / scales.length).toFixed(2)
                 : 0;
 
-            // 분포 계산
             const distribution = {};
             for (let i = 1; i <= 5; i++) {
                 distribution[i] = scales.filter(s => s === i).length;
             }
 
-            html += `
+            inputHtml += `
                 <div class="scale-section">
                     <div class="scale-title">
                         <span class="q-number">Q10</span>
@@ -627,7 +725,155 @@
                 </div>
             `;
 
-            contentDiv.innerHTML = html;
+            contentDiv.innerHTML = inputHtml;
+
+            // ===== TAB 2: 결과 분석 =====
+            const resultHtml = generateResultAnalysis(data, labels, average, distribution, scales);
+            resultDiv.innerHTML = resultHtml;
+
+            // ===== TAB 3: 인사이트 =====
+            const insightsHtml = generateInsights(data, labels, average, role);
+            insightsDiv.innerHTML = insightsHtml;
+        }
+
+        // 결과 분석 생성
+        function generateResultAnalysis(data, labels, average, distribution, scales) {
+            // 키워드 추출 (간단한 구현)
+            const allText = Object.keys(data[0])
+                .filter(k => k.startsWith('q') && k !== 'q10')
+                .map(k => data.map(d => d[k] || '').join(' '))
+                .join(' ');
+
+            // 주요 단어 추출 (길이 > 2 && 자주 나타남)
+            const words = allText.match(/\S+/g) || [];
+            const wordFreq = {};
+            words.forEach(w => {
+                if (w.length > 2) {
+                    wordFreq[w] = (wordFreq[w] || 0) + 1;
+                }
+            });
+
+            const topWords = Object.entries(wordFreq)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([word, count]) => ({ word, count }));
+
+            return `
+                <div class="analysis-box">
+                    <h3 style="color: #0a0e27; margin-top: 0;">📊 응답 통계</h3>
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+                        <p style="margin: 10px 0;">
+                            <strong>총 응답자:</strong> ${data.length}명
+                        </p>
+                        <p style="margin: 10px 0;">
+                            <strong>Q10 평균 만족도:</strong> ${average} / 5 (${parseFloat(average) >= 3 ? '보통 수준' : parseFloat(average) >= 4 ? '만족 수준' : '개선 필요'})
+                        </p>
+                        <p style="margin: 10px 0;">
+                            <strong>Q10 최빈값:</strong> ${Object.entries(distribution).reduce((a, b) => b[1] > a[1] ? b : a)[0]}점 (${Object.entries(distribution).reduce((a, b) => b[1] > a[1] ? b : a)[1]}명)
+                        </p>
+                    </div>
+
+                    <h3 style="color: #0a0e27;">🔑 주요 키워드</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px;">
+                        ${topWords.map(item => `
+                            <span style="background: #e0e7ff; color: #4f46e5; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                                ${item.word} (${item.count}회)
+                            </span>
+                        `).join('')}
+                    </div>
+
+                    <h3 style="color: #0a0e27;">📈 응답 분포</h3>
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 8px;">
+                        <p style="margin: 0 0 15px 0; font-size: 13px; color: #64748b;"><strong>Q10 점수별 응답 현황</strong></p>
+                        ${[5, 4, 3, 2, 1].map(level => {
+                            const count = Object.entries(distribution).find(([k]) => parseInt(k) === level)?.[1] || 0;
+                            const percent = Object.values(distribution).reduce((a, b) => a + b, 0) > 0
+                                ? ((count / Object.values(distribution).reduce((a, b) => a + b, 0)) * 100).toFixed(0)
+                                : 0;
+                            return `
+                                <div style="margin-bottom: 10px; font-size: 13px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                        <span>${level}점</span>
+                                        <span style="font-weight: 600;">${count}명 (${percent}%)</span>
+                                    </div>
+                                    <div style="width: 100%; height: 20px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                        <div style="width: ${percent}%; height: 100%; background: linear-gradient(90deg, #10b981 0%, #059669 100%);"></div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 인사이트 생성
+        function generateInsights(data, labels, average, role) {
+            const insights = [];
+
+            // 만족도 기반 인사이트
+            const avgNum = parseFloat(average);
+            if (avgNum < 2.5) {
+                insights.push({
+                    type: '⚠️ 위험 신호',
+                    title: '조직 운영 효율성 개선 필요',
+                    desc: '응답자들이 현재 조직 운영에 대해 부정적으로 평가하고 있습니다. 즉시 개선이 필요합니다.'
+                });
+            } else if (avgNum < 3.5) {
+                insights.push({
+                    type: '⚡ 주의',
+                    title: '보통 수준 - 단계적 개선 필요',
+                    desc: '기본적인 운영은 이루어지고 있으나, 효율성 개선을 위한 구체적인 계획이 필요합니다.'
+                });
+            } else {
+                insights.push({
+                    type: '✅ 긍정',
+                    title: '만족스러운 운영 수준',
+                    desc: '조직 운영이 효율적으로 이루어지고 있습니다. 현재 수준을 유지하면서 추가 개선을 모색하세요.'
+                });
+            }
+
+            // 응답 특성 기반 인사이트
+            if (data.length >= 2) {
+                insights.push({
+                    type: '👥 데이터 신뢰도',
+                    title: '복수 응답자 의견 수집',
+                    desc: `${data.length}명의 응답자로부터 의견을 수집했습니다. 다양한 관점의 피드백이 반영되어 있습니다.`
+                });
+            }
+
+            insights.push({
+                type: '🎯 권고사항',
+                title: '다음 단계 조치',
+                desc: role === 'executive'
+                    ? '회장단이 제시한 주요 이슈들에 대한 구조적 개선 방안을 수립하고, 단계별 실행 로드맵을 작성하세요.'
+                    : '직원들이 지적한 업무 프로세스의 비효율성을 분석하고, 개선을 위한 워크샵을 진행하세요.'
+            });
+
+            return `
+                <div class="insights-container">
+                    ${insights.map(insight => `
+                        <div class="insight-card" style="
+                            background: white;
+                            border: 2px solid #e2e8f0;
+                            border-left: 5px solid #8b5cf6;
+                            border-radius: 8px;
+                            padding: 20px;
+                            margin-bottom: 15px;
+                        ">
+                            <div style="font-size: 13px; font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">
+                                ${insight.type}
+                            </div>
+                            <h4 style="color: #0a0e27; margin: 0 0 10px 0; font-size: 15px;">
+                                ${insight.title}
+                            </h4>
+                            <p style="color: #2d3748; margin: 0; font-size: 14px; line-height: 1.6;">
+                                ${insight.desc}
+                            </p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
         }
 
         // 페이지 로드 시 데이터 로드
