@@ -526,19 +526,18 @@
 
     <script src="../js/main.js"></script>
     <script>
-        // Initialize Supabase
+        // Initialize Supabase - Create client instance
         console.log('Supabase URL:', SUPABASE_URL);
         console.log('Supabase Key:', SUPABASE_ANON_KEY ? 'Loaded' : 'NOT LOADED');
 
-        // Use existing supabase or create new one
-        let supabase;
+        // Initialize supabase client
         if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
             const { createClient } = window.supabase;
-            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('Supabase Client:', window.supabaseClient ? 'Initialized' : 'Failed');
         } else {
             console.error('Supabase library not loaded');
         }
-        console.log('Supabase Client:', supabase ? 'Initialized' : 'Failed');
 
         // Tab switching
         document.querySelectorAll('.dashboard-tab-btn').forEach(btn => {
@@ -566,7 +565,7 @@
             console.log('Loading Pre-Survey Data...');
             try {
                 // Fetch Executive Survey
-                const { data: execData, error: execError } = await supabase
+                const { data: execData, error: execError } = await window.supabaseClient
                     .from('pre_survey_executive')
                     .select('id, submitted_at')
                     .order('submitted_at', { ascending: false });
@@ -624,7 +623,7 @@
             console.log('Loading Main Survey Data...');
             try {
                 // Fetch Executive Survey
-                const { data: execData, error: execError } = await supabase
+                const { data: execData, error: execError } = await window.supabaseClient
                     .from('executive_survey')
                     .select('id, submitted_at')
                     .order('submitted_at', { ascending: false });
