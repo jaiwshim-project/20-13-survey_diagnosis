@@ -94,6 +94,12 @@
                 <h4>❓ 설문 관련 문의</h4>
                 <p>설문 중 문의사항이 있으시면 협회 사무국으로 연락주시기 바랍니다.</p>
             </div>
+
+            <div class="analysis-access">
+                <a href="pre-survey-analysis.html" class="analysis-link-btn">
+                    📊 사전 진단 결과 분석
+                </a>
+            </div>
         </div>
     </section>
 
@@ -312,6 +318,33 @@
             font-size: 14px;
             line-height: 1.7;
             margin: 6px 0;
+        }
+
+        /* Analysis Access Button */
+        .analysis-access {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .analysis-link-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        .analysis-link-btn:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
         }
 
         /* Responsive */
