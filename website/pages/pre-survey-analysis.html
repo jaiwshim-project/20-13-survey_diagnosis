@@ -1305,23 +1305,20 @@
             window.scrollTo(0, 0);
 
             setTimeout(() => {
-                // 요소를 임시로 body 직접 자식으로 이동 (위치 문제 근본 해결)
-                const originalParent = element.parentNode;
-                const originalNext = element.nextSibling;
-                const pdfWidth = 730;
-                const tempContainer = document.createElement('div');
-                tempContainer.style.cssText = 'position:absolute; left:0; top:0; width:' + pdfWidth + 'px; z-index:-1; background:#f8fafc; overflow:hidden;';
-                tempContainer.appendChild(element);
-                document.body.appendChild(tempContainer);
+                // innerHTML을 새 독립 div에 복사 (DOM 위치 문제 근본 해결)
+                const pdfRoot = document.createElement('div');
+                pdfRoot.innerHTML = element.innerHTML;
+                pdfRoot.style.cssText = 'position:absolute; left:0; top:0; width:760px; padding:20px; margin:0; background:#f8fafc; font-family:"Noto Sans KR",sans-serif; box-sizing:border-box; z-index:-1;';
 
-                // 내부 요소 폭도 강제 제한
-                element.style.width = pdfWidth + 'px';
-                element.style.maxWidth = pdfWidth + 'px';
-                element.style.overflow = 'hidden';
+                // 다운로드 버튼 제거
+                const btn2 = pdfRoot.querySelector('.report-pdf-btn-wrap');
+                if (btn2) btn2.remove();
+
+                document.body.appendChild(pdfRoot);
 
                 html2pdf()
                     .set({
-                        margin: [8, 5, 8, 5],
+                        margin: [5, 5, 5, 5],
                         filename: fileName,
                         image: { type: 'jpeg', quality: 0.98 },
                         html2canvas: {
@@ -1331,7 +1328,9 @@
                             backgroundColor: '#f8fafc',
                             scrollX: 0,
                             scrollY: 0,
-                            windowWidth: pdfWidth
+                            windowWidth: 800,
+                            x: 0,
+                            y: 0
                         },
                         jsPDF: {
                             orientation: 'portrait',
@@ -1340,33 +1339,16 @@
                             compress: true
                         }
                     })
-                    .from(element)
+                    .from(pdfRoot)
                     .save()
                     .then(() => {
-                        // 스타일 초기화 + 원래 위치로 복원
-                        element.style.width = '';
-                        element.style.maxWidth = '';
-                        element.style.overflow = '';
-                        if (originalNext) {
-                            originalParent.insertBefore(element, originalNext);
-                        } else {
-                            originalParent.appendChild(element);
-                        }
-                        document.body.removeChild(tempContainer);
+                        document.body.removeChild(pdfRoot);
                         if (btnWrap) btnWrap.style.display = '';
                         overlay.classList.remove('show');
                     })
                     .catch((err) => {
                         console.error('PDF 생성 오류:', err);
-                        element.style.width = '';
-                        element.style.maxWidth = '';
-                        element.style.overflow = '';
-                        if (originalNext) {
-                            originalParent.insertBefore(element, originalNext);
-                        } else {
-                            originalParent.appendChild(element);
-                        }
-                        document.body.removeChild(tempContainer);
+                        document.body.removeChild(pdfRoot);
                         if (btnWrap) btnWrap.style.display = '';
                         overlay.classList.remove('show');
                         alert('PDF 생성 중 오류가 발생했습니다.');
