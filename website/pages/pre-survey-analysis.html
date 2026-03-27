@@ -1301,8 +1301,18 @@
             const btnWrap = element.querySelector('.report-pdf-btn-wrap');
             if (btnWrap) btnWrap.style.display = 'none';
 
-            // 약간 대기 후 캡처 (렌더링 반영)
+            // 페이지 최상단으로 스크롤 (html2canvas 좌표 문제 방지)
+            window.scrollTo(0, 0);
+
             setTimeout(() => {
+                // 요소를 임시로 body 직접 자식으로 이동 (위치 문제 근본 해결)
+                const originalParent = element.parentNode;
+                const originalNext = element.nextSibling;
+                const tempContainer = document.createElement('div');
+                tempContainer.style.cssText = 'position:absolute; left:0; top:0; width:900px; z-index:-1; background:#f8fafc;';
+                tempContainer.appendChild(element);
+                document.body.appendChild(tempContainer);
+
                 html2pdf()
                     .set({
                         margin: [6, 8, 6, 8],
@@ -1312,7 +1322,10 @@
                             scale: 2,
                             useCORS: true,
                             allowTaint: true,
-                            backgroundColor: '#f8fafc'
+                            backgroundColor: '#f8fafc',
+                            scrollX: 0,
+                            scrollY: 0,
+                            windowWidth: 900
                         },
                         jsPDF: {
                             orientation: 'portrait',
@@ -1324,11 +1337,24 @@
                     .from(element)
                     .save()
                     .then(() => {
+                        // 원래 위치로 복원
+                        if (originalNext) {
+                            originalParent.insertBefore(element, originalNext);
+                        } else {
+                            originalParent.appendChild(element);
+                        }
+                        document.body.removeChild(tempContainer);
                         if (btnWrap) btnWrap.style.display = '';
                         overlay.classList.remove('show');
                     })
                     .catch((err) => {
                         console.error('PDF 생성 오류:', err);
+                        if (originalNext) {
+                            originalParent.insertBefore(element, originalNext);
+                        } else {
+                            originalParent.appendChild(element);
+                        }
+                        document.body.removeChild(tempContainer);
                         if (btnWrap) btnWrap.style.display = '';
                         overlay.classList.remove('show');
                         alert('PDF 생성 중 오류가 발생했습니다.');
