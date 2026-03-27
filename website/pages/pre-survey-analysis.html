@@ -1308,14 +1308,20 @@
                 // 요소를 임시로 body 직접 자식으로 이동 (위치 문제 근본 해결)
                 const originalParent = element.parentNode;
                 const originalNext = element.nextSibling;
+                const pdfWidth = 730;
                 const tempContainer = document.createElement('div');
-                tempContainer.style.cssText = 'position:absolute; left:0; top:0; width:900px; z-index:-1; background:#f8fafc;';
+                tempContainer.style.cssText = 'position:absolute; left:0; top:0; width:' + pdfWidth + 'px; z-index:-1; background:#f8fafc; overflow:hidden;';
                 tempContainer.appendChild(element);
                 document.body.appendChild(tempContainer);
 
+                // 내부 요소 폭도 강제 제한
+                element.style.width = pdfWidth + 'px';
+                element.style.maxWidth = pdfWidth + 'px';
+                element.style.overflow = 'hidden';
+
                 html2pdf()
                     .set({
-                        margin: [6, 8, 6, 8],
+                        margin: [8, 5, 8, 5],
                         filename: fileName,
                         image: { type: 'jpeg', quality: 0.98 },
                         html2canvas: {
@@ -1325,7 +1331,7 @@
                             backgroundColor: '#f8fafc',
                             scrollX: 0,
                             scrollY: 0,
-                            windowWidth: 900
+                            windowWidth: pdfWidth
                         },
                         jsPDF: {
                             orientation: 'portrait',
@@ -1337,7 +1343,10 @@
                     .from(element)
                     .save()
                     .then(() => {
-                        // 원래 위치로 복원
+                        // 스타일 초기화 + 원래 위치로 복원
+                        element.style.width = '';
+                        element.style.maxWidth = '';
+                        element.style.overflow = '';
                         if (originalNext) {
                             originalParent.insertBefore(element, originalNext);
                         } else {
@@ -1349,6 +1358,9 @@
                     })
                     .catch((err) => {
                         console.error('PDF 생성 오류:', err);
+                        element.style.width = '';
+                        element.style.maxWidth = '';
+                        element.style.overflow = '';
                         if (originalNext) {
                             originalParent.insertBefore(element, originalNext);
                         } else {
