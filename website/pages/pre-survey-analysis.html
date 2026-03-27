@@ -1308,7 +1308,7 @@
                 // innerHTML을 새 독립 div에 복사 (DOM 위치 문제 근본 해결)
                 const pdfRoot = document.createElement('div');
                 pdfRoot.innerHTML = element.innerHTML;
-                pdfRoot.style.cssText = 'position:absolute; left:0; top:0; width:760px; padding:20px; margin:0; background:#f8fafc; font-family:"Noto Sans KR",sans-serif; box-sizing:border-box; z-index:-1;';
+                pdfRoot.style.cssText = 'position:fixed; left:0; top:0; width:760px; padding:20px; margin:0; background:#f8fafc; font-family:"Noto Sans KR",sans-serif; box-sizing:border-box; z-index:99998; overflow:auto; max-height:none;';
 
                 // 다운로드 버튼 제거
                 const btn2 = pdfRoot.querySelector('.report-pdf-btn-wrap');
