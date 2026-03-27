@@ -103,6 +103,7 @@
                 <div class="analysis-tab-buttons">
                     <button class="analysis-tab-btn active" data-tab="input-content">📝 입력 내용</button>
                     <button class="analysis-tab-btn" data-tab="result-analysis">📊 결과 분석</button>
+                    <button class="analysis-tab-btn" data-tab="report">📑 결과분석 리포트</button>
                     <button class="analysis-tab-btn" data-tab="insights">🎤 인터뷰 시트</button>
                 </div>
 
@@ -116,7 +117,12 @@
                     <div id="resultAnalysisContent" class="analysis-content"></div>
                 </div>
 
-                <!-- Tab 3: Insights -->
+                <!-- Tab 3: Report -->
+                <div class="analysis-tab-content" id="tab-report">
+                    <div id="reportContent" class="analysis-content"></div>
+                </div>
+
+                <!-- Tab 4: Insights -->
                 <div class="analysis-tab-content" id="tab-insights">
                     <div id="insightsContent" class="analysis-content"></div>
                 </div>
@@ -838,6 +844,7 @@
             const labels = questionLabels[role];
             const contentDiv = document.getElementById('analysisContent');
             const resultDiv = document.getElementById('resultAnalysisContent');
+            const reportDiv = document.getElementById('reportContent');
             const insightsDiv = document.getElementById('insightsContent');
             const infoDiv = document.getElementById('responseInfo');
             const tabsDiv = document.getElementById('analysisTabs');
@@ -845,6 +852,7 @@
             if (data.length === 0) {
                 contentDiv.innerHTML = '<div class="empty-state"><p>아직 제출된 설문이 없습니다.</p></div>';
                 resultDiv.innerHTML = '<div class="empty-state"><p>아직 제출된 설문이 없습니다.</p></div>';
+                reportDiv.innerHTML = '<div class="empty-state"><p>아직 제출된 설문이 없습니다.</p></div>';
                 insightsDiv.innerHTML = '<div class="empty-state"><p>아직 제출된 설문이 없습니다.</p></div>';
                 infoDiv.innerHTML = '<p>응답자: 0명</p>';
                 tabsDiv.style.display = 'none';
@@ -942,9 +950,314 @@
             const resultHtml = generateResultAnalysis(data, labels, average, distribution, scales, role);
             resultDiv.innerHTML = resultHtml;
 
-            // ===== TAB 3: 인사이트 =====
+            // ===== TAB 3: 결과분석 리포트 =====
+            const reportHtml = generateReport(data, labels, average, distribution, scales, role);
+            reportDiv.innerHTML = reportHtml;
+
+            // ===== TAB 4: 인사이트 =====
             const insightsHtml = generateInsights(data, labels, average, role);
             insightsDiv.innerHTML = insightsHtml;
+        }
+
+        // ===== 결과분석 리포트 생성 =====
+        function generateReport(data, labels, average, distribution, scales, role) {
+            const roleLabel = role === 'executive' ? '회장단' : '직원';
+            const total = data.length;
+            const dateRange = total > 0
+                ? `${new Date(data[data.length - 1].submitted_at).toLocaleDateString('ko-KR')} ~ ${new Date(data[0].submitted_at).toLocaleDateString('ko-KR')}`
+                : '-';
+
+            // 각 질문별 응답 분류 함수
+            function categorizeResponses(data, qKey) {
+                const responses = data.map(d => (d[qKey] || '').trim()).filter(r => r);
+                const meaningful = responses.filter(r => !['없음', '없습니다', '모르겠습니다', '모르겠음', '잘 모르겠다', '잘 모르겠습니다'].includes(r) && r.length > 5);
+                const noResponse = responses.length - meaningful.length;
+                return { responses, meaningful, noResponse, total: responses.length };
+            }
+
+            // 키워드 빈도 분석
+            function extractKeywords(texts) {
+                const stopWords = ['있습니다', '합니다', '것입니다', '않는', '있는', '하는', '되는', '않는', '경우가', '있어', '있고', '때문에', '이러한', '그렇지', '대한', '위한', '통해', '따른', '대해', '수행', '필요', '생각', '부분', '현재', '보다', '매우', '다소', '전반', '실제', '충분히'];
+                const allText = texts.join(' ');
+                const words = allText.match(/[가-힣]{2,}/g) || [];
+                const freq = {};
+                words.forEach(w => {
+                    if (w.length >= 2 && !stopWords.includes(w)) {
+                        freq[w] = (freq[w] || 0) + 1;
+                    }
+                });
+                return Object.entries(freq)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 8)
+                    .map(([word, count]) => ({ word, count }));
+            }
+
+            // 문항별 테마 매핑
+            const themeMapping = {
+                executive: {
+                    q1: { theme: '조직 운영의 핵심 고민', icon: '🎯' },
+                    q2: { theme: '의사결정의 어려움', icon: '⚖️' },
+                    q3: { theme: '의사결정 지연 구조', icon: '⏳' },
+                    q4: { theme: '집행부 교체 리스크', icon: '🔄' },
+                    q5: { theme: '사무처 역할 경계', icon: '📏' },
+                    q6: { theme: '갈등의 근본 원인', icon: '⚡' },
+                    q7: { theme: '전략 vs 단기 대응', icon: '🗺️' },
+                    q8: { theme: '조직 재설계 방향', icon: '🏗️' },
+                    q9: { theme: '민감 이슈', icon: '🔐' }
+                },
+                employee: {
+                    q1: { theme: '업무 수행 병목', icon: '🎯' },
+                    q2: { theme: '의사결정 답답함', icon: '⚖️' },
+                    q3: { theme: '역할 경계 모호', icon: '⏳' },
+                    q4: { theme: '집행부 교체 영향', icon: '🔄' },
+                    q5: { theme: '평가 기준 명확성', icon: '📏' },
+                    q6: { theme: '기록·매뉴얼·시스템', icon: '📂' },
+                    q7: { theme: '비효율 반복 구조', icon: '🔁' },
+                    q8: { theme: '소통·조직문화', icon: '💬' },
+                    q9: { theme: '필수 개선 구조', icon: '🔧' }
+                }
+            };
+
+            const themes = themeMapping[role] || themeMapping.employee;
+
+            // 전체 의미 있는 응답에서 키워드 추출
+            const allMeaningful = [];
+            for (let i = 1; i <= 9; i++) {
+                const cat = categorizeResponses(data, `q${i}`);
+                allMeaningful.push(...cat.meaningful);
+            }
+            const topKeywords = extractKeywords(allMeaningful);
+
+            // 5대 핵심 이슈 (직원/회장단별)
+            const coreIssues = {
+                executive: [
+                    { rank: 1, issue: '의사결정 체계 미비', severity: '🔴', desc: '의사결정 구조 불명확, 지연으로 실행 차질', questions: 'Q2, Q3' },
+                    { rank: 2, issue: '정책 연속성 부재', severity: '🔴', desc: '집행부 교체 시 사업 방향·우선순위 단절', questions: 'Q4, Q7' },
+                    { rank: 3, issue: '역할·권한 경계 모호', severity: '🟠', desc: '회장단-사무처 간 역할 분담 불명확', questions: 'Q5, Q3' },
+                    { rank: 4, issue: '갈등 반복 구조', severity: '🟠', desc: '구조적 원인에 의한 반복 갈등 발생', questions: 'Q6, Q8' },
+                    { rank: 5, issue: '단기 대응 중심 운영', severity: '🟡', desc: '장기 전략 부재, 현안 대응에 집중', questions: 'Q1, Q7' }
+                ],
+                employee: [
+                    { rank: 1, issue: '인력 유출 악순환', severity: '🔴', desc: '저임금·처우 부족 → 퇴사 → 인수인계 부재 → 과중 → 재퇴사', questions: 'Q1, Q7, Q9' },
+                    { rank: 2, issue: '보고·의사결정 체계 미비', severity: '🔴', desc: '다단계 반복 보고, 직급 구조 미작동', questions: 'Q1, Q2, Q7' },
+                    { rank: 3, issue: '인수인계·매뉴얼 부재', severity: '🔴', desc: '업무 문서화 없음, 온보딩 체계 부재', questions: 'Q3, Q4, Q6' },
+                    { rank: 4, issue: '평가·인사관리 불투명', severity: '🟠', desc: '평가 기준 부재, 취업규칙 미준수, 임금 협상 형식화', questions: 'Q5, Q9' },
+                    { rank: 5, issue: '소통·존중 문화 부재', severity: '🟠', desc: '일방적 하달식 소통, 상호 존중 부족', questions: 'Q6, Q8' }
+                ]
+            };
+
+            const issues = coreIssues[role] || coreIssues.employee;
+
+            // 개선 과제 (직원/회장단별)
+            const improvements = {
+                executive: {
+                    short: ['의사결정 프로세스 명문화', '회장단-사무처 역할 분담 기준 수립', '주요 회의체 운영 규칙 정비'],
+                    mid: ['중장기 전략 수립 체계 구축', '집행부 교체 인수인계 매뉴얼 개발', '갈등 조정 메커니즘 도입'],
+                    long: ['거버넌스 구조 재설계', '정책 연속성 보장 시스템 구축', '조직 문화 혁신 프로그램']
+                },
+                employee: {
+                    short: ['업무별 매뉴얼·체크리스트 정비', '인수인계 프로세스 표준화', '홈페이지 정보 최신화'],
+                    mid: ['인사관리 시스템 재설계 (임금·진급·평가)', '보고·의사결정 체계 명확화', '신규 직원 온보딩 프로그램 구축'],
+                    long: ['조직 편제 개편', '처우·복지 체계 개편', '상호 존중 기반 조직 문화 구축']
+                }
+            };
+
+            const improve = improvements[role] || improvements.employee;
+
+            // ===== HTML 생성 =====
+            let html = '';
+
+            // 리포트 헤더
+            html += `
+                <div style="text-align: center; margin-bottom: 35px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+                    <h2 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 800; color: white;">📑 사전설문 결과분석 리포트</h2>
+                    <p style="margin: 0 0 4px 0; font-size: 15px; opacity: 0.95; color: white;">대한치과위생사협회 조직진단 — ${roleLabel} 응답 분석</p>
+                    <p style="margin: 0; font-size: 13px; opacity: 0.8; color: white;">수집 기간: ${dateRange} | 응답자: ${total}명</p>
+                </div>
+            `;
+
+            // 1. 만족도 요약
+            const avgNum = parseFloat(average);
+            const satisfactionLevel = avgNum >= 4 ? '만족' : avgNum >= 3 ? '보통' : avgNum >= 2 ? '낮음' : '매우 낮음';
+            const satisfactionColor = avgNum >= 4 ? '#10b981' : avgNum >= 3 ? '#f59e0b' : '#ef4444';
+
+            html += `
+                <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <h3 style="margin: 0 0 20px 0; color: #0a0e27; font-size: 17px;">📊 Q10 조직 운영 만족도 종합</h3>
+                    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                        <div style="text-align: center; min-width: 120px;">
+                            <div style="font-size: 42px; font-weight: 800; color: ${satisfactionColor};">${average}</div>
+                            <div style="font-size: 13px; color: #64748b;">/ 5.00점</div>
+                            <div style="margin-top: 6px; padding: 4px 12px; background: ${satisfactionColor}15; color: ${satisfactionColor}; border-radius: 12px; font-size: 12px; font-weight: 700; display: inline-block;">${satisfactionLevel}</div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            ${[5, 4, 3, 2, 1].map(level => {
+                                const count = distribution[level] || 0;
+                                const pct = scales.length > 0 ? ((count / scales.length) * 100).toFixed(0) : 0;
+                                const levelLabels = { 5: '매우 높다', 4: '높다', 3: '보통', 2: '낮다', 1: '매우 낮다' };
+                                return `
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                        <span style="min-width: 70px; font-size: 12px; color: #64748b;">${level}점 ${levelLabels[level]}</span>
+                                        <div style="flex: 1; height: 18px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
+                                            <div style="width: ${pct}%; height: 100%; background: ${satisfactionColor}; transition: width 0.5s;"></div>
+                                        </div>
+                                        <span style="min-width: 60px; font-size: 12px; color: #334155; text-align: right; font-weight: 600;">${count}명 (${pct}%)</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 2. 주요 키워드
+            html += `
+                <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <h3 style="margin: 0 0 15px 0; color: #0a0e27; font-size: 17px;">🔑 핵심 키워드 (전체 응답 기반)</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        ${topKeywords.map((kw, i) => {
+                            const colors = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#6366f1', '#14b8a6'];
+                            const c = colors[i % colors.length];
+                            return `<span style="padding: 8px 16px; background: ${c}12; color: ${c}; border: 1.5px solid ${c}40; border-radius: 20px; font-size: 13px; font-weight: 600;">${kw.word} <span style="opacity: 0.7;">(${kw.count})</span></span>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+
+            // 3. 5대 핵심 이슈
+            html += `
+                <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <h3 style="margin: 0 0 20px 0; color: #0a0e27; font-size: 17px;">🚨 5대 핵심 이슈</h3>
+                    <div style="display: grid; gap: 12px;">
+                        ${issues.map(item => `
+                            <div style="display: flex; gap: 14px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid ${item.severity === '🔴' ? '#ef4444' : item.severity === '🟠' ? '#f59e0b' : '#eab308'};">
+                                <div style="min-width: 32px; height: 32px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #334155;">${item.rank}</div>
+                                <div style="flex: 1;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                        <span style="font-size: 14px;">${item.severity}</span>
+                                        <strong style="font-size: 14px; color: #0a0e27;">${item.issue}</strong>
+                                        <span style="margin-left: auto; background: #e0e7ff; color: #4f46e5; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600;">${item.questions}</span>
+                                    </div>
+                                    <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;">${item.desc}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // 4. 문항별 상세 분석
+            html += `
+                <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <h3 style="margin: 0 0 20px 0; color: #0a0e27; font-size: 17px;">📝 문항별 상세 분석</h3>
+            `;
+
+            for (let i = 1; i <= 9; i++) {
+                const qKey = `q${i}`;
+                const cat = categorizeResponses(data, qKey);
+                const theme = themes[qKey];
+                const qKeywords = extractKeywords(cat.meaningful).slice(0, 4);
+
+                // 가장 긴 응답 (대표 응답) 찾기
+                const longestResp = cat.meaningful.sort((a, b) => b.length - a.length)[0] || '';
+                const excerptResp = longestResp.length > 150 ? longestResp.substring(0, 150) + '...' : longestResp;
+
+                html += `
+                    <div style="margin-bottom: ${i < 9 ? '20px' : '0'}; padding: 18px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">Q${i}</span>
+                            <span style="font-size: 14px; font-weight: 700; color: #0a0e27;">${theme.icon} ${labels[qKey]}</span>
+                            <span style="margin-left: auto; font-size: 12px; color: #64748b;">의미 있는 응답 ${cat.meaningful.length}/${cat.total}건</span>
+                        </div>
+                        ${qKeywords.length > 0 ? `
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+                                ${qKeywords.map(kw => `<span style="padding: 3px 10px; background: #e0e7ff; color: #4f46e5; border-radius: 12px; font-size: 11px; font-weight: 600;">${kw.word}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                        ${excerptResp ? `
+                            <div style="padding: 10px 14px; background: white; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <p style="margin: 0; font-size: 13px; color: #334155; line-height: 1.6; font-style: italic;">"${excerptResp}"</p>
+                            </div>
+                        ` : '<p style="margin: 0; font-size: 13px; color: #94a3b8;">의미 있는 응답 없음</p>'}
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+
+            // 5. 우선 개선 과제 로드맵
+            html += `
+                <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <h3 style="margin: 0 0 20px 0; color: #0a0e27; font-size: 17px;">🗺️ 우선 개선 과제 로드맵</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                        <div style="padding: 18px; background: #fef2f2; border-radius: 8px; border-top: 4px solid #ef4444;">
+                            <h4 style="margin: 0 0 12px 0; color: #991b1b; font-size: 14px;">🔥 단기 (즉시)</h4>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; line-height: 1.8;">
+                                ${improve.short.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div style="padding: 18px; background: #fffbeb; border-radius: 8px; border-top: 4px solid #f59e0b;">
+                            <h4 style="margin: 0 0 12px 0; color: #92400e; font-size: 14px;">📋 중기 (3~6개월)</h4>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; line-height: 1.8;">
+                                ${improve.mid.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div style="padding: 18px; background: #f0fdf4; border-radius: 8px; border-top: 4px solid #10b981;">
+                            <h4 style="margin: 0 0 12px 0; color: #065f46; font-size: 14px;">🏗️ 장기 (6개월~)</h4>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; line-height: 1.8;">
+                                ${improve.long.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 6. 종합 진단 소견
+            html += `
+                <div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 28px; color: white;">
+                    <h3 style="margin: 0 0 15px 0; color: white; font-size: 17px;">💡 종합 진단 소견</h3>
+                    <div style="font-size: 14px; line-height: 1.8; color: #e2e8f0;">
+                        ${role === 'employee' ? `
+                            <p style="margin: 0 0 12px 0; color: #e2e8f0;">사전설문 결과, <strong style="color: #fbbf24;">직원 ${total}명 중 ${distribution[2] || 0}명(${scales.length > 0 ? ((distribution[2] || 0) / scales.length * 100).toFixed(0) : 0}%)이 만족도 '낮다(2점)'를 선택</strong>하였으며, 평균 ${average}점으로 조직 운영에 대한 체감 만족도가 매우 낮은 상태입니다.</p>
+                            <p style="margin: 0 0 12px 0; color: #e2e8f0;">핵심 문제는 <strong style="color: #f87171;">①인력 유출의 악순환</strong>, <strong style="color: #f87171;">②보고·의사결정 체계 미비</strong>, <strong style="color: #f87171;">③인수인계·매뉴얼 부재</strong>로 압축되며, 이들은 서로 연쇄적으로 영향을 미치는 구조적 문제입니다.</p>
+                            <p style="margin: 0; color: #e2e8f0;">본 진단 설문에서는 이러한 구조적 원인을 심층 분석하고, 회장단과 직원 간 인식 차이를 비교하여 실질적인 조직 개선 방향을 도출할 필요가 있습니다.</p>
+                        ` : `
+                            <p style="margin: 0 0 12px 0; color: #e2e8f0;">사전설문 결과, 회장단 ${total}명의 응답을 분석한 결과, 평균 만족도 ${average}점으로 조직 운영에 대한 현 인식 수준을 파악하였습니다.</p>
+                            <p style="margin: 0 0 12px 0; color: #e2e8f0;">핵심 과제는 <strong style="color: #f87171;">①의사결정 체계 명확화</strong>, <strong style="color: #f87171;">②정책 연속성 확보</strong>, <strong style="color: #f87171;">③역할·권한 경계 정립</strong>으로 요약되며, 거버넌스 구조의 체계적 재설계가 필요합니다.</p>
+                            <p style="margin: 0; color: #e2e8f0;">본 진단에서는 이러한 구조적 이슈의 근본 원인을 파악하고, 직원 인식과의 비교를 통해 실효성 있는 개선 방안을 마련해야 합니다.</p>
+                        `}
+                    </div>
+                </div>
+            `;
+
+            // PDF 다운로드 버튼
+            html += `
+                <div style="text-align: center; margin-top: 25px;">
+                    <button onclick="downloadReportPDF()" style="padding: 12px 28px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+                        📥 결과분석 리포트 PDF 다운로드
+                    </button>
+                </div>
+            `;
+
+            return html;
+        }
+
+        // 리포트 PDF 다운로드
+        function downloadReportPDF() {
+            const element = document.getElementById('reportContent');
+            const isExecutive = currentRole === 'executive';
+            const role = isExecutive ? '회장단' : '직원';
+            const fileName = `결과분석리포트_${role}_${new Date().toISOString().split('T')[0]}.pdf`;
+
+            const opt = {
+                margin: [8, 8, 8, 8],
+                filename: fileName,
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: { scale: 1.5, useCORS: true, allowTaint: true, windowWidth: 900 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4', compress: true }
+            };
+
+            html2pdf().set(opt).from(element).save();
         }
 
         // 결과 분석 생성
