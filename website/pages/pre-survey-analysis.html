@@ -691,8 +691,7 @@
             display: none;
         }
 
-        /* ===== Report PDF WYSIWYG Styles ===== */
-        /* PDF 생성 중 오버레이 */
+        /* ===== Report PDF 로딩 오버레이 ===== */
         .pdf-generating-overlay {
             display: none;
             position: fixed;
@@ -726,50 +725,6 @@
         }
         .pdf-generating-box .pdf-sub {
             font-size: 12px; color: #94a3b8; font-weight: 400; margin-top: 6px;
-        }
-
-        /* PDF 출력 모드 - 리포트 컨텐츠 전용 */
-        body.pdf-mode #reportContent {
-            width: 800px !important;
-            max-width: 800px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        /* 페이지 나눔 방지 - 각 섹션 카드 */
-        body.pdf-mode #reportContent > div {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* PDF 모드에서 다운로드 버튼 숨김 */
-        body.pdf-mode .report-pdf-btn-wrap {
-            display: none !important;
-        }
-
-        /* PDF 모드 - 그라데이션·색상이 확실히 출력되도록 */
-        body.pdf-mode * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            color-adjust: exact !important;
-        }
-
-        /* 문항별 상세 분석 내부 카드도 나눔 방지 */
-        body.pdf-mode #reportContent [style*="border-left: 4px solid #8b5cf6"] {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* 5대 핵심 이슈 카드 나눔 방지 */
-        body.pdf-mode #reportContent [style*="border-left: 4px solid"] {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* 로드맵 그리드 나눔 방지 */
-        body.pdf-mode #reportContent [style*="border-top: 4px solid"] {
-            page-break-inside: avoid;
-            break-inside: avoid;
         }
 
         .password-error.show {
@@ -1160,16 +1115,16 @@
             // 리포트 헤더
             html += `
                 <div style="text-align: center; margin-bottom: 35px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
-                    <h2 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 800; color: white;">📑 사전설문 결과분석 리포트</h2>
-                    <p style="margin: 0 0 4px 0; font-size: 15px; opacity: 0.95; color: white;">대한치과위생사협회 조직진단 — ${roleLabel} 응답 분석</p>
-                    <p style="margin: 0; font-size: 13px; opacity: 0.8; color: white;">수집 기간: ${dateRange} | 응답자: ${total}명</p>
+                    <h2 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 800; color: #ffffff;">📑 사전설문 결과분석 리포트</h2>
+                    <p style="margin: 0 0 4px 0; font-size: 15px; color: #ffffff;">대한치과위생사협회 조직진단 — ${roleLabel} 응답 분석</p>
+                    <p style="margin: 0; font-size: 13px; color: #e8e0f5;">수집 기간: ${dateRange} | 응답자: ${total}명</p>
                 </div>
             `;
 
             // 1. 만족도 요약
             const avgNum = parseFloat(average);
             const satisfactionLevel = avgNum >= 4 ? '만족' : avgNum >= 3 ? '보통' : avgNum >= 2 ? '낮음' : '매우 낮음';
-            const satisfactionColor = avgNum >= 4 ? '#10b981' : avgNum >= 3 ? '#f59e0b' : '#ef4444';
+            const satisfactionColor = avgNum >= 4 ? '#059669' : avgNum >= 3 ? '#d97706' : '#dc2626';
 
             html += `
                 <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
@@ -1177,8 +1132,8 @@
                     <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
                         <div style="text-align: center; min-width: 120px;">
                             <div style="font-size: 42px; font-weight: 800; color: ${satisfactionColor};">${average}</div>
-                            <div style="font-size: 13px; color: #64748b;">/ 5.00점</div>
-                            <div style="margin-top: 6px; padding: 4px 12px; background: ${satisfactionColor}15; color: ${satisfactionColor}; border-radius: 12px; font-size: 12px; font-weight: 700; display: inline-block;">${satisfactionLevel}</div>
+                            <div style="font-size: 13px; color: #374151; font-weight: 500;">/ 5.00점</div>
+                            <div style="margin-top: 6px; padding: 4px 12px; background: ${satisfactionColor}20; color: ${satisfactionColor}; border-radius: 12px; font-size: 12px; font-weight: 700; display: inline-block;">${satisfactionLevel}</div>
                         </div>
                         <div style="flex: 1; min-width: 200px;">
                             ${[5, 4, 3, 2, 1].map(level => {
@@ -1187,11 +1142,11 @@
                                 const levelLabels = { 5: '매우 높다', 4: '높다', 3: '보통', 2: '낮다', 1: '매우 낮다' };
                                 return `
                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                        <span style="min-width: 70px; font-size: 12px; color: #64748b;">${level}점 ${levelLabels[level]}</span>
+                                        <span style="min-width: 70px; font-size: 12px; color: #374151; font-weight: 500;">${level}점 ${levelLabels[level]}</span>
                                         <div style="flex: 1; height: 18px; background: #f1f5f9; border-radius: 4px; overflow: hidden;">
                                             <div style="width: ${pct}%; height: 100%; background: ${satisfactionColor}; transition: width 0.5s;"></div>
                                         </div>
-                                        <span style="min-width: 60px; font-size: 12px; color: #334155; text-align: right; font-weight: 600;">${count}명 (${pct}%)</span>
+                                        <span style="min-width: 60px; font-size: 12px; color: #111827; text-align: right; font-weight: 700;">${count}명 (${pct}%)</span>
                                     </div>
                                 `;
                             }).join('')}
@@ -1206,9 +1161,9 @@
                     <h3 style="margin: 0 0 15px 0; color: #0a0e27; font-size: 17px;">🔑 핵심 키워드 (전체 응답 기반)</h3>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         ${topKeywords.map((kw, i) => {
-                            const colors = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#6366f1', '#14b8a6'];
-                            const c = colors[i % colors.length];
-                            return `<span style="padding: 8px 16px; background: ${c}12; color: ${c}; border: 1.5px solid ${c}40; border-radius: 20px; font-size: 13px; font-weight: 600;">${kw.word} <span style="opacity: 0.7;">(${kw.count})</span></span>`;
+                            const colors = ['#6d28d9', '#1d4ed8', '#047857', '#b45309', '#b91c1c', '#be185d', '#4338ca', '#0f766e'];
+                            const bgColors = ['#ede9fe', '#dbeafe', '#d1fae5', '#fef3c7', '#fee2e2', '#fce7f3', '#e0e7ff', '#ccfbf1'];
+                            return `<span style="padding: 8px 16px; background: ${bgColors[i % bgColors.length]}; color: ${colors[i % colors.length]}; border: 1.5px solid ${colors[i % colors.length]}40; border-radius: 20px; font-size: 13px; font-weight: 700;">${kw.word} (${kw.count})</span>`;
                         }).join('')}
                     </div>
                 </div>
@@ -1220,15 +1175,15 @@
                     <h3 style="margin: 0 0 20px 0; color: #0a0e27; font-size: 17px;">🚨 5대 핵심 이슈</h3>
                     <div style="display: grid; gap: 12px;">
                         ${issues.map(item => `
-                            <div style="display: flex; gap: 14px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid ${item.severity === '🔴' ? '#ef4444' : item.severity === '🟠' ? '#f59e0b' : '#eab308'};">
-                                <div style="min-width: 32px; height: 32px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #334155;">${item.rank}</div>
+                            <div style="display: flex; gap: 14px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid ${item.severity === '🔴' ? '#dc2626' : item.severity === '🟠' ? '#d97706' : '#ca8a04'};">
+                                <div style="min-width: 32px; height: 32px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #111827;">${item.rank}</div>
                                 <div style="flex: 1;">
                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
                                         <span style="font-size: 14px;">${item.severity}</span>
                                         <strong style="font-size: 14px; color: #0a0e27;">${item.issue}</strong>
-                                        <span style="margin-left: auto; background: #e0e7ff; color: #4f46e5; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600;">${item.questions}</span>
+                                        <span style="margin-left: auto; background: #e0e7ff; color: #3730a3; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 700;">${item.questions}</span>
                                     </div>
-                                    <p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;">${item.desc}</p>
+                                    <p style="margin: 0; font-size: 13px; color: #374151; line-height: 1.6;">${item.desc}</p>
                                 </div>
                             </div>
                         `).join('')}
@@ -1248,25 +1203,24 @@
                 const theme = themes[qKey];
                 const qKeywords = extractKeywords(cat.meaningful).slice(0, 4);
 
-                // 가장 긴 응답 (대표 응답) 찾기
-                const longestResp = cat.meaningful.sort((a, b) => b.length - a.length)[0] || '';
-                const excerptResp = longestResp.length > 150 ? longestResp.substring(0, 150) + '...' : longestResp;
+                // 가장 긴 응답 (대표 응답) - 전체 표시
+                const longestResp = [...cat.meaningful].sort((a, b) => b.length - a.length)[0] || '';
 
                 html += `
                     <div style="margin-bottom: ${i < 9 ? '20px' : '0'}; padding: 18px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #8b5cf6;">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                             <span style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">Q${i}</span>
                             <span style="font-size: 14px; font-weight: 700; color: #0a0e27;">${theme.icon} ${labels[qKey]}</span>
-                            <span style="margin-left: auto; font-size: 12px; color: #64748b;">의미 있는 응답 ${cat.meaningful.length}/${cat.total}건</span>
+                            <span style="margin-left: auto; font-size: 12px; color: #374151; font-weight: 500;">의미 있는 응답 ${cat.meaningful.length}/${cat.total}건</span>
                         </div>
                         ${qKeywords.length > 0 ? `
                             <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
-                                ${qKeywords.map(kw => `<span style="padding: 3px 10px; background: #e0e7ff; color: #4f46e5; border-radius: 12px; font-size: 11px; font-weight: 600;">${kw.word}</span>`).join('')}
+                                ${qKeywords.map(kw => `<span style="padding: 3px 10px; background: #e0e7ff; color: #3730a3; border-radius: 12px; font-size: 11px; font-weight: 700;">${kw.word}</span>`).join('')}
                             </div>
                         ` : ''}
-                        ${excerptResp ? `
+                        ${longestResp ? `
                             <div style="padding: 10px 14px; background: white; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                <p style="margin: 0; font-size: 13px; color: #334155; line-height: 1.6; font-style: italic;">"${excerptResp}"</p>
+                                <p style="margin: 0; font-size: 13px; color: #1a1a1a; line-height: 1.7; font-style: italic;">"${longestResp}"</p>
                             </div>
                         ` : '<p style="margin: 0; font-size: 13px; color: #94a3b8;">의미 있는 응답 없음</p>'}
                     </div>
@@ -1282,19 +1236,19 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
                         <div style="padding: 18px; background: #fef2f2; border-radius: 8px; border-top: 4px solid #ef4444;">
                             <h4 style="margin: 0 0 12px 0; color: #991b1b; font-size: 14px;">🔥 단기 (즉시)</h4>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; line-height: 1.8;">
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #1e293b; line-height: 1.8; font-weight: 500;">
                                 ${improve.short.map(item => `<li>${item}</li>`).join('')}
                             </ul>
                         </div>
-                        <div style="padding: 18px; background: #fffbeb; border-radius: 8px; border-top: 4px solid #f59e0b;">
-                            <h4 style="margin: 0 0 12px 0; color: #92400e; font-size: 14px;">📋 중기 (3~6개월)</h4>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; line-height: 1.8;">
+                        <div style="padding: 18px; background: #fffbeb; border-radius: 8px; border-top: 4px solid #d97706;">
+                            <h4 style="margin: 0 0 12px 0; color: #78350f; font-size: 14px;">📋 중기 (3~6개월)</h4>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #1e293b; line-height: 1.8; font-weight: 500;">
                                 ${improve.mid.map(item => `<li>${item}</li>`).join('')}
                             </ul>
                         </div>
-                        <div style="padding: 18px; background: #f0fdf4; border-radius: 8px; border-top: 4px solid #10b981;">
-                            <h4 style="margin: 0 0 12px 0; color: #065f46; font-size: 14px;">🏗️ 장기 (6개월~)</h4>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; line-height: 1.8;">
+                        <div style="padding: 18px; background: #f0fdf4; border-radius: 8px; border-top: 4px solid #059669;">
+                            <h4 style="margin: 0 0 12px 0; color: #064e3b; font-size: 14px;">🏗️ 장기 (6개월~)</h4>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #1e293b; line-height: 1.8; font-weight: 500;">
                                 ${improve.long.map(item => `<li>${item}</li>`).join('')}
                             </ul>
                         </div>
@@ -1306,15 +1260,15 @@
             html += `
                 <div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 28px; color: white;">
                     <h3 style="margin: 0 0 15px 0; color: white; font-size: 17px;">💡 종합 진단 소견</h3>
-                    <div style="font-size: 14px; line-height: 1.8; color: #e2e8f0;">
+                    <div style="font-size: 14px; line-height: 1.8; color: #f1f5f9;">
                         ${role === 'employee' ? `
-                            <p style="margin: 0 0 12px 0; color: #e2e8f0;">사전설문 결과, <strong style="color: #fbbf24;">직원 ${total}명 중 ${distribution[2] || 0}명(${scales.length > 0 ? ((distribution[2] || 0) / scales.length * 100).toFixed(0) : 0}%)이 만족도 '낮다(2점)'를 선택</strong>하였으며, 평균 ${average}점으로 조직 운영에 대한 체감 만족도가 매우 낮은 상태입니다.</p>
-                            <p style="margin: 0 0 12px 0; color: #e2e8f0;">핵심 문제는 <strong style="color: #f87171;">①인력 유출의 악순환</strong>, <strong style="color: #f87171;">②보고·의사결정 체계 미비</strong>, <strong style="color: #f87171;">③인수인계·매뉴얼 부재</strong>로 압축되며, 이들은 서로 연쇄적으로 영향을 미치는 구조적 문제입니다.</p>
-                            <p style="margin: 0; color: #e2e8f0;">본 진단 설문에서는 이러한 구조적 원인을 심층 분석하고, 회장단과 직원 간 인식 차이를 비교하여 실질적인 조직 개선 방향을 도출할 필요가 있습니다.</p>
+                            <p style="margin: 0 0 12px 0; color: #f1f5f9;">사전설문 결과, <strong style="color: #fde68a;">직원 ${total}명 중 ${distribution[2] || 0}명(${scales.length > 0 ? ((distribution[2] || 0) / scales.length * 100).toFixed(0) : 0}%)이 만족도 '낮다(2점)'를 선택</strong>하였으며, 평균 ${average}점으로 조직 운영에 대한 체감 만족도가 매우 낮은 상태입니다.</p>
+                            <p style="margin: 0 0 12px 0; color: #f1f5f9;">핵심 문제는 <strong style="color: #fca5a5;">①인력 유출의 악순환</strong>, <strong style="color: #fca5a5;">②보고·의사결정 체계 미비</strong>, <strong style="color: #fca5a5;">③인수인계·매뉴얼 부재</strong>로 압축되며, 이들은 서로 연쇄적으로 영향을 미치는 구조적 문제입니다.</p>
+                            <p style="margin: 0; color: #f1f5f9;">본 진단 설문에서는 이러한 구조적 원인을 심층 분석하고, 회장단과 직원 간 인식 차이를 비교하여 실질적인 조직 개선 방향을 도출할 필요가 있습니다.</p>
                         ` : `
-                            <p style="margin: 0 0 12px 0; color: #e2e8f0;">사전설문 결과, 회장단 ${total}명의 응답을 분석한 결과, 평균 만족도 ${average}점으로 조직 운영에 대한 현 인식 수준을 파악하였습니다.</p>
-                            <p style="margin: 0 0 12px 0; color: #e2e8f0;">핵심 과제는 <strong style="color: #f87171;">①의사결정 체계 명확화</strong>, <strong style="color: #f87171;">②정책 연속성 확보</strong>, <strong style="color: #f87171;">③역할·권한 경계 정립</strong>으로 요약되며, 거버넌스 구조의 체계적 재설계가 필요합니다.</p>
-                            <p style="margin: 0; color: #e2e8f0;">본 진단에서는 이러한 구조적 이슈의 근본 원인을 파악하고, 직원 인식과의 비교를 통해 실효성 있는 개선 방안을 마련해야 합니다.</p>
+                            <p style="margin: 0 0 12px 0; color: #f1f5f9;">사전설문 결과, 회장단 ${total}명의 응답을 분석한 결과, 평균 만족도 ${average}점으로 조직 운영에 대한 현 인식 수준을 파악하였습니다.</p>
+                            <p style="margin: 0 0 12px 0; color: #f1f5f9;">핵심 과제는 <strong style="color: #fca5a5;">①의사결정 체계 명확화</strong>, <strong style="color: #fca5a5;">②정책 연속성 확보</strong>, <strong style="color: #fca5a5;">③역할·권한 경계 정립</strong>으로 요약되며, 거버넌스 구조의 체계적 재설계가 필요합니다.</p>
+                            <p style="margin: 0; color: #f1f5f9;">본 진단에서는 이러한 구조적 이슈의 근본 원인을 파악하고, 직원 인식과의 비교를 통해 실효성 있는 개선 방안을 마련해야 합니다.</p>
                         `}
                     </div>
                 </div>
@@ -1332,7 +1286,7 @@
             return html;
         }
 
-        // 리포트 PDF 다운로드 (WYSIWYG)
+        // 리포트 PDF 다운로드 (WYSIWYG - 클론 방식)
         function downloadReportPDF() {
             const element = document.getElementById('reportContent');
             const isExecutive = currentRole === 'executive';
@@ -1343,84 +1297,56 @@
             const overlay = document.getElementById('pdfOverlay');
             overlay.classList.add('show');
 
-            // PDF 모드 활성화 (WYSIWYG)
-            document.body.classList.add('pdf-mode');
+            // 클론 생성 → 버튼 제거 → PDF 변환
+            const clone = element.cloneNode(true);
 
-            // 잠시 대기 후 렌더링 (레이아웃 재계산 시간 확보)
+            // 다운로드 버튼 제거
+            const btnWrap = clone.querySelector('.report-pdf-btn-wrap');
+            if (btnWrap) btnWrap.remove();
+
+            // 클론을 고정 폭 컨테이너에 넣기
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'width:800px; padding:0; margin:0; font-family:"Noto Sans KR",sans-serif; background:#f8fafc;';
+            wrapper.appendChild(clone);
+
+            // 화면 밖에 임시 배치 (렌더링용)
+            wrapper.style.position = 'fixed';
+            wrapper.style.left = '-9999px';
+            wrapper.style.top = '0';
+            document.body.appendChild(wrapper);
+
             setTimeout(() => {
                 const opt = {
-                    margin: [6, 6, 10, 6],
+                    margin: [6, 8, 6, 8],
                     filename: fileName,
                     image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: {
                         scale: 2,
                         useCORS: true,
                         allowTaint: true,
-                        windowWidth: 820,
                         backgroundColor: '#f8fafc',
-                        logging: false,
-                        removeContainer: true
+                        logging: false
                     },
                     jsPDF: {
                         orientation: 'portrait',
                         unit: 'mm',
                         format: 'a4',
                         compress: true
-                    },
-                    pagebreak: {
-                        mode: ['avoid-all', 'css', 'legacy'],
-                        before: '.report-page-break-before',
-                        after: '.report-page-break-after',
-                        avoid: [
-                            '[style*="border-radius: 12px"]',
-                            '[style*="border-radius: 8px"]',
-                            '[style*="border-left: 4px"]',
-                            '[style*="border-top: 4px"]'
-                        ]
                     }
                 };
 
-                html2pdf().set(opt).from(element)
-                    .toPdf()
-                    .get('pdf')
-                    .then(function(pdf) {
-                        // 페이지 번호 추가
-                        const totalPages = pdf.internal.getNumberOfPages();
-                        for (let i = 1; i <= totalPages; i++) {
-                            pdf.setPage(i);
-                            pdf.setFontSize(9);
-                            pdf.setTextColor(150);
-                            const pageWidth = pdf.internal.pageSize.getWidth();
-                            const pageHeight = pdf.internal.pageSize.getHeight();
-                            pdf.text(
-                                `${i} / ${totalPages}`,
-                                pageWidth / 2,
-                                pageHeight - 4,
-                                { align: 'center' }
-                            );
-                            // 하단 로고/제목
-                            pdf.setFontSize(7);
-                            pdf.setTextColor(180);
-                            pdf.text(
-                                `대한치과위생사협회 사전설문 결과분석 리포트 (${role})`,
-                                6,
-                                pageHeight - 4
-                            );
-                        }
-                    })
-                    .save()
+                html2pdf().set(opt).from(wrapper).save()
                     .then(() => {
-                        // PDF 모드 해제
-                        document.body.classList.remove('pdf-mode');
+                        document.body.removeChild(wrapper);
                         overlay.classList.remove('show');
                     })
                     .catch((err) => {
                         console.error('PDF 생성 오류:', err);
-                        document.body.classList.remove('pdf-mode');
+                        document.body.removeChild(wrapper);
                         overlay.classList.remove('show');
-                        alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+                        alert('PDF 생성 중 오류가 발생했습니다.');
                     });
-            }, 300);
+            }, 500);
         }
 
         // 결과 분석 생성
