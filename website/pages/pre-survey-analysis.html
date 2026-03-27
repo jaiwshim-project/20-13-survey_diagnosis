@@ -1304,24 +1304,37 @@
             // 페이지 최상단으로 스크롤 (html2canvas 좌표 문제 방지)
             window.scrollTo(0, 0);
 
+            // 오버레이 숨기기 (html2canvas 간섭 방지)
+            overlay.classList.remove('show');
+
             setTimeout(() => {
-                // 원본 요소를 body 최상단으로 임시 이동
                 const originalParent = element.parentNode;
                 const originalNext = element.nextSibling;
-                const savedStyle = element.getAttribute('style') || '';
 
-                // body에 직접 배치 (position:absolute top:0으로 최상단)
-                element.style.cssText = 'position:absolute; left:0; top:0; width:780px; max-width:780px; margin:0; padding:10px; background:#f8fafc; z-index:99998;';
-                document.body.appendChild(element);
+                // wrapper div로 감싸서 body 최상단에 배치
+                const wrapper = document.createElement('div');
+                wrapper.id = 'pdf-temp-wrapper';
+                wrapper.style.cssText = 'position:absolute; left:0; top:0; width:760px; background:#f8fafc; z-index:-1; padding:0; margin:0;';
+                wrapper.appendChild(element);
+                document.body.insertBefore(wrapper, document.body.firstChild);
 
-                // 복원 함수
+                // element 스타일 강제 (margin auto 제거)
+                element.style.margin = '0';
+                element.style.maxWidth = '760px';
+                element.style.width = '760px';
+                element.style.padding = '0';
+
                 function restore() {
-                    element.setAttribute('style', savedStyle);
+                    element.style.margin = '';
+                    element.style.maxWidth = '';
+                    element.style.width = '';
+                    element.style.padding = '';
                     if (originalNext) {
                         originalParent.insertBefore(element, originalNext);
                     } else {
                         originalParent.appendChild(element);
                     }
+                    if (wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
                     if (btnWrap) btnWrap.style.display = '';
                     overlay.classList.remove('show');
                 }
@@ -1338,7 +1351,7 @@
                             backgroundColor: '#f8fafc',
                             scrollX: 0,
                             scrollY: 0,
-                            windowWidth: 800
+                            windowWidth: 760
                         },
                         jsPDF: {
                             orientation: 'portrait',
@@ -1351,11 +1364,10 @@
                     .save()
                     .then(restore)
                     .catch((err) => {
-                        console.error('PDF 생성 오류:', err);
+                        console.error('PDF 오류:', err);
                         restore();
-                        alert('PDF 생성 중 오류가 발생했습니다.');
                     });
-            }, 300);
+            }, 500);
         }
 
         // 결과 분석 생성
