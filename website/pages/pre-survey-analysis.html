@@ -1286,7 +1286,7 @@
             return html;
         }
 
-        // 리포트 PDF 다운로드 (WYSIWYG - 클론 방식)
+        // 리포트 PDF 다운로드 (WYSIWYG)
         function downloadReportPDF() {
             const element = document.getElementById('reportContent');
             const isExecutive = currentRole === 'executive';
@@ -1297,56 +1297,43 @@
             const overlay = document.getElementById('pdfOverlay');
             overlay.classList.add('show');
 
-            // 클론 생성 → 버튼 제거 → PDF 변환
-            const clone = element.cloneNode(true);
+            // 버튼 숨기기
+            const btnWrap = element.querySelector('.report-pdf-btn-wrap');
+            if (btnWrap) btnWrap.style.display = 'none';
 
-            // 다운로드 버튼 제거
-            const btnWrap = clone.querySelector('.report-pdf-btn-wrap');
-            if (btnWrap) btnWrap.remove();
-
-            // 클론을 고정 폭 컨테이너에 넣기
-            const wrapper = document.createElement('div');
-            wrapper.style.cssText = 'width:800px; padding:0; margin:0; font-family:"Noto Sans KR",sans-serif; background:#f8fafc;';
-            wrapper.appendChild(clone);
-
-            // 화면 밖에 임시 배치 (렌더링용)
-            wrapper.style.position = 'fixed';
-            wrapper.style.left = '-9999px';
-            wrapper.style.top = '0';
-            document.body.appendChild(wrapper);
-
+            // 약간 대기 후 캡처 (렌더링 반영)
             setTimeout(() => {
-                const opt = {
-                    margin: [6, 8, 6, 8],
-                    filename: fileName,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        allowTaint: true,
-                        backgroundColor: '#f8fafc',
-                        logging: false
-                    },
-                    jsPDF: {
-                        orientation: 'portrait',
-                        unit: 'mm',
-                        format: 'a4',
-                        compress: true
-                    }
-                };
-
-                html2pdf().set(opt).from(wrapper).save()
+                html2pdf()
+                    .set({
+                        margin: [6, 8, 6, 8],
+                        filename: fileName,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: {
+                            scale: 2,
+                            useCORS: true,
+                            allowTaint: true,
+                            backgroundColor: '#f8fafc'
+                        },
+                        jsPDF: {
+                            orientation: 'portrait',
+                            unit: 'mm',
+                            format: 'a4',
+                            compress: true
+                        }
+                    })
+                    .from(element)
+                    .save()
                     .then(() => {
-                        document.body.removeChild(wrapper);
+                        if (btnWrap) btnWrap.style.display = '';
                         overlay.classList.remove('show');
                     })
                     .catch((err) => {
                         console.error('PDF 생성 오류:', err);
-                        document.body.removeChild(wrapper);
+                        if (btnWrap) btnWrap.style.display = '';
                         overlay.classList.remove('show');
                         alert('PDF 생성 중 오류가 발생했습니다.');
                     });
-            }, 500);
+            }, 300);
         }
 
         // 결과 분석 생성
