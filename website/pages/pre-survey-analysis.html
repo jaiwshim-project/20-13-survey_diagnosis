@@ -1305,22 +1305,32 @@
             window.scrollTo(0, 0);
 
             setTimeout(() => {
-                // innerHTML을 새 독립 div에 복사 (DOM 위치 문제 근본 해결)
-                const pdfRoot = document.createElement('div');
-                pdfRoot.innerHTML = element.innerHTML;
-                pdfRoot.style.cssText = 'position:fixed; left:0; top:0; width:760px; padding:20px; margin:0; background:#f8fafc; font-family:"Noto Sans KR",sans-serif; box-sizing:border-box; z-index:99998; overflow:auto; max-height:none;';
+                // 원본 요소를 body 최상단으로 임시 이동
+                const originalParent = element.parentNode;
+                const originalNext = element.nextSibling;
+                const savedStyle = element.getAttribute('style') || '';
 
-                // 다운로드 버튼 제거
-                const btn2 = pdfRoot.querySelector('.report-pdf-btn-wrap');
-                if (btn2) btn2.remove();
+                // body에 직접 배치 (position:absolute top:0으로 최상단)
+                element.style.cssText = 'position:absolute; left:0; top:0; width:780px; max-width:780px; margin:0; padding:10px; background:#f8fafc; z-index:99998;';
+                document.body.appendChild(element);
 
-                document.body.appendChild(pdfRoot);
+                // 복원 함수
+                function restore() {
+                    element.setAttribute('style', savedStyle);
+                    if (originalNext) {
+                        originalParent.insertBefore(element, originalNext);
+                    } else {
+                        originalParent.appendChild(element);
+                    }
+                    if (btnWrap) btnWrap.style.display = '';
+                    overlay.classList.remove('show');
+                }
 
                 html2pdf()
                     .set({
                         margin: [5, 5, 5, 5],
                         filename: fileName,
-                        image: { type: 'jpeg', quality: 0.98 },
+                        image: { type: 'jpeg', quality: 0.95 },
                         html2canvas: {
                             scale: 2,
                             useCORS: true,
@@ -1328,9 +1338,7 @@
                             backgroundColor: '#f8fafc',
                             scrollX: 0,
                             scrollY: 0,
-                            windowWidth: 800,
-                            x: 0,
-                            y: 0
+                            windowWidth: 800
                         },
                         jsPDF: {
                             orientation: 'portrait',
@@ -1339,18 +1347,12 @@
                             compress: true
                         }
                     })
-                    .from(pdfRoot)
+                    .from(element)
                     .save()
-                    .then(() => {
-                        document.body.removeChild(pdfRoot);
-                        if (btnWrap) btnWrap.style.display = '';
-                        overlay.classList.remove('show');
-                    })
+                    .then(restore)
                     .catch((err) => {
                         console.error('PDF 생성 오류:', err);
-                        document.body.removeChild(pdfRoot);
-                        if (btnWrap) btnWrap.style.display = '';
-                        overlay.classList.remove('show');
+                        restore();
                         alert('PDF 생성 중 오류가 발생했습니다.');
                     });
             }, 300);
