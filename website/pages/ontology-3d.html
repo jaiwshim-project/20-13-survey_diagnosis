@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="심재우">
+<meta name="description" content="대한치과위생사협회 조직진단 3D 온톨로지 - AXOS 스키마 기반 시각화">
+<title>3D 온톨로지 — 대한치과위생사협회 조직진단</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body { background:#f8fafb; color:#0f172a; overflow:hidden; }
+
+.header {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(248,250,251,.92) 70%,rgba(248,250,251,0) 100%);
+  padding:14px 24px; display:flex; align-items:center; justify-content:space-between;
+}
+.header h1 { font-size:20px; font-weight:800; background:linear-gradient(135deg,#1F6BFF,#7c3aed,#0d9488); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.header .sub { font-size:11px; color:#64748b; margin-top:2px; }
+
+.control-panel {
+  position:fixed; left:14px; top:72px; z-index:100;
+  background:rgba(255,255,255,.97); backdrop-filter:blur(16px);
+  border:1px solid rgba(0,0,0,.08); border-radius:14px;
+  padding:16px; width:240px; max-height:calc(100vh - 90px); overflow-y:auto;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.control-panel h3 { font-size:12px; font-weight:700; color:#1e293b; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.section { margin-bottom:16px; }
+.section-title { font-size:10px; font-weight:600; color:#64748b; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+
+.legend-item { display:flex; align-items:center; gap:7px; padding:4px 0; font-size:11px; color:#1e293b; font-weight:500; cursor:pointer; transition:opacity .2s; }
+.legend-item:hover { opacity:.7; }
+.legend-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+
+.rel-item { display:flex; align-items:center; gap:6px; padding:2px 0; font-size:10px; color:#475569; font-weight:500; }
+.rel-line { width:16px; height:2px; flex-shrink:0; }
+
+.btn {
+  padding:6px 12px; border-radius:8px; border:1px solid rgba(31,107,255,.2);
+  background:rgba(31,107,255,.08); color:#1F6BFF; font-size:11px; font-weight:600;
+  cursor:pointer; transition:all .2s;
+}
+.btn:hover { background:rgba(31,107,255,.15); border-color:#1F6BFF; color:#1F6BFF; }
+.btn-group { display:flex; flex-wrap:wrap; gap:5px; }
+
+.view-toggle { display:flex; border-radius:8px; overflow:hidden; border:1px solid rgba(31,107,255,.15); }
+.view-toggle button { flex:1; padding:5px 8px; background:transparent; border:none; color:#64748b; font-size:10px; font-weight:600; cursor:pointer; transition:all .2s; }
+.view-toggle button.active { background:rgba(31,107,255,.12); color:#1F6BFF; }
+
+.detail-panel {
+  position:fixed; right:0; top:0; width:320px; height:100vh; z-index:100;
+  background:rgba(255,255,255,.96); backdrop-filter:blur(16px);
+  border-left:1px solid rgba(31,107,255,.15);
+  padding:72px 20px 20px; transform:translateX(100%); transition:transform .3s; overflow-y:auto;
+}
+.detail-panel.open { transform:translateX(0); }
+.detail-close { position:absolute; top:16px; right:14px; background:none; border:none; color:#64748b; font-size:22px; cursor:pointer; }
+.detail-type-badge { display:inline-block; padding:3px 12px; border-radius:6px; font-size:11px; font-weight:700; margin-bottom:12px; }
+.detail-section { margin-bottom:16px; }
+.detail-section h4 { font-size:10px; font-weight:600; color:#64748b; text-transform:uppercase; margin-bottom:6px; }
+.detail-section p { font-size:13px; color:#334155; line-height:1.6; }
+.detail-rel { padding:6px 10px; background:rgba(0,0,0,.03); border-radius:6px; margin-bottom:4px; font-size:11px; color:#334155; border:1px solid rgba(0,0,0,.06); }
+
+.info-bar {
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
+  background:linear-gradient(0deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.85) 70%,rgba(255,255,255,0) 100%);
+  padding:10px 24px; display:flex; align-items:center; justify-content:space-between;
+}
+.info-bar .stats { display:flex; gap:16px; }
+.stat { font-size:10px; color:#475569; font-weight:500; }
+.stat span { color:#1F6BFF; font-weight:700; }
+.info-bar .hint { font-size:10px; color:#64748b; }
+
+.modal-overlay { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; }
+.modal-overlay.hidden { display:none; }
+.modal { background:linear-gradient(135deg,#ffffff,#f8fafb); border:1px solid rgba(31,107,255,.2); border-radius:16px; padding:28px; width:90%; max-width:680px; max-height:80vh; overflow-y:auto; }
+.modal h2 { font-size:18px; font-weight:800; margin-bottom:6px; background:linear-gradient(135deg,#1F6BFF,#7c3aed); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.modal p.desc { font-size:12px; color:#64748b; margin-bottom:16px; }
+.modal textarea { width:100%; height:280px; background:rgba(0,0,0,.04); border:1px solid rgba(31,107,255,.15); border-radius:10px; padding:14px; color:#334155; font-size:12px; font-family:'Consolas','Courier New',monospace; resize:vertical; line-height:1.5; }
+.modal textarea:focus { outline:none; border-color:#1F6BFF; }
+.modal .actions { display:flex; gap:8px; margin-top:14px; justify-content:flex-end; }
+.btn-primary { padding:8px 20px; border-radius:10px; border:none; font-weight:700; font-size:12px; cursor:pointer; background:linear-gradient(135deg,#1F6BFF,#7c3aed); color:#fff; transition:all .2s; }
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(31,107,255,.3); }
+.btn-ghost { padding:8px 20px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:transparent; color:#64748b; font-weight:600; font-size:12px; cursor:pointer; }
+
+#graph3d { width:100vw; height:100vh; }
+.node-tooltip { position:absolute; padding:8px 14px; background:rgba(255,255,255,.95); border:1px solid rgba(31,107,255,.2); border-radius:8px; color:#334155; font-size:12px; pointer-events:none; z-index:150; white-space:nowrap; backdrop-filter:blur(8px); }
+
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(31,107,255,.2); border-radius:4px; }
+
+.desc-panel {
+  position:fixed; right:16px; bottom:52px; z-index:100;
+  width:360px; max-height:320px; overflow-y:auto;
+  background:rgba(255,255,255,.97); backdrop-filter:blur(16px);
+  border:1px solid rgba(0,0,0,.08); border-radius:14px;
+  padding:18px 20px; transition:opacity .4s, transform .4s;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.desc-panel.hidden { opacity:0; transform:translateY(10px); pointer-events:none; }
+.desc-panel h4 { font-size:13px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.desc-panel h4 .tag { font-size:9px; font-weight:600; padding:2px 8px; border-radius:6px; text-transform:uppercase; letter-spacing:.5px; }
+.desc-panel p { font-size:11px; color:#334155; line-height:1.7; margin-bottom:10px; }
+.desc-panel .meta { font-size:10px; color:#64748b; font-weight:500; border-top:1px solid rgba(0,0,0,.08); padding-top:8px; display:flex; gap:12px; flex-wrap:wrap; }
+.desc-panel .meta span { display:flex; align-items:center; gap:4px; }
+.desc-toggle { position:absolute; top:10px; right:12px; background:none; border:none; color:#64748b; font-size:16px; cursor:pointer; }
+
+.issue-panel {
+  position:fixed; right:16px; top:72px; z-index:101;
+  width:380px; max-height:calc(100vh - 130px); overflow-y:auto;
+  background:rgba(255,255,255,.98); backdrop-filter:blur(16px);
+  border:1px solid rgba(190,18,60,.12); border-radius:14px;
+  padding:20px; transition:opacity .4s, transform .4s;
+  box-shadow:0 4px 24px rgba(190,18,60,.08), 0 1px 4px rgba(0,0,0,.06);
+}
+.issue-panel.hidden { opacity:0; transform:translateX(20px); pointer-events:none; }
+.issue-panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid rgba(190,18,60,.1); }
+.issue-panel-header h3 { font-size:14px; font-weight:800; color:#be123c; display:flex; align-items:center; gap:6px; }
+.issue-panel-close { background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer; }
+.issue-panel-close:hover { color:#be123c; }
+.issue-cause-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:8px; font-size:12px; font-weight:700; margin-bottom:12px; }
+.issue-section { margin-bottom:14px; }
+.issue-section-title { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
+.issue-section p { font-size:12px; color:#334155; line-height:1.7; margin:0; }
+.issue-solution { border-radius:8px; padding:10px 12px; margin-bottom:6px; }
+.issue-solution-head { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+.issue-solution-badge { font-size:9px; font-weight:700; color:#fff; padding:1px 7px; border-radius:3px; }
+.issue-solution-title { font-size:12px; font-weight:700; color:#1e293b; }
+.issue-solution p { font-size:11px; color:#475569; line-height:1.6; margin:0; }
+.issue-name-btn { display:block; width:100%; text-align:left; padding:8px 12px; margin-bottom:4px; border-radius:8px; border:1px solid rgba(0,0,0,.06); background:rgba(190,18,60,.03); cursor:pointer; transition:all .2s; font-family:inherit; }
+.issue-name-btn:hover { background:rgba(190,18,60,.08); border-color:rgba(190,18,60,.2); }
+.issue-name-btn.active { background:rgba(190,18,60,.1); border-color:rgba(190,18,60,.25); }
+
+#loadingOverlay { position:fixed; inset:0; z-index:300; background:#f8fafb; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .5s; }
+#loadingOverlay.fade { opacity:0; pointer-events:none; }
+.loader { width:48px; height:48px; border:3px solid rgba(31,107,255,.15); border-top-color:#1F6BFF; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div class="loader"></div>
+  <div style="color:#1F6BFF;font-size:14px;font-weight:600">3D 엔진 로딩 중...</div>
+  <div style="color:#94a3b8;font-size:11px;margin-top:6px" id="loadStatus">라이브러리 다운로드</div>
+</div>
+
+<div class="header">
+  <div>
+    <h1>&#x1F578; 대한치과위생사협회 — 3D 조직진단 온톨로지</h1>
+    <div class="sub">SB-OPM 진단 모델 기반 &mdash; AXOS 스키마 3D 시각화 &nbsp;|&nbsp; &copy; 2026 심재우</div>
+  </div>
+  <div class="btn-group">
+    <button class="btn" onclick="openDataModal()">&#x270F; 데이터 편집</button>
+    <button class="btn" onclick="resetCamera()">&#x1F3AF; 초기화</button>
+    <button class="btn" onclick="toggleAutoRotate()">&#x1F504; 회전</button>
+    <button class="btn" onclick="exportPNG()">&#x1F4F7; 캡처</button>
+  </div>
+</div>
+
+<div class="control-panel">
+  <h3>&#x1F3AE; Controls</h3>
+  <div class="section">
+    <div class="section-title">뷰 모드</div>
+    <div class="view-toggle" id="viewToggle">
+      <button class="active" onclick="setViewMode('cluster',this)">군집</button>
+      <button onclick="setViewMode('layer',this)">레이어</button>
+      <button onclick="setViewMode('timeline',this)">타임라인</button>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">노드 타입 (8종) &mdash; 클릭하여 필터</div>
+    <div id="nodeLegend"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Issue 원인 구분 (외곽 링)</div>
+    <div id="issueCauseLegend"></div>
+    <div style="margin-top:8px">
+      <button class="btn" id="btnIssueMode" onclick="toggleIssueMode()" style="width:100%">&#x26A0; Issue 분석 모드</button>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">관계 타입 (9종)</div>
+    <div id="relLegend"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">3D 좌표계</div>
+    <div class="rel-item"><div class="rel-line" style="background:#ef4444"></div><span style="color:#ef4444;font-weight:600">X</span> 업무 흐름</div>
+    <div class="rel-item"><div class="rel-line" style="background:#22c55e"></div><span style="color:#22c55e;font-weight:600">Y</span> 조직 계층</div>
+    <div class="rel-item"><div class="rel-line" style="background:#3b82f6"></div><span style="color:#3b82f6;font-weight:600">Z</span> 데이터 깊이</div>
+  </div>
+  <div class="section">
+    <div class="section-title">좌표계 표시</div>
+    <div class="btn-group">
+      <button class="btn" onclick="toggleAxes()" id="btnAxes">&#x1F4D0; 축 ON</button>
+      <button class="btn" onclick="toggleGrid()" id="btnGrid">&#x1F4CF; 그리드 ON</button>
+    </div>
+  </div>
+</div>
+
+<div class="detail-panel" id="detailPanel">
+  <button class="detail-close" onclick="closeDetail()">&times;</button>
+  <div id="detailContent"></div>
+</div>
+
+<div class="info-bar">
+  <div class="stats">
+    <div class="stat">노드: <span id="statNodes">0</span></div>
+    <div class="stat">관계: <span id="statEdges">0</span></div>
+    <div class="stat">모드: <span id="statView">군집</span></div>
+  </div>
+  <div class="hint">&#x1F5B1; 좌클릭 드래그=회전 &nbsp;|&nbsp; 우클릭=이동 &nbsp;|&nbsp; 스크롤=줌 &nbsp;|&nbsp; 노드 클릭=상세</div>
+</div>
+
+<div class="modal-overlay hidden" id="dataModal">
+  <div class="modal">
+    <h2>&#x270F; 온톨로지 데이터 편집</h2>
+    <p class="desc">AXOS JSON 형식으로 입력하세요. 노드 type: Actor/Process/Data/System/Artifact/Decision/Event/Issue &nbsp;|&nbsp; 관계 type: FLOW/INPUT/OUTPUT/USES/CREATES/DECIDES/TRIGGERS/CAUSES/BLOCKS</p>
+    <textarea id="dataInput" spellcheck="false"></textarea>
+    <div class="actions">
+      <button class="btn-ghost" onclick="closeDataModal()">취소</button>
+      <button class="btn-primary" onclick="applyData()">&#x26A1; 적용</button>
+    </div>
+  </div>
+</div>
+
+<div class="desc-panel" id="descPanel">
+  <button class="desc-toggle" onclick="toggleDesc()">&times;</button>
+  <div id="descContent"></div>
+</div>
+
+<div class="issue-panel hidden" id="issuePanel">
+  <div class="issue-panel-header">
+    <h3>&#x26A0; Issue 분석</h3>
+    <button class="issue-panel-close" onclick="closeIssuePanel()">&times;</button>
+  </div>
+  <div id="issueListArea"></div>
+  <div id="issueDetailArea"></div>
+</div>
+
+<div id="graph3d"></div>
+<div class="node-tooltip" id="tooltip" style="display:none"></div>
+
+<script>
+// ============================================================
+// AXOS 스키마 정의
+// ============================================================
+const NODE_TYPES = {
+  Actor:    { color:"#1F6BFF", icon:"\u{1F464}", desc:"사람/역할",     z:0,  size:10 },
+  Process:  { color:"#7c3aed", icon:"\u2699",    desc:"업무 단계",     z:1,  size:8 },
+  Data:     { color:"#0d9488", icon:"\u{1F4CA}", desc:"데이터",        z:2,  size:8 },
+  System:   { color:"#06b6d4", icon:"\u{1F5A5}", desc:"툴/시스템",     z:2,  size:7 },
+  Artifact: { color:"#ea580c", icon:"\u{1F4C4}", desc:"결과물",        z:3,  size:7 },
+  Decision: { color:"#4a5568", icon:"\u{1F500}", desc:"의사결정",      z:1,  size:9 },
+  Event:    { color:"#d97706", icon:"\u26A1",    desc:"이벤트/트리거",  z:0,  size:7 },
+  Issue:    { color:"#be123c", icon:"\u26A0",    desc:"문제/병목",      z:3,  size:11 }
+};
+
+const ISSUE_CAUSE = {
+  Actor:    { color:"#1F6BFF", icon:"\u{1F464}", label:"사람 기인" },
+  Process:  { color:"#7c3aed", icon:"\u2699",    label:"프로세스 기인" },
+  System:   { color:"#06b6d4", icon:"\u{1F5A5}", label:"시스템 기인" },
+  Data:     { color:"#0d9488", icon:"\u{1F4CA}", label:"데이터 기인" },
+  Event:    { color:"#d97706", icon:"\u26A1",    label:"이벤트 기인" },
+  Decision: { color:"#4a5568", icon:"\u{1F500}", label:"의사결정 기인" }
+};
+
+// ============================================================
+// Issue 상세 분석 데이터
+// ============================================================
+const ISSUE_ANALYSIS = {
+  'kdha_i1': {
+    rootCause: '선출직 임원(회장·부회장)이 교체될 때마다 조직의 방향성·인사·사업 우선순위가 리셋되며, 체계적 인수인계 프로세스가 부재하여 전임 성과가 단절됨',
+    chainDesc: '선거(Event) → 임원 교체 → 정책연속성 단절(Issue) → 사무처 업무 혼란(Process) → 사업 일관성 상실',
+    affectedProcess: '중장기 전략 수립·사업 실행·대외 협력이 임기 시작마다 초기화되어 조직의 전문성 축적이 불가능',
+    solutions: [
+      { priority: 1, title: '제도적 인수인계 프로토콜 수립', desc: '임기 종료 3개월 전 인수인계 문서 패키지(진행 사업, 핵심 이해관계자, 미결 사안) 작성 의무화. 전·현직 공동 운영 기간 1개월 설정' },
+      { priority: 2, title: '중장기 전략 로드맵 제도화', desc: '임기 초월 5개년 전략 로드맵을 이사회에서 의결하여 개인 임기와 무관하게 조직 방향 유지. 전략위원회 상설 운영' },
+      { priority: 3, title: 'AI 기반 조직 기억 시스템', desc: '의사결정 이력·사업 성과·교훈을 AI가 자동 색인·요약하여 후임자가 즉시 맥락 파악 가능한 디지털 조직 기억 구축' }
+    ]
+  },
+  'kdha_i2': {
+    rootCause: '정책·사업 수행 과정에서 축적된 노하우·의사결정 배경·성공/실패 사례가 체계적으로 기록·관리되지 않아 담당자 이동 시 조직 지식이 소멸',
+    chainDesc: '업무 수행(Process) → 결과물 생성(Artifact) → 기록 미비 → 조직기억 소실(Issue) → 동일 실수 반복',
+    affectedProcess: '신임 담당자의 학습 곡선 과다, 과거 실패 반복, 성공 사례 재활용 불가로 조직 효율성 저하 (진단점수 39/100)',
+    solutions: [
+      { priority: 1, title: '디지털 지식관리 시스템(KMS) 도입', desc: '모든 사업·정책의 기획서, 회의록, 결과보고서를 태그 기반으로 체계 관리. 검색·참조 즉시 가능한 조직 아카이브 구축' },
+      { priority: 2, title: 'AI 자동 문서화 파이프라인', desc: '회의 녹취를 AI가 자동 요약, 의사결정 포인트 추출, 관련 문서 링크까지 자동 생성. 기록 부담 최소화하며 지식 축적' },
+      { priority: 3, title: '퇴직·이동 시 지식 전수 세션 의무화', desc: '담당자 변경 시 2시간 이상 구조화된 지식 전수 세션 진행. 핵심 경험, 암묵지, 이해관계자 맵을 후임에게 전달' }
+    ]
+  },
+  'kdha_i3': {
+    rootCause: '세대 간(50대 이상 vs 30대 이하) 업무 방식·소통 스타일·성과 기준에 대한 인식 차이가 크고, 이를 통합하는 공식적 표준이 부재',
+    chainDesc: '다세대 구성원(Actor) → 업무 수행(Process) → 기준 불일치 → 세대갈등(Issue) → 협업 비효율',
+    affectedProcess: '팀 내 소통 비용 증가, 의사결정 속도 저하, 구성원 사기 저하로 이직률 상승 위험 (진단점수 45/100)',
+    solutions: [
+      { priority: 1, title: '세대 통합 업무 표준(Work Standard) 수립', desc: '보고 방식, 회의 규칙, 커뮤니케이션 채널 사용 기준을 세대 대표 참여하에 공동 설계. 모든 세대가 수용 가능한 명문화된 업무 기준' },
+      { priority: 2, title: '세대 간 멘토링 프로그램', desc: '시니어의 경험+주니어의 디지털 역량을 교차 멘토링. 상호 이해 증진과 동시에 역량 전수 효과' },
+      { priority: 3, title: '세대 인식 차이 정기 서베이', desc: '반기별 세대 간 인식 차이 설문 실시 → 갈등 지점 조기 감지 → 타겟 워크숍으로 선제 대응' }
+    ]
+  },
+  'kdha_i4': {
+    rootCause: '사무처(실무)와 임원(선출직) 간 역할 경계가 상황에 따라 모호해지며, 특히 임원 교체기에 사무처의 자율적 업무 수행 범위가 불확실해짐',
+    chainDesc: '임원(Actor) ↔ 사무처(Actor) → 역할경계 모호(Issue) → 업무 중복/공백 → 의사결정 지연(Decision)',
+    affectedProcess: '긴급 의사결정 지연, 책임 소재 불명확으로 실행력 저하. 다만 현재 상대적 강점 영역 (진단점수 71/100)',
+    solutions: [
+      { priority: 1, title: '의사결정 유형별 권한 매트릭스 제정', desc: '일상 운영/전략/재정/대외 등 의사결정 유형별로 사무처 전결/임원 협의/이사회 승인 기준을 명문화. RACI 차트 도입' },
+      { priority: 2, title: '임기 전환기 표준 운영 절차(SOP)', desc: '임원 교체 시 3개월간의 표준 운영 절차를 수립하여 사무처의 안정적 업무 수행 보장. 비상 의사결정 라인 사전 지정' },
+      { priority: 3, title: '분기별 역할 경계 점검 회의', desc: '사무처장-회장 간 분기별 역할 경계 점검. 모호한 영역 발견 시 즉시 기준 수정·공유' }
+    ]
+  },
+  'kdha_i5': {
+    rootCause: '공익법인으로서의 공공 미션과 37만 회원의 이익 대변이라는 이중 목적 사이에서 의사결정 기준이 상황별로 달라지며 일관성 부족',
+    chainDesc: '공공미션(Artifact) + 회원이익(Data) → 정책 수립(Process) → 미션-실행 괴리(Issue) → 대외 신뢰도 저하',
+    affectedProcess: '정책의 일관성 저하, 회원 및 사회적 신뢰 흔들림, 장기적 조직 정체성 약화',
+    solutions: [
+      { priority: 1, title: '공공미션 의사결정 프레임워크', desc: '모든 주요 정책에 "공공 영향 평가" 체크리스트 도입. 공익 기여도와 회원 이익을 동시에 정량적으로 평가하는 의사결정 도구' },
+      { priority: 2, title: '미션 실행 지표(KPI) 체계 수립', desc: '연간 공공미션 실행 현황을 정량 지표로 추적. 구강건강 증진 기여도, 정책 제안 건수, 사회공헌 활동 등 측정 가능한 KPI' },
+      { priority: 3, title: '이해관계자 균형 위원회 운영', desc: '회원 대표, 외부 전문가, 공익 대표가 참여하는 균형 위원회를 통해 주요 정책의 공익-사익 균형 검증' }
+    ]
+  },
+  'kdha_i6': {
+    rootCause: '의사결정 과정의 투명성, 자원 배분의 공정성, 성과 평가 기준에 대한 구성원 인식이 불균등하여 조직 내 신뢰 기반이 취약',
+    chainDesc: '의사결정(Decision) → 결과 공유(Process) → 투명성 부족 → 신뢰/공정성 저하(Issue) → 구성원 동기 저하',
+    affectedProcess: '구성원 몰입도 저하, 내부 갈등 잠재화, 변화 관리 저항 증가',
+    solutions: [
+      { priority: 1, title: '의사결정 투명성 대시보드', desc: '주요 의사결정의 배경, 참여자, 논의 내용, 결정 근거를 구성원 누구나 열람 가능한 디지털 대시보드로 공개' },
+      { priority: 2, title: '공정성 인식 정기 측정 시스템', desc: '분기별 익명 공정성 인식 서베이 실시. 인사, 예산, 기회 배분에 대한 체감도를 추적하고 개선 우선순위 도출' },
+      { priority: 3, title: '고충 처리 및 의견 반영 채널 강화', desc: '익명 의견 제출 시스템 + 접수 건별 처리 상태 피드백. 구성원 목소리가 실제 조직 운영에 반영되는 선순환 구축' }
+    ]
+  }
+};
+
+const REL_TYPES = {
+  FLOW:     { color:"#64748b", desc:"흐름"   },
+  INPUT:    { color:"#0d9488", desc:"입력"   },
+  OUTPUT:   { color:"#06b6d4", desc:"출력"   },
+  USES:     { color:"#7c3aed", desc:"사용"   },
+  CREATES:  { color:"#ea580c", desc:"생성"   },
+  DECIDES:  { color:"#4a5568", desc:"결정"   },
+  TRIGGERS: { color:"#d97706", desc:"트리거" },
+  CAUSES:   { color:"#be123c", desc:"원인"   },
+  BLOCKS:   { color:"#be123c", desc:"병목"   }
+};
+
+// ============================================================
+// 대한치과위생사협회 조직진단 온톨로지 데이터
+// ============================================================
+const SAMPLES = {
+custom: { nodes: [
+  // ── Actor (행위자/역할) ──
+  {id:"a1", name:"회장", type:"Actor", desc:"대한치과위생사협회 선출직 대표"},
+  {id:"a2", name:"회장단", type:"Actor", desc:"부회장, 이사 등 선출직 임원 그룹"},
+  {id:"a3", name:"사무처", type:"Actor", desc:"협회 상근 실무 조직 (사무처장 + 직원)"},
+  {id:"a4", name:"이사회", type:"Actor", desc:"주요 정책·예산 의결 기구"},
+  {id:"a5", name:"시니어 구성원", type:"Actor", desc:"경력 20년 이상, 50대 이상 세대"},
+  {id:"a6", name:"주니어 구성원", type:"Actor", desc:"경력 10년 미만, 30대 이하 세대"},
+  {id:"a7", name:"37만 회원", type:"Actor", desc:"전국 치과위생사 회원"},
+
+  // ── Process (업무 프로세스) ──
+  {id:"p1", name:"선거/임원교체", type:"Process", desc:"정기 선거를 통한 임원 선출 및 교체"},
+  {id:"p2", name:"인수인계", type:"Process", desc:"전임자 → 후임자 업무·정보 이관"},
+  {id:"p3", name:"정책 수립", type:"Process", desc:"협회 운영 방향 및 사업 정책 결정"},
+  {id:"p4", name:"사업 실행", type:"Process", desc:"연간 사업 계획에 따른 실무 수행"},
+  {id:"p5", name:"대외 협력", type:"Process", desc:"정부·유관기관·국제기구와의 협력 활동"},
+  {id:"p6", name:"회원 서비스", type:"Process", desc:"교육·복지·권익보호 등 회원 지원"},
+  {id:"p7", name:"조직진단", type:"Process", desc:"SB-OPM 기반 조직 현황 진단"},
+  {id:"p8", name:"비전 워크숍", type:"Process", desc:"전 구성원 참여 비전 수립 워크숍"},
+  {id:"p9", name:"성과 평가", type:"Process", desc:"사업 성과 측정 및 환류"},
+
+  // ── Data (데이터/정보) ──
+  {id:"d1", name:"진단 설문 데이터", type:"Data", desc:"사전설문 + 본진단 7개 영역 응답 데이터"},
+  {id:"d2", name:"회원 니즈 데이터", type:"Data", desc:"37만 회원의 요구·불만·제안 정보"},
+  {id:"d3", name:"사업 성과 데이터", type:"Data", desc:"연간 사업 실적·예산 집행 현황"},
+  {id:"d4", name:"면담 인사이트", type:"Data", desc:"회장단·사무처 대면 면담 결과"},
+
+  // ── System (시스템/도구) ──
+  {id:"s1", name:"사무처 행정시스템", type:"System", desc:"내부 행정·문서 관리 시스템"},
+  {id:"s2", name:"회원관리 시스템", type:"System", desc:"37만 회원 등록·관리 플랫폼"},
+  {id:"s3", name:"진단 플랫폼", type:"System", desc:"온라인 설문 및 분석 시스템 (Supabase)"},
+
+  // ── Artifact (산출물/문서) ──
+  {id:"ar1", name:"진단 결과 리포트", type:"Artifact", desc:"7개 영역 정량·정성 분석 보고서"},
+  {id:"ar2", name:"공공미션 선언문", type:"Artifact", desc:"협회의 공익적 미션 및 비전 문서"},
+  {id:"ar3", name:"역할경계 매트릭스", type:"Artifact", desc:"사무처-임원 간 역할·권한 구분 문서"},
+  {id:"ar4", name:"중장기 전략 로드맵", type:"Artifact", desc:"임기 초월 5개년 전략 계획"},
+  {id:"ar5", name:"워크숍 결과물", type:"Artifact", desc:"비전 워크숍 합의 사항 및 실행 계획"},
+
+  // ── Decision (의사결정 포인트) ──
+  {id:"dc1", name:"정책 승인", type:"Decision", desc:"이사회 차원의 주요 정책·예산 승인"},
+  {id:"dc2", name:"사업 우선순위 결정", type:"Decision", desc:"연간 사업의 우선순위 및 자원 배분"},
+  {id:"dc3", name:"인사 결정", type:"Decision", desc:"사무처 인력 배치 및 직무 조정"},
+
+  // ── Event (이벤트/트리거) ──
+  {id:"e1", name:"정기 선거", type:"Event", desc:"임기 만료에 따른 정기 임원 선거"},
+  {id:"e2", name:"진단 착수", type:"Event", desc:"조직진단 프로젝트 시작 (2026.03)"},
+  {id:"e3", name:"워크숍 개최", type:"Event", desc:"비전 워크숍 개최 (2026.05.13)"},
+  {id:"e4", name:"세대갈등 발생", type:"Event", desc:"업무 방식 차이로 인한 세대 간 마찰"},
+
+  // ── Issue (문제/병목) ── 6대 핵심 이슈
+  {id:"i1", name:"거버넌스 연속성 단절", type:"Issue", desc:"임원 교체 시 정책·사업 연속성 붕괴 (48점)", cause:"Actor", ak:"kdha_i1"},
+  {id:"i2", name:"조직기억 소실", type:"Issue", desc:"체계적 기록 부재로 지식·경험 유실 (39점)", cause:"Process", ak:"kdha_i2"},
+  {id:"i3", name:"세대 간 기준 충돌", type:"Issue", desc:"세대별 업무 방식·소통 기준 불일치 (45점)", cause:"Actor", ak:"kdha_i3"},
+  {id:"i4", name:"역할경계 모호", type:"Issue", desc:"사무처-임원 간 권한 경계 상황별 변동 (71점)", cause:"Decision", ak:"kdha_i4"},
+  {id:"i5", name:"미션-실행 괴리", type:"Issue", desc:"공공미션과 실제 운영 사이 간극 (62점)", cause:"Process", ak:"kdha_i5"},
+  {id:"i6", name:"신뢰/공정성 체감 부족", type:"Issue", desc:"의사결정 투명성·공정성 인식 격차", cause:"Decision", ak:"kdha_i6"}
+], edges: [
+  // ── 선거 → 임원 교체 흐름 ──
+  {source:"e1", target:"p1", type:"TRIGGERS"},
+  {source:"p1", target:"a1", type:"FLOW"},
+  {source:"p1", target:"a2", type:"FLOW"},
+  {source:"p1", target:"i1", type:"CAUSES"},
+
+  // ── 인수인계 (미비) ──
+  {source:"p1", target:"p2", type:"FLOW"},
+  {source:"i1", target:"p2", type:"BLOCKS"},
+  {source:"i2", target:"p2", type:"BLOCKS"},
+
+  // ── 정책 수립 및 의사결정 ──
+  {source:"a1", target:"p3", type:"FLOW"},
+  {source:"a2", target:"p3", type:"FLOW"},
+  {source:"a3", target:"p3", type:"FLOW"},
+  {source:"p3", target:"dc1", type:"FLOW"},
+  {source:"a4", target:"dc1", type:"DECIDES"},
+  {source:"dc1", target:"dc2", type:"DECIDES"},
+  {source:"i5", target:"p3", type:"BLOCKS"},
+
+  // ── 사업 실행 ──
+  {source:"dc2", target:"p4", type:"DECIDES"},
+  {source:"a3", target:"p4", type:"FLOW"},
+  {source:"p4", target:"d3", type:"CREATES"},
+  {source:"p4", target:"s1", type:"USES"},
+  {source:"i1", target:"p4", type:"BLOCKS"},
+
+  // ── 대외 협력 ──
+  {source:"a1", target:"p5", type:"FLOW"},
+  {source:"p3", target:"p5", type:"FLOW"},
+  {source:"i1", target:"p5", type:"BLOCKS"},
+
+  // ── 회원 서비스 ──
+  {source:"a3", target:"p6", type:"FLOW"},
+  {source:"d2", target:"p6", type:"INPUT"},
+  {source:"p6", target:"s2", type:"USES"},
+  {source:"a7", target:"d2", type:"CREATES"},
+
+  // ── 조직진단 프로세스 ──
+  {source:"e2", target:"p7", type:"TRIGGERS"},
+  {source:"p7", target:"s3", type:"USES"},
+  {source:"p7", target:"d1", type:"CREATES"},
+  {source:"p7", target:"d4", type:"CREATES"},
+  {source:"d1", target:"ar1", type:"CREATES"},
+  {source:"d4", target:"ar1", type:"INPUT"},
+
+  // ── 비전 워크숍 ──
+  {source:"e3", target:"p8", type:"TRIGGERS"},
+  {source:"ar1", target:"p8", type:"INPUT"},
+  {source:"p8", target:"ar5", type:"CREATES"},
+  {source:"p8", target:"ar4", type:"CREATES"},
+
+  // ── 성과 평가 루프 ──
+  {source:"p4", target:"p9", type:"FLOW"},
+  {source:"p9", target:"d3", type:"CREATES"},
+  {source:"d3", target:"dc2", type:"INPUT"},
+
+  // ── 세대 갈등 ──
+  {source:"a5", target:"p4", type:"FLOW"},
+  {source:"a6", target:"p4", type:"FLOW"},
+  {source:"e4", target:"i3", type:"CAUSES"},
+  {source:"i3", target:"p4", type:"BLOCKS"},
+
+  // ── 역할 경계 ──
+  {source:"a3", target:"ar3", type:"CREATES"},
+  {source:"ar3", target:"dc3", type:"INPUT"},
+  {source:"i4", target:"dc3", type:"BLOCKS"},
+
+  // ── 공공미션 ──
+  {source:"ar2", target:"p3", type:"INPUT"},
+  {source:"ar2", target:"p5", type:"INPUT"},
+
+  // ── 신뢰/공정성 ──
+  {source:"i6", target:"dc1", type:"BLOCKS"},
+
+  // ── 조직기억 소실 ──
+  {source:"p4", target:"i2", type:"CAUSES"},
+  {source:"p9", target:"i2", type:"CAUSES"}
+]}
+};
+
+// ============================================================
+// 설명문
+// ============================================================
+const DESCRIPTIONS = {
+custom: {
+  title: '대한치과위생사협회 조직진단 온톨로지',
+  industry: 'Professional Association',
+  color: '#1F6BFF',
+  body: '이 3D 온톨로지 그래프는 대한치과위생사협회(37만 회원)의 조직 구조와 업무 흐름을 SB-OPM 진단 모델 기반으로 시각화한 것입니다. 7개 진단 영역(공공미션 작동력, 전문직 자율성, 선출 거버넌스 연속성, 사무국-임원 역할경계, 세대 간 기준, 조직기억 유지, 신뢰/공정성)의 분석 결과를 AXOS 표준 스키마로 구조화했습니다. 전체 진단 점수 54/100에서 가장 심각한 병목은 "조직기억 소실(39점)"과 "세대 간 기준 충돌(45점)", "거버넌스 연속성 단절(48점)"입니다. 선출직 임원 교체가 조직 전반의 연속성을 리셋하는 구조적 문제가 핵심이며, 이를 해결하기 위한 제도적 인수인계·중장기 전략 로드맵·디지털 조직기억 시스템이 3대 우선 과제입니다. Issue 노드를 클릭하면 근본 원인, 인과 체인, 영향 범위, 우선순위별 해결책을 확인할 수 있습니다.',
+  highlights: ['거버넌스 연속성 (48점)', '조직기억 소실 (39점)', '세대 간 충돌 (45점)', '전체 54/100', '6대 핵심 Issue', 'SB-OPM 진단']
+}
+};
+
+// ============================================================
+// 상태
+// ============================================================
+let graph = null;
+let rawData = null;
+let viewMode = 'cluster';
+let hiddenTypes = new Set();
+let highlightType = null;
+let issueMode = false;
+let autoRotating = false;
+
+// ============================================================
+// 범례
+// ============================================================
+function buildLegends() {
+  updateNodeLegend();
+  updateIssueCauseLegend();
+  document.getElementById('relLegend').innerHTML = Object.entries(REL_TYPES).map(([k,v]) =>
+    `<div class="rel-item"><div class="rel-line" style="background:${v.color}"></div>${k} <span style="color:#94a3b8">${v.desc}</span></div>`
+  ).join('');
+}
+
+function updateNodeLegend() {
+  const counts = {};
+  if (rawData) rawData.nodes.forEach(n => { counts[n.type] = (counts[n.type]||0) + 1; });
+  const total = rawData ? rawData.nodes.length : 0;
+  document.getElementById('nodeLegend').innerHTML = Object.entries(NODE_TYPES).map(([k,v]) => {
+    const c = counts[k] || 0;
+    return `<div class="legend-item" onclick="toggleType('${k}')" id="leg-${k}">
+      <div class="legend-dot" style="background:${v.color};box-shadow:0 0 6px ${v.color}"></div>
+      <span>${v.icon} ${k} <span style="color:#1F6BFF;font-size:9px;font-weight:700;margin-left:2px">${c}</span> <span style="color:#94a3b8;font-size:9px">${v.desc}</span></span>
+    </div>`;
+  }).join('') +
+  `<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,.06);font-size:10px;color:#64748b;font-weight:600">전체 노드: <span style="color:#1F6BFF;font-weight:700">${total}</span>개</div>`;
+}
+
+function updateIssueCauseLegend() {
+  const causeCounts = {};
+  if (rawData) rawData.nodes.filter(n => n.type === 'Issue').forEach(n => { if (n.cause) causeCounts[n.cause] = (causeCounts[n.cause]||0) + 1; });
+  document.getElementById('issueCauseLegend').innerHTML = Object.entries(ISSUE_CAUSE).map(([k,v]) => {
+    const c = causeCounts[k] || 0;
+    return `<div class="legend-item" style="padding:3px 0${c === 0 ? ';opacity:.4' : ''}">
+      <div style="width:14px;height:14px;border-radius:50%;border:2.5px solid ${v.color};flex-shrink:0;background:rgba(190,18,60,.12)"></div>
+      <span style="font-size:11px;font-weight:500">${v.icon} ${v.label} <span style="color:#be123c;font-size:9px;font-weight:700">${c > 0 ? c : ''}</span></span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// 라이브러리 동적 로드
+// ============================================================
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Failed: ' + url));
+    document.head.appendChild(s);
+  });
+}
+
+async function loadLibraries() {
+  const status = document.getElementById('loadStatus');
+  try {
+    status.textContent = 'Three.js 로딩...';
+    await loadScript('https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js');
+    status.textContent = 'SpriteText 로딩...';
+    await loadScript('https://cdn.jsdelivr.net/npm/three-spritetext@1.8.0/dist/three-spritetext.min.js');
+    status.textContent = '3D Force Graph 로딩...';
+    await loadScript('https://cdn.jsdelivr.net/npm/3d-force-graph@1.73.3/dist/3d-force-graph.min.js');
+    status.textContent = '초기화 중...';
+    return true;
+  } catch(e) {
+    status.textContent = 'CDN 1차 실패, 대체 CDN 시도...';
+    try {
+      if (!window.THREE) await loadScript('https://unpkg.com/three@0.152.2/build/three.min.js');
+      if (!window.SpriteText) await loadScript('https://unpkg.com/three-spritetext@1.8.0/dist/three-spritetext.min.js');
+      if (!window.ForceGraph3D) await loadScript('https://unpkg.com/3d-force-graph@1.73.3/dist/3d-force-graph.min.js');
+      return true;
+    } catch(e2) {
+      status.textContent = '라이브러리 로드 실패: ' + e2.message;
+      return false;
+    }
+  }
+}
+
+// ============================================================
+// 초기화
+// ============================================================
+async function init() {
+  buildLegends();
+  const ok = await loadLibraries();
+  if (!ok) return;
+
+  graph = ForceGraph3D()(document.getElementById('graph3d'))
+    .backgroundColor('#dfe3e8')
+    .showNavInfo(false)
+    .nodeRelSize(5)
+    .nodeVal(n => NODE_TYPES[n.type]?.size || 8)
+    .nodeColor(n => NODE_TYPES[n.type]?.color || '#475569')
+    .nodeOpacity(0.92)
+    .nodeLabel(n => '')
+    .nodeThreeObject(n => {
+      const group = new THREE.Group();
+      const isHighlighted = !highlightType || n.type === highlightType;
+      const dimOpacity = 0.12;
+      const geo = new THREE.SphereGeometry(NODE_TYPES[n.type]?.size * 0.6 || 5, 16, 16);
+      const mat = new THREE.MeshLambertMaterial({ color: NODE_TYPES[n.type]?.color || '#475569', transparent: true, opacity: isHighlighted ? 0.85 : dimOpacity });
+      const mesh = new THREE.Mesh(geo, mat);
+      group.add(mesh);
+      if (n.type === 'Issue') {
+        const causeInfo = ISSUE_CAUSE[n.cause] || null;
+        const ringColor = causeInfo ? causeInfo.color : '#ff4444';
+        const ringGeo = new THREE.RingGeometry(NODE_TYPES[n.type].size * 0.8, NODE_TYPES[n.type].size * 1.0, 32);
+        const ringMat = new THREE.MeshBasicMaterial({ color: ringColor, side: THREE.DoubleSide, transparent: true, opacity: isHighlighted ? 0.7 : dimOpacity });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        group.add(ring);
+        const ringGeo2 = new THREE.RingGeometry(NODE_TYPES[n.type].size * 1.05, NODE_TYPES[n.type].size * 1.12, 32);
+        const ringMat2 = new THREE.MeshBasicMaterial({ color: '#be123c', side: THREE.DoubleSide, transparent: true, opacity: isHighlighted ? 0.35 : dimOpacity * 0.5 });
+        const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+        group.add(ring2);
+      }
+      if (typeof SpriteText !== 'undefined') {
+        const sprite = new SpriteText(n.name);
+        sprite.color = isHighlighted ? '#0f172a' : 'rgba(15,23,42,0.15)';
+        sprite.textHeight = 5;
+        sprite.fontWeight = '800';
+        sprite.backgroundColor = isHighlighted ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.3)';
+        sprite.borderWidth = 0.3;
+        sprite.borderColor = isHighlighted ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.04)';
+        sprite.padding = 1.2;
+        sprite.borderRadius = 1.5;
+        sprite.position.y = -(NODE_TYPES[n.type]?.size * 0.7 || 5) - 3;
+        group.add(sprite);
+      }
+      return group;
+    })
+    .linkColor(l => {
+      if (!highlightType) return REL_TYPES[l.type]?.color || '#334155';
+      const s = typeof l.source === 'object' ? l.source : rawData?.nodes.find(n=>n.id===l.source);
+      const t = typeof l.target === 'object' ? l.target : rawData?.nodes.find(n=>n.id===l.target);
+      const connected = (s?.type === highlightType) || (t?.type === highlightType);
+      return connected ? (REL_TYPES[l.type]?.color || '#334155') : 'rgba(200,200,200,0.08)';
+    })
+    .linkOpacity(0.45)
+    .linkWidth(l => (l.type === 'BLOCKS' || l.type === 'CAUSES') ? 2.5 : 1)
+    .linkDirectionalArrowLength(3.5)
+    .linkDirectionalArrowRelPos(1)
+    .linkDirectionalParticles(l => (l.type === 'BLOCKS') ? 5 : 2)
+    .linkDirectionalParticleWidth(l => (l.type === 'BLOCKS' || l.type === 'CAUSES') ? 2.5 : 1.2)
+    .linkDirectionalParticleColor(l => REL_TYPES[l.type]?.color || '#334155')
+    .linkDirectionalParticleSpeed(0.005)
+    .onNodeClick(n => showDetail(n))
+    .onNodeHover(n => {
+      document.getElementById('graph3d').style.cursor = n ? 'pointer' : 'default';
+      const tip = document.getElementById('tooltip');
+      if (n) {
+        const nt = NODE_TYPES[n.type] || {};
+        tip.innerHTML = `<strong>${nt.icon || ''} ${n.name}</strong> <span style="opacity:.6">[${n.type}]</span>`;
+        tip.style.display = 'block';
+      } else {
+        tip.style.display = 'none';
+      }
+    })
+    .warmupTicks(80)
+    .cooldownTicks(50)
+    .d3AlphaDecay(0.04)
+    .d3VelocityDecay(0.3);
+
+  document.addEventListener('mousemove', e => {
+    const tip = document.getElementById('tooltip');
+    if (tip.style.display !== 'none') {
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top = (e.clientY + 14) + 'px';
+    }
+  });
+
+  loadSample('custom');
+  addCoordinateAxes();
+
+  setTimeout(() => {
+    document.getElementById('loadingOverlay').classList.add('fade');
+    setTimeout(() => document.getElementById('loadingOverlay').style.display = 'none', 600);
+  }, 800);
+}
+
+// ============================================================
+// 3D 좌표계 축 표시
+// ============================================================
+function addCoordinateAxes() {
+  const scene = graph.scene();
+  const L = 180;
+  const COL = { x: '#ef4444', y: '#22c55e', z: '#3b82f6' };
+  const NAMES = {
+    x: 'X: 업무 흐름 (Work Flow)',
+    y: 'Y: 조직 계층 (Org Hierarchy)',
+    z: 'Z: 데이터 깊이 (Data Depth)'
+  };
+
+  function add(obj) { axesObjects.push(obj); scene.add(obj); return obj; }
+
+  function axisLine(end, color, opacity) {
+    const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), end]);
+    return add(new THREE.Line(geo, new THREE.LineBasicMaterial({ color, transparent:true, opacity })));
+  }
+  axisLine(new THREE.Vector3(L,0,0), COL.x, 0.7);
+  axisLine(new THREE.Vector3(0,L,0), COL.y, 0.7);
+  axisLine(new THREE.Vector3(0,0,L), COL.z, 0.7);
+  axisLine(new THREE.Vector3(-L*0.5,0,0), COL.x, 0.2);
+  axisLine(new THREE.Vector3(0,-L*0.5,0), COL.y, 0.2);
+  axisLine(new THREE.Vector3(0,0,-L*0.5), COL.z, 0.2);
+
+  function arrow(pos, color, rot) {
+    const cone = new THREE.Mesh(
+      new THREE.ConeGeometry(2.5, 8, 12),
+      new THREE.MeshBasicMaterial({ color, transparent:true, opacity:0.8 })
+    );
+    cone.position.copy(pos);
+    if (rot) cone.rotation.set(rot.x||0, rot.y||0, rot.z||0);
+    add(cone);
+  }
+  arrow(new THREE.Vector3(L,0,0), COL.x, {z:-Math.PI/2});
+  arrow(new THREE.Vector3(0,L,0), COL.y, {});
+  arrow(new THREE.Vector3(0,0,L), COL.z, {x:Math.PI/2});
+
+  function label(text, pos, color, size) {
+    if (typeof SpriteText === 'undefined') return;
+    const s = new SpriteText(text);
+    s.color = color;
+    s.textHeight = size || 3.5;
+    s.fontWeight = '700';
+    s.backgroundColor = 'rgba(255,255,255,0.88)';
+    s.padding = 2;
+    s.borderRadius = 2;
+    s.borderWidth = 0.5;
+    s.borderColor = color;
+    s.position.copy(pos);
+    add(s);
+  }
+
+  label(NAMES.x, new THREE.Vector3(L+14, 0, 0), COL.x);
+  label(NAMES.y, new THREE.Vector3(0, L+14, 0), COL.y);
+  label(NAMES.z, new THREE.Vector3(0, 0, L+14), COL.z);
+  label('X', new THREE.Vector3(L*0.5, -7, 0), COL.x, 4);
+  label('Y', new THREE.Vector3(-7, L*0.5, 0), COL.y, 4);
+  label('Z', new THREE.Vector3(0, -7, L*0.5), COL.z, 4);
+
+  add(new THREE.Mesh(
+    new THREE.SphereGeometry(2, 16, 16),
+    new THREE.MeshBasicMaterial({ color:'#94a3b8', transparent:true, opacity:0.6 })
+  ));
+  label('O (Origin)', new THREE.Vector3(-14, -10, 0), '#94a3b8', 3);
+
+  for (let i = 1; i <= 4; i++) {
+    const t = (L/4)*i, k = 1.5;
+    function tick(a, b, color) {
+      const g = new THREE.BufferGeometry().setFromPoints([a, b]);
+      add(new THREE.Line(g, new THREE.LineBasicMaterial({ color, transparent:true, opacity:0.4 })));
+    }
+    tick(new THREE.Vector3(t,-k,0), new THREE.Vector3(t,k,0), COL.x);
+    tick(new THREE.Vector3(-k,t,0), new THREE.Vector3(k,t,0), COL.y);
+    tick(new THREE.Vector3(0,-k,t), new THREE.Vector3(0,k,t), COL.z);
+  }
+
+  const grid = new THREE.GridHelper(L*2, 16, '#cbd5e1', '#e2e8f0');
+  grid.material.transparent = true;
+  grid.material.opacity = 0.25;
+  grid.position.y = -L*0.5;
+  gridObject = grid;
+  scene.add(grid);
+}
+
+// ============================================================
+// 데이터 적용
+// ============================================================
+function loadSample(key) {
+  rawData = SAMPLES[key];
+  if (!rawData) return;
+  applyGraph();
+  renderDescription(key);
+}
+
+function renderDescription(key) {
+  const d = DESCRIPTIONS[key];
+  const panel = document.getElementById('descPanel');
+  const content = document.getElementById('descContent');
+  if (!d) { panel.classList.add('hidden'); return; }
+
+  const data = SAMPLES[key];
+  const nCount = data.nodes.length;
+  const eCount = data.edges.length;
+  const typeCount = {};
+  data.nodes.forEach(n => { typeCount[n.type] = (typeCount[n.type]||0) + 1; });
+  const issueCount = typeCount['Issue'] || 0;
+
+  content.innerHTML = `
+    <h4>
+      <span class="tag" style="background:${d.color}22;color:${d.color};border:1px solid ${d.color}44">${d.industry}</span>
+      <span style="color:#0f172a">${d.title}</span>
+    </h4>
+    <p>${d.body}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">
+      ${d.highlights.map(h => `<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:${d.color}15;color:${d.color};border:1px solid ${d.color}33">${h}</span>`).join('')}
+    </div>
+    <div class="meta">
+      <span style="color:#1F6BFF">&#x1F4CA; ${nCount} 노드</span>
+      <span style="color:#1F6BFF">&#x1F517; ${eCount} 관계</span>
+      <span style="color:#f87171">&#x26A0; ${issueCount} 병목</span>
+      <span style="color:#94a3b8">&#x1F3E2; ${Object.keys(typeCount).length} 타입</span>
+    </div>
+  `;
+  panel.classList.remove('hidden');
+}
+
+function toggleDesc() {
+  document.getElementById('descPanel').classList.toggle('hidden');
+}
+
+function applyGraph() {
+  if (!rawData || !graph) return;
+  let nodes, nodeIds, links;
+
+  if (issueMode) {
+    const issueIds = new Set(rawData.nodes.filter(n => n.type === 'Issue').map(n => n.id));
+    const connectedIds = new Set(issueIds);
+    rawData.edges.forEach(e => {
+      if (issueIds.has(e.source) || issueIds.has(e.target)) {
+        connectedIds.add(e.source);
+        connectedIds.add(e.target);
+      }
+    });
+    nodes = rawData.nodes.filter(n => connectedIds.has(n.id) && !hiddenTypes.has(n.type));
+    nodeIds = new Set(nodes.map(n => n.id));
+    links = rawData.edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target)).map(e => ({...e}));
+  } else {
+    nodes = rawData.nodes.filter(n => !hiddenTypes.has(n.type));
+    nodeIds = new Set(nodes.map(n => n.id));
+    links = rawData.edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target)).map(e => ({...e}));
+  }
+
+  if (viewMode === 'layer') {
+    nodes.forEach(n => { n.fy = (NODE_TYPES[n.type]?.z || 0) * -60; });
+  } else if (viewMode === 'timeline') {
+    const order = topoSort(nodes, rawData.edges);
+    nodes.forEach(n => { n.fx = order.indexOf(n.id) / Math.max(order.length-1,1) * 300 - 150; });
+  } else {
+    nodes.forEach(n => { delete n.fx; delete n.fy; delete n.fz; });
+  }
+
+  graph.graphData({ nodes, links });
+  document.getElementById('statNodes').textContent = nodes.length;
+  document.getElementById('statEdges').textContent = links.length;
+  document.getElementById('statView').textContent = issueMode ? 'Issue 분석' : (viewMode === 'cluster' ? '군집' : viewMode === 'layer' ? '레이어' : '타임라인');
+  updateNodeLegend();
+  updateIssueCauseLegend();
+
+  if (viewMode !== 'cluster') {
+    setTimeout(() => {
+      graph.graphData().nodes.forEach(n => { delete n.fx; delete n.fy; delete n.fz; });
+      graph.d3ReheatSimulation();
+    }, 4000);
+  }
+}
+
+function topoSort(nodes, edges) {
+  const visited = new Set(), order = [];
+  function dfs(id) {
+    if (visited.has(id)) return;
+    visited.add(id);
+    edges.filter(e => e.target === id).forEach(e => dfs(e.source));
+    order.push(id);
+  }
+  nodes.forEach(n => dfs(n.id));
+  return order;
+}
+
+// ============================================================
+// 인터랙션
+// ============================================================
+function toggleType(type) {
+  if (highlightType === type) {
+    highlightType = null;
+  } else {
+    highlightType = type;
+  }
+  Object.keys(NODE_TYPES).forEach(k => {
+    const el = document.getElementById('leg-' + k);
+    if (!el) return;
+    if (!highlightType || k === highlightType) {
+      el.style.opacity = '1';
+      el.style.fontWeight = k === highlightType ? '700' : '';
+    } else {
+      el.style.opacity = '0.4';
+      el.style.fontWeight = '';
+    }
+  });
+  graph.nodeThreeObject(graph.nodeThreeObject());
+  graph.linkColor(graph.linkColor());
+}
+
+function setViewMode(mode, btn) {
+  viewMode = mode;
+  document.getElementById('statView').textContent = mode === 'cluster' ? '군집' : mode === 'layer' ? '레이어' : '타임라인';
+  document.querySelectorAll('#viewToggle button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (rawData) {
+    rawData.nodes.forEach(n => { delete n.fx; delete n.fy; delete n.fz; });
+    applyGraph();
+  }
+}
+
+let axesVisible = true;
+let gridVisible = true;
+let axesObjects = [];
+let gridObject = null;
+
+function toggleAxes() {
+  axesVisible = !axesVisible;
+  document.getElementById('btnAxes').innerHTML = axesVisible ? '&#x1F4D0; 축 ON' : '&#x1F4D0; 축 OFF';
+  axesObjects.forEach(obj => { obj.visible = axesVisible; });
+}
+
+function toggleGrid() {
+  gridVisible = !gridVisible;
+  document.getElementById('btnGrid').innerHTML = gridVisible ? '&#x1F4CF; 그리드 ON' : '&#x1F4CF; 그리드 OFF';
+  if (gridObject) gridObject.visible = gridVisible;
+}
+
+function resetCamera() { if (graph) graph.cameraPosition({ x:0, y:0, z:350 }, { x:0, y:0, z:0 }, 1000); }
+function toggleIssueMode() {
+  issueMode = !issueMode;
+  const btn = document.getElementById('btnIssueMode');
+  if (issueMode) {
+    btn.innerHTML = '\u26A0 전체 보기로 복귀';
+    btn.style.background = 'rgba(190,18,60,.12)';
+    btn.style.color = '#be123c';
+    btn.style.borderColor = 'rgba(190,18,60,.3)';
+    openIssuePanel(null);
+  } else {
+    btn.innerHTML = '\u26A0 Issue 분석 모드';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    closeIssuePanel();
+  }
+  applyGraph();
+}
+
+function toggleAutoRotate() {
+  if (!graph) return;
+  autoRotating = !autoRotating;
+  const ctrl = graph.controls();
+  ctrl.autoRotate = autoRotating;
+  ctrl.autoRotateSpeed = 1.5;
+}
+
+function exportPNG() {
+  if (!graph) return;
+  const canvas = graph.renderer().domElement;
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'kdha-ontology-3d-' + new Date().toISOString().slice(0,10) + '.png';
+  a.click();
+}
+
+// ============================================================
+// 상세 패널
+// ============================================================
+function showDetail(node) {
+  const nt = NODE_TYPES[node.type] || {};
+  const gd = graph.graphData();
+  const edges = gd.links.filter(l => {
+    const sid = typeof l.source === 'object' ? l.source.id : l.source;
+    const tid = typeof l.target === 'object' ? l.target.id : l.target;
+    return sid === node.id || tid === node.id;
+  });
+
+  let html = `
+    <div class="detail-type-badge" style="background:${nt.color||'#475569'}22;color:${nt.color||'#0f172a'};border:1px solid ${nt.color||'#475569'}44">
+      ${nt.icon||''} ${node.type}
+    </div>
+    <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin-bottom:4px">${node.name}</h2>
+    <div class="detail-section"><h4>설명</h4><p>${node.desc||'없음'}</p></div>
+    <div class="detail-section"><h4>연결된 관계 (${edges.length})</h4>
+    ${edges.map(l => {
+      const sid = typeof l.source === 'object' ? l.source.id : l.source;
+      const tid = typeof l.target === 'object' ? l.target.id : l.target;
+      const isFrom = sid === node.id;
+      const otherId = isFrom ? tid : sid;
+      const other = gd.nodes.find(n => n.id === otherId);
+      const dir = isFrom ? '&rarr;' : '&larr;';
+      const rt = REL_TYPES[l.type] || {};
+      return `<div class="detail-rel">${dir} <strong style="color:${NODE_TYPES[other?.type]?.color||'#0f172a'}">${other?.name||'?'}</strong> <span style="color:${rt.color||'#64748b'};font-weight:600;margin-left:4px">[${l.type}]</span></div>`;
+    }).join('')}
+    </div>`;
+
+  if (node.type === 'Issue') {
+    const ci = ISSUE_CAUSE[node.cause] || null;
+    const analysis = ISSUE_ANALYSIS[node.ak] || null;
+
+    html += `<div class="detail-section" style="background:rgba(190,18,60,.05);padding:14px;border-radius:10px;border:1px solid rgba(190,18,60,.12)">
+      <h4 style="color:#be123c;font-size:12px;margin-bottom:8px">\u26A0 Issue 분석</h4>
+      ${ci ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="width:18px;height:18px;border-radius:50%;border:2.5px solid ${ci.color};background:rgba(190,18,60,.1);flex-shrink:0"></div>
+        <span style="font-size:13px;font-weight:700;color:${ci.color}">${ci.icon} ${ci.label}</span>
+        <span style="font-size:10px;color:#64748b;background:rgba(0,0,0,.04);padding:2px 8px;border-radius:4px">${node.cause}</span>
+      </div>` : ''}`;
+
+    if (analysis) {
+      html += `<div style="margin-bottom:12px">
+        <div style="font-size:9px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">근본 원인</div>
+        <p style="font-size:12px;color:#1e293b;line-height:1.6">${analysis.rootCause}</p>
+      </div>`;
+      html += `<div style="margin-bottom:12px;background:rgba(31,107,255,.04);padding:10px;border-radius:6px;border:1px solid rgba(31,107,255,.1)">
+        <div style="font-size:9px;font-weight:600;color:#1F6BFF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">인과 체인</div>
+        <p style="font-size:11px;color:#334155;line-height:1.6">${analysis.chainDesc}</p>
+      </div>`;
+      html += `<div style="margin-bottom:12px">
+        <div style="font-size:9px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">영향 범위</div>
+        <p style="font-size:11px;color:#334155;line-height:1.6">${analysis.affectedProcess}</p>
+      </div>`;
+      html += `<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(190,18,60,.1)">
+        <div style="font-size:9px;font-weight:600;color:#be123c;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">\u{1F4A1} 권장 해결책</div>
+        ${analysis.solutions.map(s => {
+          const pColor = s.priority === 1 ? '#16a34a' : s.priority === 2 ? '#1F6BFF' : '#64748b';
+          const pBg = s.priority === 1 ? 'rgba(22,163,74,.08)' : s.priority === 2 ? 'rgba(31,107,255,.06)' : 'rgba(0,0,0,.03)';
+          const pBorder = s.priority === 1 ? 'rgba(22,163,74,.15)' : s.priority === 2 ? 'rgba(31,107,255,.12)' : 'rgba(0,0,0,.06)';
+          const pLabel = s.priority === 1 ? '최우선' : s.priority === 2 ? '권장' : '보완';
+          return `<div style="background:${pBg};border:1px solid ${pBorder};border-radius:8px;padding:10px;margin-bottom:6px">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+              <span style="font-size:9px;font-weight:700;color:#fff;background:${pColor};padding:1px 6px;border-radius:3px">${pLabel}</span>
+              <span style="font-size:12px;font-weight:700;color:#1e293b">${s.title}</span>
+            </div>
+            <p style="font-size:11px;color:#475569;line-height:1.6;margin:0">${s.desc}</p>
+          </div>`;
+        }).join('')}
+      </div>`;
+    } else {
+      html += `<p style="font-size:12px;color:#64748b">상세 분석 데이터가 없습니다.</p>`;
+    }
+    html += `</div>`;
+  }
+
+  document.getElementById('detailContent').innerHTML = html;
+
+  if (node.type === 'Issue') {
+    document.getElementById('detailPanel').classList.remove('open');
+    openIssuePanel(node);
+  } else {
+    document.getElementById('detailPanel').classList.add('open');
+    closeIssuePanel();
+  }
+
+  const { x, y, z } = node;
+  graph.cameraPosition({ x: x+60, y: y+30, z: z+60 }, { x, y, z }, 800);
+}
+
+function closeDetail() { document.getElementById('detailPanel').classList.remove('open'); }
+
+// ============================================================
+// Issue 분석 전용 패널
+// ============================================================
+function openIssuePanel(selectedNode) {
+  const panel = document.getElementById('issuePanel');
+  const listArea = document.getElementById('issueListArea');
+  const detailArea = document.getElementById('issueDetailArea');
+
+  const issues = rawData ? rawData.nodes.filter(n => n.type === 'Issue') : [];
+  if (issues.length === 0) { panel.classList.add('hidden'); return; }
+
+  listArea.innerHTML = `<div style="font-size:9px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">발견된 Issue (${issues.length}건)</div>` +
+    issues.map(iss => {
+      const ci = ISSUE_CAUSE[iss.cause] || {};
+      const isActive = selectedNode && selectedNode.id === iss.id;
+      return `<button class="issue-name-btn${isActive ? ' active' : ''}" onclick="selectIssue('${iss.id}')">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:10px;height:10px;border-radius:50%;border:2px solid ${ci.color||'#be123c'};background:rgba(190,18,60,.12);flex-shrink:0"></div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:#1e293b">${iss.name}</div>
+            <div style="font-size:10px;color:#64748b">${iss.desc} &mdash; ${ci.icon||''} ${ci.label||'미분류'}</div>
+          </div>
+        </div>
+      </button>`;
+    }).join('');
+
+  if (selectedNode && selectedNode.type === 'Issue') {
+    renderIssueDetail(selectedNode, detailArea);
+  } else {
+    detailArea.innerHTML = `<div style="text-align:center;padding:20px;color:#94a3b8;font-size:12px">Issue를 클릭하면 상세 분석이 표시됩니다</div>`;
+  }
+
+  panel.classList.remove('hidden');
+}
+
+function selectIssue(nodeId) {
+  const node = rawData.nodes.find(n => n.id === nodeId);
+  if (!node) return;
+  openIssuePanel(node);
+  const gd = graph.graphData();
+  const graphNode = gd.nodes.find(n => n.id === nodeId);
+  if (graphNode) {
+    const { x, y, z } = graphNode;
+    graph.cameraPosition({ x: x+60, y: y+30, z: z+60 }, { x, y, z }, 800);
+  }
+}
+
+function renderIssueDetail(node, container) {
+  const ci = ISSUE_CAUSE[node.cause] || null;
+  const analysis = ISSUE_ANALYSIS[node.ak] || null;
+
+  let html = `<div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(190,18,60,.1)">`;
+
+  if (ci) {
+    html += `<div class="issue-cause-badge" style="background:${ci.color}10;color:${ci.color};border:1px solid ${ci.color}30">
+      <div style="width:14px;height:14px;border-radius:50%;border:2.5px solid ${ci.color};background:rgba(190,18,60,.1);flex-shrink:0"></div>
+      ${ci.icon} ${ci.label}
+    </div>`;
+  }
+
+  if (analysis) {
+    html += `<div class="issue-section">
+      <div class="issue-section-title" style="color:#be123c">근본 원인</div>
+      <p>${analysis.rootCause}</p>
+    </div>`;
+    html += `<div class="issue-section" style="background:rgba(31,107,255,.03);padding:10px;border-radius:8px;border:1px solid rgba(31,107,255,.08)">
+      <div class="issue-section-title" style="color:#1F6BFF">인과 체인</div>
+      <p style="font-size:11px">${analysis.chainDesc}</p>
+    </div>`;
+    html += `<div class="issue-section">
+      <div class="issue-section-title" style="color:#64748b">영향 범위</div>
+      <p style="font-size:11px">${analysis.affectedProcess}</p>
+    </div>`;
+    html += `<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,.06)">
+      <div class="issue-section-title" style="color:#16a34a;margin-bottom:8px">\u{1F4A1} 권장 해결책</div>
+      ${analysis.solutions.map(s => {
+        const pColor = s.priority === 1 ? '#16a34a' : s.priority === 2 ? '#1F6BFF' : '#64748b';
+        const pBg = s.priority === 1 ? 'rgba(22,163,74,.06)' : s.priority === 2 ? 'rgba(31,107,255,.04)' : 'rgba(0,0,0,.02)';
+        const pBorder = s.priority === 1 ? 'rgba(22,163,74,.12)' : s.priority === 2 ? 'rgba(31,107,255,.1)' : 'rgba(0,0,0,.06)';
+        const pLabel = s.priority === 1 ? '최우선' : s.priority === 2 ? '권장' : '보완';
+        return `<div class="issue-solution" style="background:${pBg};border:1px solid ${pBorder}">
+          <div class="issue-solution-head">
+            <span class="issue-solution-badge" style="background:${pColor}">${pLabel}</span>
+            <span class="issue-solution-title">${s.title}</span>
+          </div>
+          <p>${s.desc}</p>
+        </div>`;
+      }).join('')}
+    </div>`;
+  } else {
+    html += `<p style="font-size:12px;color:#94a3b8;padding:12px 0">상세 분석 데이터가 없습니다.</p>`;
+  }
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function closeIssuePanel() {
+  document.getElementById('issuePanel').classList.add('hidden');
+}
+
+// ============================================================
+// 데이터 편집
+// ============================================================
+function openDataModal() {
+  document.getElementById('dataInput').value = JSON.stringify(rawData || SAMPLES.custom, null, 2);
+  document.getElementById('dataModal').classList.remove('hidden');
+}
+function closeDataModal() { document.getElementById('dataModal').classList.add('hidden'); }
+function applyData() {
+  try {
+    rawData = JSON.parse(document.getElementById('dataInput').value);
+    if (!rawData.nodes || !rawData.edges) throw new Error('nodes/edges 필요');
+    applyGraph();
+    closeDataModal();
+  } catch(e) { alert('JSON 오류: ' + e.message); }
+}
+
+// ============================================================
+// 시작
+// ============================================================
+init();
+window.addEventListener('resize', () => { if (graph) graph.width(window.innerWidth).height(window.innerHeight); });
+</script>
+</body>
+</html>
