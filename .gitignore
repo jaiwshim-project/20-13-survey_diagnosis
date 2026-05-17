@@ -1,0 +1,8 @@
+*.pptx
+*.pdf
+*.mp4
+*.mov
+*.zip
+node_modules/
+.env
+.env.local

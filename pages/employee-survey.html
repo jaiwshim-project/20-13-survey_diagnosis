@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>직원 조직진단 | 대한치과위생사협회</title>
+    <meta name="description" content="대한치과위생사협회 직원(사무처) 조직진단 설문">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="../index.html" class="logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="logo-img"><span>조직진단 AI플랫폼</span></a>
+            <ul class="nav-links">
+                <li class="has-dropdown"><a href="kdha.html">대한치과위생사협회</a><ul class="dropdown-menu"><li><a href="survey.html">사전 설문</a></li></ul></li>
+                <li class="has-dropdown">
+                    <a href="../index.html">진단</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="../index.html">대한치과위생사협회</a></li>
+                        <li><a href="../home.html">에스비컨설팅</a></li>
+                    </ul>
+                </li>
+                <li><a href="diagnosis.html">진단시스템</a></li>
+                <li><a href="areas.html">진단영역</a></li>
+                <li class="has-dropdown">
+                    <a href="roadmap.html">실행로드맵</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="roadmap.html">일반 로드맵</a></li>
+                        <li><a href="kdha-roadmap.html">협회 로드맵</a></li>
+                        <li><a href="workshop.html">워크숍 안내</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="outcomes.html">산출물</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="report.html">진단 결과 리포트</a></li>
+                        <li><a href="admin-dashboard.html">📊 관리자 대시보드</a></li>
+                        <li><a href="main-survey-analysis.html">📊 본진단 분석</a></li>
+					<li><a href="ontology-3d.html">🔬 3D 온톨로지</a></li>
+                    </ul>
+                </li>
+                <li><a href="contact.html">문의하기</a></li>
+            </ul>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Survey Section -->
+    <section class="survey-section">
+        <div class="container">
+            <div class="form-header">
+                <h1>👩‍💼 직원(사무처) 조직진단</h1>
+                <p>협회의 실행·병목·조직문화에 관한 진단 설문입니다.<br>
+                완전히 익명으로 처리되며 솔직한 응답을 부탁드립니다.</p>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text"><span id="progressPercent">0</span>% 진행됨</p>
+                </div>
+            </div>
+
+            <form id="surveyForm" class="survey-form">
+                <!-- Section I: 미션·방향성·프로세스 효율성 -->
+                <fieldset class="section">
+                    <legend>Ⅰ. 미션·방향성·프로세스 효율성</legend>
+                    <p class="section-desc">📌 사전진단 이슈: 미션-실행 괴리, 비효율 프로세스 | 협회의 목적과 실제 업무 사이의 일관성, 업무 프로세스의 효율성을 파악합니다.</p>
+
+                    <div class="question-group">
+                        <label class="question-label">1. 협회가 추구하는 미션(전문직 자율성과 공공성)을 업무 수행 시에 얼마나 체감하고 있습니까? 구체적인 사례를 들어주십시오.</label>
+                        <textarea name="q1" class="textarea-input" rows="4" placeholder="미션이 실제 업무에 반영되는 정도"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">2. 업무 지시나 우선순위가 자주 바뀌었던 경험이 있다면, 그 영향은 무엇이었습니까?</label>
+                        <textarea name="q2" class="textarea-input" rows="4" placeholder="방향성 불명확으로 인한 혼란"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">3. 협회에서 "좋은 일"이라는 기준은 무엇이며, 그 기준이 명확하게 전달되고 있습니까?</label>
+                        <textarea name="q3" class="textarea-input" rows="4" placeholder="성과 평가 기준의 명확성"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">4. 협회의 장기적인 전략·계획보다 긴급한 이슈 대응이 우선되는 경우는 얼마나 자주 발생하며, 이것이 업무 효율에 미치는 영향은 무엇입니까?</label>
+                        <textarea name="q4" class="textarea-input" rows="4" placeholder="전략 vs 단기 대응의 우선순위 현황"></textarea>
+                    </div>
+
+                    <div class="question-group scale-group">
+                        <label class="question-label">5. (5점 척도) 협회의 방향성과 우선순위는 일관되게 유지되고 있다.</label>
+                        <div class="scale-options">
+                            <label><input type="radio" name="q5" value="1"> 1 (전혀 동의 안 함)</label>
+                            <label><input type="radio" name="q5" value="2"> 2</label>
+                            <label><input type="radio" name="q5" value="3"> 3 (중립)</label>
+                            <label><input type="radio" name="q5" value="4"> 4</label>
+                            <label><input type="radio" name="q5" value="5"> 5 (매우 동의)</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section II: 의사결정 병목·속도 -->
+                <fieldset class="section">
+                    <legend>Ⅱ. 의사결정 병목·속도</legend>
+                    <p class="section-desc">📌 사전진단 이슈: 의사결정 병목 | 의사결정 지연의 구조적 원인과 개선 가능성을 파악합니다.</p>
+
+                    <div class="question-group">
+                        <label class="question-label">6. 최근 가장 답답했던 의사결정 사례는 무엇이며, 그 과정에서 가장 큰 문제점은 무엇이었습니까?</label>
+                        <textarea name="q6" class="textarea-input" rows="4" placeholder="지연·병목의 구체적 사례"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">7. 업무 승인·결재에 몇 단계를 거쳐야 한다고 생각하십니까? 그것이 적절하다고 느끼십니까?</label>
+                        <textarea name="q7" class="textarea-input" rows="4" placeholder="결재 단계의 수와 적절성 평가"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">8. 책임자가 불명확해서 업무가 정체되거나 중복되었던 경험이 있다면 설명해 주십시오.</label>
+                        <textarea name="q8" class="textarea-input" rows="4" placeholder="책임 불명확으로 인한 문제"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">9. 반대로, 의사결정이 빠르고 효과적으로 이루어졌던 사례는 무엇이며, 그 성공 요인은 무엇이었습니까?</label>
+                        <textarea name="q9" class="textarea-input" rows="4" placeholder="성공적 의사결정의 조건"></textarea>
+                    </div>
+
+                    <div class="question-group scale-group">
+                        <label class="question-label">10. (5점 척도) 현재 의사결정 구조는 필요한 속도와 품질의 균형을 이루고 있다.</label>
+                        <div class="scale-options">
+                            <label><input type="radio" name="q10" value="1"> 1 (전혀 동의 안 함)</label>
+                            <label><input type="radio" name="q10" value="2"> 2</label>
+                            <label><input type="radio" name="q10" value="3"> 3 (중립)</label>
+                            <label><input type="radio" name="q10" value="4"> 4</label>
+                            <label><input type="radio" name="q10" value="5"> 5 (매우 동의)</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section III: 역할경계·자율성·위임 -->
+                <fieldset class="section">
+                    <legend>Ⅲ. 역할경계·자율성·위임</legend>
+                    <p class="section-desc">📌 사전진단 이슈: 역할경계 모호 | 회장단과 사무처 간, 부서 간 역할의 명확성과 자율성을 파악합니다.</p>
+
+                    <div class="question-group">
+                        <label class="question-label">11. 회장단(회장/임원)과 사무처 간의 역할과 권한 경계가 명확하다고 느끼십니까? 모호한 부분이 있다면 무엇입니까?</label>
+                        <textarea name="q11" class="textarea-input" rows="4" placeholder="역할경계의 명확성 평가"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">12. 이미 진행 중인 실무 판단이 상위에서 번복되거나 다시 결정되는 경험이 있다면, 그것이 미친 영향은 무엇입니까?</label>
+                        <textarea name="q12" class="textarea-input" rows="4" placeholder="판단 번복으로 인한 혼란과 비효율"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">13. 책임이 주어졌을 때 그에 필요한 권한(예산, 의사결정, 자원 배분)을 충분히 가지고 있다고 느끼십니까? 부족한 부분은 무엇입니까?</label>
+                        <textarea name="q13" class="textarea-input" rows="4" placeholder="책임과 권한의 균형 평가"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">14. 부서 간 또는 직급 간 역할이 겹치거나 불분명해서 협업이 어려웠던 경험이 있다면, 그것을 개선할 방법은 무엇이라고 생각하십니까?</label>
+                        <textarea name="q14" class="textarea-input" rows="4" placeholder="역할 명확화를 위한 개선안"></textarea>
+                    </div>
+
+                    <div class="question-group scale-group">
+                        <label class="question-label">15. (5점 척도) 직원으로서 할당된 업무에 대한 자율성과 판단권이 충분하다.</label>
+                        <div class="scale-options">
+                            <label><input type="radio" name="q15" value="1"> 1 (전혀 동의 안 함)</label>
+                            <label><input type="radio" name="q15" value="2"> 2</label>
+                            <label><input type="radio" name="q15" value="3"> 3 (중립)</label>
+                            <label><input type="radio" name="q15" value="4"> 4</label>
+                            <label><input type="radio" name="q15" value="5"> 5 (매우 동의)</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section IV: 정보·기록·연속성 -->
+                <fieldset class="section">
+                    <legend>Ⅳ. 정보·기록·연속성</legend>
+                    <p class="section-desc">📌 사전진단 이슈: 정보 단절, 조직기억 소실, 거버넌스 연속성 | 정보 공유, 기록 관리, 리더십 교체 시의 연속성을 파악합니다.</p>
+
+                    <div class="question-group">
+                        <label class="question-label">16. 리더십(회장) 교체 시 사무처 직원으로서 경험했던 가장 큰 어려움은 무엇입니까?</label>
+                        <textarea name="q16" class="textarea-input" rows="4" placeholder="리더십 변화로 인한 영향과 혼란"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">17. 리더십 교체 후 진행 중이던 정책이나 사업이 중단되거나 크게 변경된 구체적인 사례를 설명해 주십시오.</label>
+                        <textarea name="q17" class="textarea-input" rows="4" placeholder="정책 단절의 구체적 사례와 그 영향"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">18. 신규 리더십 또는 신규 직원이 업무를 이해하기 위한 인수인계가 체계적으로 이루어지고 있습니까? 부족한 부분은 무엇입니까?</label>
+                        <textarea name="q18" class="textarea-input" rows="4" placeholder="인수인계 체계의 현황과 문제점"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">19. 과거 의사결정, 사업 진행 경과, 업무 노하우를 기록하고 공유하는 체계가 충분합니까? 기록 부족으로 어려웠던 구체적인 사례는 무엇입니까?</label>
+                        <textarea name="q19" class="textarea-input" rows="4" placeholder="조직기억 시스템의 현황과 개선 필요 부분"></textarea>
+                    </div>
+
+                    <div class="question-group scale-group">
+                        <label class="question-label">20. (5점 척도) 리더십이 바뀌어도 협회의 중요한 정책, 업무 흐름, 업무 표준은 일관되게 유지된다.</label>
+                        <div class="scale-options">
+                            <label><input type="radio" name="q20" value="1"> 1 (전혀 동의 안 함)</label>
+                            <label><input type="radio" name="q20" value="2"> 2</label>
+                            <label><input type="radio" name="q20" value="3"> 3 (중립)</label>
+                            <label><input type="radio" name="q20" value="4"> 4</label>
+                            <label><input type="radio" name="q20" value="5"> 5 (매우 동의)</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section V: 평가·세대·문화·신뢰·공정성 -->
+                <fieldset class="section">
+                    <legend>Ⅴ. 평가·세대·문화·신뢰·공정성</legend>
+                    <p class="section-desc">📌 사전진단 이슈: 평가기준 불명확, 세대 간 기준 충돌, 신뢰·공정성 체감 부족 | 조직 문화와 신뢰도를 파악합니다.</p>
+
+                    <div class="question-group">
+                        <label class="question-label">21. 협회의 리더(회장, 임원)와 직원 간, 또는 세대별로 업무 기준, 의사소통 방식, 가치관의 차이가 있다고 느끼십니까? 구체적인 사례를 들어주십시오.</label>
+                        <textarea name="q21" class="textarea-input" rows="4" placeholder="세대 간 기준 차이의 구체적 사례"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">22. 성과 평가나 인사 대우에서 명확하고 객관적인 기준이 적용되고 있다고 느끼십니까? 아니면 사람에 따라 달라진다고 느끼십니까?</label>
+                        <textarea name="q22" class="textarea-input" rows="4" placeholder="평가 기준의 공정성과 객관성 평가"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">23. 조직에서 업무 개선, 정책 변화에 대한 의견이나 제안을 자유롭게 표현할 수 있다고 느끼십니까? 그렇지 않다면 그 이유는 무엇입니까?</label>
+                        <textarea name="q23" class="textarea-input" rows="4" placeholder="의견 제시 환경의 개방성"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">24. 협회 조직 내의 신뢰 수준(회장과 직원, 직원 간, 회의에서의 약속 지킴)은 어느 정도라고 느끼십니까?</label>
+                        <textarea name="q24" class="textarea-input" rows="4" placeholder="조직 내 신뢰도의 현황"></textarea>
+                    </div>
+
+                    <div class="question-group scale-group">
+                        <label class="question-label">25. (5점 척도) 협회의 의사결정과 인사 운영은 공정하고 투명하다.</label>
+                        <div class="scale-options">
+                            <label><input type="radio" name="q25" value="1"> 1 (전혀 동의 안 함)</label>
+                            <label><input type="radio" name="q25" value="2"> 2</label>
+                            <label><input type="radio" name="q25" value="3"> 3 (중립)</label>
+                            <label><input type="radio" name="q25" value="4"> 4</label>
+                            <label><input type="radio" name="q25" value="5"> 5 (매우 동의)</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section VI: 미래비전·개선방안·민감이슈 -->
+                <fieldset class="section">
+                    <legend>Ⅵ. 미래비전·개선방안·민감이슈</legend>
+                    <p class="section-desc">📌 종합평가 | 조직의 미래 방향과 구체적 개선 전략, 그리고 진단 과정에서 반드시 다루어야 할 사항을 파악합니다.</p>
+
+                    <div class="question-group">
+                        <label class="question-label">26. 협회의 업무 기록·매뉴얼·시스템이 얼마나 체계적으로 관리되고 있으며, 신규 직원이나 필요할 때 쉽게 접근할 수 있습니까?</label>
+                        <textarea name="q26" class="textarea-input" rows="4" placeholder="기록 관리와 정보 공유 시스템의 현황"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">27. 신규 직원이 업무에 적응하는 데 걸리는 시간과 학습 곡선은 어느 정도이며, 더 빠르게 적응시킬 수 있는 방법은 무엇이라고 생각하십니까?</label>
+                        <textarea name="q27" class="textarea-input" rows="4" placeholder="신입 적응 시간과 개선 방안"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">28. 협회의 업무 프로세스에서 반복적으로 비효율이 발생하는 영역은 어디이며, 그 원인과 개선 방법은 무엇입니까?</label>
+                        <textarea name="q28" class="textarea-input" rows="4" placeholder="반복되는 비효율의 구체적 사례와 개선안"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">29. 현실적으로 실행 가능하다고 생각하는 협회 조직·문화·프로세스의 개선 방안 3가지를 제안해 주십시오. (각 방안의 우선순위, 기대 효과 포함)</label>
+                        <textarea name="q29" class="textarea-input" rows="4" placeholder="실행 가능한 구체적 개선안 3가지"></textarea>
+                    </div>
+
+                    <div class="question-group">
+                        <label class="question-label">30. 이번 조직진단 과정에서 반드시 다루어야 할 민감하거나 핵심적인 이슈가 있다면 적어주십시오. (개인정보 보호 필요한 경우 일반적으로 표기 가능)</label>
+                        <textarea name="q30" class="textarea-input" rows="4" placeholder="진단에서 특별히 강조할 사항이나 조사 방향"></textarea>
+                    </div>
+                </fieldset>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="window.location.href='main-survey.html'">돌아가기</button>
+                    <button type="submit" class="btn-submit">설문 완료</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-about">
+                <div class="footer-logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="footer-logo-img"><span>조직진단 AI플랫폼</span></div>
+                <p class="footer-desc">전문직 자율성과 공공성을 동시에 작동시키는 협회 전용 조직진단 시스템을 제공합니다.</p>
+            </div>
+            <div class="footer-links">
+                <h4>메뉴</h4>
+                <ul>
+                    <li class="has-dropdown"><a href="kdha.html">대한치과위생사협회</a><ul class="dropdown-menu"><li><a href="survey.html">사전 설문</a></li></ul></li>
+                    <li><a href="diagnosis.html">진단 시스템</a></li>
+                    <li><a href="areas.html">진단 영역</a></li>
+                    <li><a href="kdha-roadmap.html">로드맵</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>회사</h4>
+                <ul>
+                    <li><a href="about.html">회사 소개</a></li>
+                    <li><a href="contact.html">문의하기</a></li>
+                    <li><a href="../home.html">에스비컨설팅</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>연락처</h4>
+                <ul>
+                    <li>이메일: jaiwshim@gmail.com</li>
+                    <li>전화: 010-2397-5734</li>
+                    <li>홈페이지: www.sbconsulting.co.kr</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 에스비컨설팅 조직진단. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        /* Survey Section */
+        .survey-section {
+            padding: 80px 30px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .form-header h1 {
+            font-size: 28px;
+            color: #0a0e27;
+            margin: 20px 0 15px 0;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .form-header p {
+            font-size: 14px;
+            color: #2d3748;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 0 auto;
+            max-width: 500px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Survey Form */
+        .survey-form {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section {
+            border: none;
+            padding: 0 0 40px 0;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 30px;
+            padding-bottom: 0;
+        }
+
+        .section legend {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f2744;
+            padding: 0 0 20px 0;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #10b981;
+            display: block;
+        }
+
+        .section-desc {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0 0 20px 0;
+            padding: 10px 15px;
+            background: #f0fdf4;
+            border-left: 3px solid #10b981;
+            border-radius: 4px;
+            display: block;
+        }
+
+        /* Question Group */
+        .question-group {
+            margin-bottom: 30px;
+        }
+
+        .question-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0a0e27;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Text Area */
+        .textarea-input {
+            width: 100%;
+            padding: 12px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 13px;
+            color: #2d3748;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .textarea-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            background: #ffffff;
+        }
+
+        /* Scale Options */
+        .scale-group .scale-options {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 8px;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+
+        .scale-options label {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #2d3748;
+            cursor: pointer;
+            padding: 8px 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .scale-options label:hover {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.08);
+        }
+
+        .scale-options input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .scale-options input[type="radio"]:checked + span {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .scale-options label:has(input:checked) {
+            background: #ecfdf5;
+            border-color: #10b981;
+            color: #0a0e27;
+            font-weight: 600;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .btn-cancel, .btn-submit {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #2d3748;
+            border: 2px solid #cbd5e1;
+            font-weight: 700;
+        }
+
+        .btn-cancel:hover {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .survey-section {
+                padding: 50px 20px;
+            }
+
+            .form-header h1 {
+                font-size: 24px;
+            }
+
+            .survey-form {
+                padding: 25px;
+            }
+
+            .scale-group .scale-options {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-cancel, .btn-submit {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script>
+        // Progress tracking
+        function updateProgress() {
+            const form = document.getElementById('surveyForm');
+            const allFields = form.querySelectorAll('input[type="text"], textarea, input[type="radio"]:checked');
+            const totalFields = form.querySelectorAll('textarea').length + form.querySelectorAll('input[type="radio"]').length;
+            const filledFields = new Set();
+
+            // Count filled textareas
+            form.querySelectorAll('textarea').forEach(field => {
+                if (field.value.trim()) {
+                    filledFields.add(field.name);
+                }
+            });
+
+            // Count selected radios (each radio group = 1)
+            const radioGroups = new Set();
+            form.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                radioGroups.add(radio.name);
+            });
+
+            const completed = filledFields.size + radioGroups.size;
+            const total = form.querySelectorAll('textarea').length + new Set(
+                Array.from(form.querySelectorAll('input[type="radio"]')).map(r => r.name)
+            ).size;
+
+            const percentage = Math.round((completed / total) * 100);
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressPercent').textContent = percentage;
+        }
+
+        // Event listeners for progress tracking
+        document.getElementById('surveyForm').addEventListener('input', updateProgress);
+        document.getElementById('surveyForm').addEventListener('change', updateProgress);
+
+        // Form submission
+        document.getElementById('surveyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            try {
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                // 30개 질문 모두 수집
+                const formData = {};
+                for (let i = 1; i <= 30; i++) {
+                    const selector = document.querySelector(`input[name="q${i}"]`) ||
+                                   document.querySelector(`textarea[name="q${i}"]`);
+                    if (selector) {
+                        if (selector.type === 'radio' && selector.checked) {
+                            formData[`q${i}`] = parseInt(selector.value);
+                        } else if (selector.type !== 'radio') {
+                            formData[`q${i}`] = selector.value;
+                        } else if (selector.type === 'radio' && !formData[`q${i}`]) {
+                            // 라디오 버튼 그룹에서 선택된 값 찾기
+                            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                            if (selected) {
+                                formData[`q${i}`] = parseInt(selected.value);
+                            }
+                        }
+                    }
+                }
+
+                const { error } = await supabase
+                    .from('employee_survey')
+                    .insert([formData]);
+
+                if (error) {
+                    alert('설문 저장 중 오류가 발생했습니다.\n' + error.message);
+                    return;
+                }
+
+                alert('직원 조직진단이 완료되었습니다.\n귀중한 응답 감사합니다.');
+                window.location.href = 'main-survey.html';
+            } catch (err) {
+                alert('오류 발생: ' + err.message);
+            }
+        });
+
+        // Initial progress
+        updateProgress();
+    </script>
+</body>
+</html>
