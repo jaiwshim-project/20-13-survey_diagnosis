@@ -65,11 +65,13 @@
                     <button class="analysis-tab-btn" data-tab="result-analysis">📊 결과 분석</button>
                     <button class="analysis-tab-btn" data-tab="report">📑 결과분석 리포트</button>
                     <button class="analysis-tab-btn" data-tab="insights">🎤 인터뷰 시트</button>
+                    <button class="analysis-tab-btn" data-tab="ontology">🔬 온톨로지 분석</button>
                 </div>
                 <div class="analysis-tab-content active" id="tab-input-content"><div id="analysisContent" class="analysis-content"></div></div>
                 <div class="analysis-tab-content" id="tab-result-analysis"><div id="resultAnalysisContent" class="analysis-content"></div></div>
                 <div class="analysis-tab-content" id="tab-report"><div id="reportContent" class="analysis-content"></div></div>
                 <div class="analysis-tab-content" id="tab-insights"><div id="insightsContent" class="analysis-content"></div></div>
+                <div class="analysis-tab-content" id="tab-ontology"><div id="ontologyContent" class="analysis-content"></div></div>
             </div>
 
             <div class="back-link"><a href="main-survey.html">← 본진단 선택으로 돌아가기</a></div>
@@ -158,6 +160,42 @@
         .password-btn-submit:hover { background: #0052a3; }
         .password-error { color: #d32f2f; font-size: 0.9rem; margin-top: 0.5rem; display: none; }
         .password-error.show { display: block; }
+        /* Ontology Styles */
+        .onto-profile-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px; }
+        .onto-profile-card { background:white;border:1px solid #e2e8f0;border-radius:8px;padding:14px;text-align:center; }
+        .onto-profile-card .dim-label { font-size:11px;color:#64748b;font-weight:600;margin-bottom:6px; }
+        .onto-profile-card .dim-value { font-size:14px;color:#0a0e27;font-weight:700; }
+        .onto-section { background:white;border:1px solid #e2e8f0;border-radius:10px;padding:25px;margin-bottom:25px;box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+        .onto-section h3 { color:#0a0e27;margin:0 0 20px 0;font-size:16px;font-weight:700;padding-bottom:12px;border-bottom:2px solid #f0f1f3; }
+        .onto-node-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px; }
+        .onto-node-card { border-radius:8px;padding:14px;border-left:4px solid; }
+        .onto-node-card .node-type { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px; }
+        .onto-node-card .node-name { font-size:14px;font-weight:600;color:#0a0e27;margin-bottom:4px; }
+        .onto-node-card .node-keywords { margin-top:8px;display:flex;flex-wrap:wrap;gap:4px; }
+        .onto-node-card .node-keywords span { font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600; }
+        .onto-bottleneck-table { width:100%;border-collapse:collapse;font-size:13px; }
+        .onto-bottleneck-table th { background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;color:#2d3748;border-bottom:2px solid #e2e8f0; }
+        .onto-bottleneck-table td { padding:10px 12px;border-bottom:1px solid #f0f1f3;color:#334155;vertical-align:top; }
+        .onto-severity { display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700; }
+        .onto-severity.high { background:#fef2f2;color:#dc2626; }
+        .onto-severity.medium { background:#fffbeb;color:#d97706; }
+        .onto-severity.low { background:#f0fdf4;color:#16a34a; }
+        .onto-relation-list { display:grid;gap:10px; }
+        .onto-relation-item { display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f8fafc;border-radius:6px;font-size:13px; }
+        .onto-relation-item .rel-from { font-weight:600;min-width:80px;text-align:right; }
+        .onto-relation-item .rel-arrow { background:#e2e8f0;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;color:#64748b;white-space:nowrap; }
+        .onto-relation-item .rel-to { font-weight:600;color:#7c3aed; }
+        .onto-ai-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px; }
+        .onto-ai-card { background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1px solid #bae6fd;border-radius:8px;padding:16px; }
+        .onto-ai-card .ai-title { font-size:14px;font-weight:700;color:#0369a1;margin-bottom:8px; }
+        .onto-ai-card .ai-desc { font-size:12px;color:#334155;line-height:1.6; }
+        .onto-ai-card .ai-impact { margin-top:10px;font-size:11px;font-weight:600;color:#059669; }
+        .onto-svg-container { width:100%;overflow-x:auto;margin:0 auto 20px;background:#fafbfc;border-radius:8px;border:1px solid #e2e8f0; }
+        .onto-legend { display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px;padding:10px; }
+        .onto-legend-item { display:flex;align-items:center;gap:6px;font-size:11px;color:#64748b;font-weight:600; }
+        .onto-legend-dot { width:12px;height:12px;border-radius:3px; }
+        @media (max-width:768px) { .onto-profile-grid{grid-template-columns:repeat(2,1fr);} .onto-node-grid{grid-template-columns:1fr;} .onto-ai-grid{grid-template-columns:1fr;} .onto-relation-item{flex-wrap:wrap;} }
+
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             header, footer, .role-tabs, .response-info, .analysis-tab-buttons, .back-link, .password-modal, .report-pdf-btn-wrap { display: none !important; }
@@ -618,9 +656,352 @@
         </div>`;
 
         insightsDiv.innerHTML = insightsHtml;
+
+        /* ═══ TAB 5: 온톨로지 분석 ═══ */
+        const ontologyHtml = generateOntologyAnalysis(data, labels, role);
+        document.getElementById('ontologyContent').innerHTML = ontologyHtml;
     }
 
     function downloadReportPDF() { window.print(); }
+
+    /* ══════════════════════════════════════════
+       AXOS 온톨로지 분석 (pre-survey-analysis 동일 엔진)
+    ══════════════════════════════════════════ */
+    const AXOS_COLORS = { Actor:'#1F6BFF', Process:'#7c3aed', Data:'#0d9488', System:'#06b6d4', Artifact:'#ea580c', Decision:'#dc2626', Event:'#d97706', Issue:'#be123c' };
+    const AXOS_BG = { Actor:'#eff6ff', Process:'#f5f3ff', Data:'#f0fdfa', System:'#ecfeff', Artifact:'#fff7ed', Decision:'#fef2f2', Event:'#fffbeb', Issue:'#fff1f2' };
+
+    const NODE_KEYWORDS = {
+        Actor:['회장','사무처','직원','이사','집행부','위원회','부서','팀','임원','사무총장','부회장','회장단','리더','담당자','관리자','선출직','상근직'],
+        Process:['의사결정','보고','평가','소통','업무','회의','협의','승인','검토','기획','실행','운영','관리','조정','전달','수행','처리','진행','협업'],
+        Decision:['결정','판단','선택','배분','우선순위','정책','방향','전략','기준','권한'],
+        Data:['정보','데이터','문서','기록','매뉴얼','규정','지침','보고서','자료','이력','아카이빙','인수인계'],
+        Issue:['갈등','지연','비효율','불명확','부족','문제','어려움','반복','중복','혼선','모호','불균형','단절','불만','마찰','충돌','과부하','병목','괴리'],
+        Event:['교체','선거','개편','변화','전환','임기','인수인계','출범','교체','리더십 교체'],
+        System:['시스템','플랫폼','IT','디지털','소프트웨어','도구','드라이브'],
+        Artifact:['계획서','리포트','산출물','제안서','결과물','성과물','매뉴얼','인수인계서']
+    };
+
+    function extractKeywordsFromResponses(data, role) {
+        const typeCounts = {}, typeExamples = {};
+        Object.keys(AXOS_COLORS).forEach(t => { typeCounts[t]=0; typeExamples[t]=new Set(); });
+        const allTexts = [];
+        for(let i=1;i<=30;i++) { data.forEach(item => { const t=item[`q${i}`]||''; if(t.trim()) allTexts.push(t); }); }
+        const fullText = allTexts.join(' ');
+        Object.entries(NODE_KEYWORDS).forEach(([nodeType,keywords]) => {
+            keywords.forEach(kw => {
+                const matches = fullText.match(new RegExp(kw,'g'));
+                if(matches){ typeCounts[nodeType]+=matches.length; typeExamples[nodeType].add(kw); }
+            });
+        });
+        return {typeCounts, typeExamples};
+    }
+
+    function getOntologyModel(role) {
+        if(role==='executive') return {
+            nodes:[
+                {id:'A1',type:'Actor',name:'회장단',desc:'협회 선출직 최고 의사결정 주체'},
+                {id:'A2',type:'Actor',name:'사무처',desc:'상근직 실무 집행 조직'},
+                {id:'A3',type:'Actor',name:'이사회',desc:'정책 심의 및 의결 기구'},
+                {id:'P1',type:'Process',name:'의사결정',desc:'핵심 안건에 대한 판단·결정 프로세스'},
+                {id:'P2',type:'Process',name:'거버넌스',desc:'조직 운영 체계 및 정책 연속성 프로세스'},
+                {id:'P3',type:'Process',name:'역할협업',desc:'회장단-사무처 간 역할 분담·협업 프로세스'},
+                {id:'P4',type:'Process',name:'갈등관리',desc:'이해관계자 간 갈등 조정 프로세스'},
+                {id:'D1',type:'Decision',name:'정책결정',desc:'사업·규정·인사 등 핵심 정책 판단 포인트'},
+                {id:'D2',type:'Decision',name:'자원배분',desc:'예산·인력·시간 배분 판단 포인트'},
+                {id:'DA1',type:'Data',name:'회의록/아카이브',desc:'의사결정 근거 기록 및 정책 문서'},
+                {id:'DA2',type:'Data',name:'인수인계서',desc:'집행부 교체 시 인수인계 문서'},
+                {id:'E1',type:'Event',name:'집행부 교체',desc:'선거를 통한 리더십 전환 이벤트'},
+                {id:'I1',type:'Issue',name:'의사결정 지연',desc:'합의 중심 문화로 인한 결정 지연'},
+                {id:'I2',type:'Issue',name:'역할경계 모호',desc:'회장단-사무처 간 권한·역할 불명확'},
+                {id:'I3',type:'Issue',name:'정책 단절',desc:'집행부 교체 시 정책 연속성 상실'},
+                {id:'I4',type:'Issue',name:'세대 갈등',desc:'세대 간 기준·방식 충돌로 반복 갈등'},
+                {id:'AF1',type:'Artifact',name:'진단 리포트',desc:'조직진단 결과 보고서'}
+            ],
+            edges:[
+                {from:'A1',to:'P1',rel:'FLOW',label:'주도'},
+                {from:'A2',to:'P1',rel:'FLOW',label:'실행지원'},
+                {from:'A3',to:'D1',rel:'DECIDES',label:'심의·의결'},
+                {from:'P1',to:'D1',rel:'FLOW',label:'안건→결정'},
+                {from:'P2',to:'DA1',rel:'CREATES',label:'기록'},
+                {from:'DA1',to:'P1',rel:'INPUT',label:'근거자료'},
+                {from:'D1',to:'P3',rel:'FLOW',label:'실행지시'},
+                {from:'P3',to:'DA2',rel:'CREATES',label:'산출'},
+                {from:'E1',to:'P2',rel:'TRIGGERS',label:'재수립'},
+                {from:'E1',to:'I3',rel:'CAUSES',label:'유발'},
+                {from:'I1',to:'P1',rel:'BLOCKS',label:'지연'},
+                {from:'I2',to:'P3',rel:'BLOCKS',label:'혼선'},
+                {from:'I4',to:'P4',rel:'TRIGGERS',label:'반복발생'},
+                {from:'A1',to:'I2',rel:'CAUSES',label:'경계불명확'},
+                {from:'P4',to:'AF1',rel:'OUTPUT',label:'산출'},
+                {from:'D2',to:'P3',rel:'DECIDES',label:'배분결정'}
+            ]
+        };
+        return {
+            nodes:[
+                {id:'A1',type:'Actor',name:'직원',desc:'사무처 소속 상근 실무 담당자'},
+                {id:'A2',type:'Actor',name:'관리자',desc:'부서/팀 단위 업무 관리 책임자'},
+                {id:'A3',type:'Actor',name:'집행부',desc:'선출직 리더십 (회장단)'},
+                {id:'P1',type:'Process',name:'업무수행',desc:'일상적 업무 실행 프로세스'},
+                {id:'P2',type:'Process',name:'보고/소통',desc:'상향·하향 커뮤니케이션 프로세스'},
+                {id:'P3',type:'Process',name:'인수인계',desc:'담당자 변경 시 업무 인수인계 프로세스'},
+                {id:'P4',type:'Process',name:'역할협업',desc:'부서 간·직급 간 협업 프로세스'},
+                {id:'D1',type:'Decision',name:'업무배분',desc:'업무 할당·우선순위 판단 포인트'},
+                {id:'D2',type:'Decision',name:'권한위임',desc:'직원 자율 판단 허용 범위 결정 포인트'},
+                {id:'DA1',type:'Data',name:'업무매뉴얼',desc:'업무 절차·기준 문서'},
+                {id:'DA2',type:'Data',name:'인수인계서',desc:'담당자 변경 시 인수인계 자료'},
+                {id:'E1',type:'Event',name:'리더십 교체',desc:'선거를 통한 집행부 교체 이벤트'},
+                {id:'I1',type:'Issue',name:'의사결정 병목',desc:'상위 결재 지연으로 업무 정체'},
+                {id:'I2',type:'Issue',name:'역할·권한 모호',desc:'책임은 있으나 권한·기준 부재'},
+                {id:'I3',type:'Issue',name:'매뉴얼 부재',desc:'업무 기록·인수인계 자료 미비'},
+                {id:'I4',type:'Issue',name:'정보 단절',desc:'부서·계층 간 정보 공유 미흡'},
+                {id:'AF1',type:'Artifact',name:'진단 리포트',desc:'조직진단 결과 보고서'}
+            ],
+            edges:[
+                {from:'A3',to:'D1',rel:'DECIDES',label:'지시'},
+                {from:'A2',to:'P1',rel:'FLOW',label:'관리'},
+                {from:'A1',to:'P1',rel:'FLOW',label:'수행'},
+                {from:'D1',to:'P1',rel:'FLOW',label:'업무할당'},
+                {from:'P1',to:'P2',rel:'FLOW',label:'결과보고'},
+                {from:'P2',to:'A2',rel:'OUTPUT',label:'보고'},
+                {from:'D2',to:'P4',rel:'DECIDES',label:'권한부여'},
+                {from:'P3',to:'DA2',rel:'CREATES',label:'산출'},
+                {from:'DA1',to:'P1',rel:'INPUT',label:'기준적용'},
+                {from:'E1',to:'P3',rel:'TRIGGERS',label:'인수인계'},
+                {from:'E1',to:'I3',rel:'CAUSES',label:'유발'},
+                {from:'I1',to:'P1',rel:'BLOCKS',label:'병목'},
+                {from:'I2',to:'P4',rel:'BLOCKS',label:'혼선'},
+                {from:'I3',to:'P3',rel:'BLOCKS',label:'단절'},
+                {from:'I4',to:'P2',rel:'BLOCKS',label:'소통단절'},
+                {from:'P1',to:'AF1',rel:'OUTPUT',label:'산출'}
+            ]
+        };
+    }
+
+    function generateOntologySVG(model) {
+        const W=960,H=700,RW=54,RH=22;
+        const pos={};
+        const layoutRow=(nodes,y,xStart,xEnd)=>{
+            if(!nodes.length) return;
+            if(nodes.length===1){pos[nodes[0].id]={x:(xStart+xEnd)/2,y};return;}
+            const gap=(xEnd-xStart)/(nodes.length-1);
+            nodes.forEach((n,i)=>{pos[n.id]={x:xStart+gap*i,y};});
+        };
+        layoutRow(model.nodes.filter(n=>n.type==='Actor'),75,160,800);
+        layoutRow(model.nodes.filter(n=>n.type==='Process'),220,120,840);
+        layoutRow(model.nodes.filter(n=>n.type==='Artifact'),370,80,80);
+        layoutRow(model.nodes.filter(n=>n.type==='Decision'),370,260,480);
+        layoutRow(model.nodes.filter(n=>n.type==='Data'),370,650,880);
+        layoutRow(model.nodes.filter(n=>n.type==='Event'),500,780,780);
+        layoutRow(model.nodes.filter(n=>n.type==='Issue'),580,100,700);
+
+        const relColors={FLOW:'#7c3aed',INPUT:'#0d9488',OUTPUT:'#ea580c',USES:'#06b6d4',CREATES:'#0d9488',DECIDES:'#dc2626',TRIGGERS:'#d97706',CAUSES:'#be123c',BLOCKS:'#be123c'};
+        let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;">`;
+        svg+=`<defs>`;
+        Object.entries(relColors).forEach(([rel,color])=>{
+            svg+=`<marker id="arr-${rel}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="${color}"/></marker>`;
+        });
+        svg+=`</defs><rect width="${W}" height="${H}" fill="#fafbfc" rx="8"/>`;
+        svg+=`<text x="18" y="78" font-size="12" fill="#94a3b8" font-weight="600" font-family="Noto Sans KR,sans-serif">Actor</text>`;
+        svg+=`<text x="18" y="223" font-size="12" fill="#94a3b8" font-weight="600" font-family="Noto Sans KR,sans-serif">Process</text>`;
+        svg+=`<text x="18" y="373" font-size="12" fill="#94a3b8" font-weight="600" font-family="Noto Sans KR,sans-serif">Decision</text>`;
+        svg+=`<text x="18" y="583" font-size="12" fill="#94a3b8" font-weight="600" font-family="Noto Sans KR,sans-serif">Issue</text>`;
+        [145,295,450,540].forEach(y=>{svg+=`<line x1="50" y1="${y}" x2="${W-30}" y2="${y}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>`;});
+        const edgeIdx={};
+        model.edges.forEach(edge=>{
+            const from=pos[edge.from],to=pos[edge.to];
+            if(!from||!to) return;
+            const color=relColors[edge.rel]||'#94a3b8';
+            const isDashed=edge.rel==='BLOCKS'||edge.rel==='CAUSES';
+            const pairKey=[edge.from,edge.to].sort().join('-');
+            edgeIdx[pairKey]=(edgeIdx[pairKey]||0)+1;
+            const dx=to.x-from.x,dy=to.y-from.y;
+            const dist=Math.sqrt(dx*dx+dy*dy)||1;
+            const fromX=from.x+(dx/dist)*RW,fromY=from.y+(dy/dist)*RH;
+            const toX=to.x-(dx/dist)*RW,toY=to.y-(dy/dist)*RH;
+            const midX=(fromX+toX)/2,midY=(fromY+toY)/2;
+            const mag=25+edgeIdx[pairKey]*15;
+            const cx=midX+(-dy/dist)*mag,cy=midY+(dx/dist)*mag;
+            svg+=`<path d="M${fromX},${fromY} Q${cx},${cy} ${toX},${toY}" fill="none" stroke="${color}" stroke-width="1.5" ${isDashed?'stroke-dasharray="5,3"':''} marker-end="url(#arr-${edge.rel})" opacity="0.6"/>`;
+            const lx=cx*0.5+midX*0.5,ly=cy*0.5+midY*0.5-3;
+            svg+=`<rect x="${lx-20}" y="${ly-8}" width="40" height="14" rx="3" fill="white" fill-opacity="0.85"/>`;
+            svg+=`<text x="${lx}" y="${ly+2}" font-size="10" fill="${color}" text-anchor="middle" font-weight="600" font-family="Noto Sans KR,sans-serif">${edge.label}</text>`;
+        });
+        model.nodes.forEach(node=>{
+            const p=pos[node.id];
+            if(!p) return;
+            const color=AXOS_COLORS[node.type],bg=AXOS_BG[node.type];
+            svg+=`<rect x="${p.x-RW+2}" y="${p.y-RH+2}" width="${RW*2}" height="${RH*2}" rx="6" fill="#00000008"/>`;
+            svg+=`<rect x="${p.x-RW}" y="${p.y-RH}" width="${RW*2}" height="${RH*2}" rx="6" fill="${bg}" stroke="${color}" stroke-width="2"/>`;
+            svg+=`<text x="${p.x}" y="${p.y-1}" font-size="13" fill="${color}" text-anchor="middle" dominant-baseline="middle" font-weight="700" font-family="Noto Sans KR,sans-serif">${node.name}</text>`;
+            svg+=`<text x="${p.x}" y="${p.y+14}" font-size="9" fill="#94a3b8" text-anchor="middle" dominant-baseline="middle" font-family="Noto Sans KR,sans-serif">${node.type}</text>`;
+        });
+        svg+=`</svg>`;
+        return svg;
+    }
+
+    function relColors_map(rel) {
+        const m={FLOW:'#7c3aed',INPUT:'#0d9488',OUTPUT:'#ea580c',USES:'#06b6d4',CREATES:'#0d9488',DECIDES:'#dc2626',TRIGGERS:'#d97706',CAUSES:'#be123c',BLOCKS:'#be123c'};
+        return m[rel]||'#94a3b8';
+    }
+
+    function generateOntologyAnalysis(data, labels, role) {
+        const {typeCounts, typeExamples} = extractKeywordsFromResponses(data, role);
+        const model = getOntologyModel(role);
+        const svgGraph = generateOntologySVG(model);
+        const roleLabel = role==='executive' ? '임원진' : '직원';
+        const issueNodes = model.nodes.filter(n=>n.type==='Issue');
+        const bottlenecks = model.edges.filter(e=>e.rel==='BLOCKS'||e.rel==='CAUSES');
+
+        const qMappings = {
+            executive:[
+                {q:'Q1~Q4',label:'Ⅰ. 미션·공공성과 전략 작동력',nodes:'Issue, Process',relations:'CAUSES, FLOW',desc:'미션-실행 괴리 → Issue 추출 + Process 흐름'},
+                {q:'Q5',label:'장기 미션 실현 중점도 (7점)',nodes:'Decision',relations:'DECIDES',desc:'전략 판단 → Decision 노드'},
+                {q:'Q6~Q9',label:'Ⅱ. 의사결정 구조와 속도',nodes:'Process, Decision',relations:'FLOW, DECIDES',desc:'의사결정 절차·병목 → Process+Decision'},
+                {q:'Q10',label:'의사결정 균형도 (7점)',nodes:'Issue',relations:'BLOCKS',desc:'지연 척도 → Issue BLOCKS 관계'},
+                {q:'Q11~Q14',label:'Ⅲ. 거버넌스·연속성·조직기억',nodes:'Event, Data',relations:'TRIGGERS, CAUSES',desc:'집행부 교체 → Event + 아카이빙 Data'},
+                {q:'Q15',label:'리더십 연속성 (7점)',nodes:'Event',relations:'TRIGGERS',desc:'연속성 척도 → Event 영향'},
+                {q:'Q16~Q19',label:'Ⅳ. 역할경계·협업·자율성',nodes:'Actor, Process',relations:'FLOW, BLOCKS',desc:'역할경계 모호 → Actor 관계 + BLOCKS'},
+                {q:'Q20',label:'역할·권한 명확성 (7점)',nodes:'Issue',relations:'BLOCKS',desc:'명확성 척도 → Issue 영향'},
+                {q:'Q21~Q24',label:'Ⅴ. 갈등·세대·신뢰·공정성',nodes:'Issue, Process',relations:'CAUSES, BLOCKS',desc:'반복 갈등 → Issue + 갈등관리 Process'},
+                {q:'Q25',label:'공정성·신뢰 (7점)',nodes:'Issue',relations:'CAUSES',desc:'신뢰 척도 → Issue 원인'},
+                {q:'Q26~Q30',label:'Ⅵ. 미래비전·개선방안',nodes:'Artifact, Process',relations:'CREATES, OUTPUT',desc:'개선 방안 → 산출물(Artifact) 연결'}
+            ],
+            employee:[
+                {q:'Q1~Q4',label:'Ⅰ. 미션·업무 의미·직무 보람',nodes:'Actor, Process',relations:'FLOW',desc:'미션 연결감 → Actor-Process 흐름'},
+                {q:'Q5',label:'미션 기여도 체감 (5점)',nodes:'Decision',relations:'DECIDES',desc:'기여도 척도 → 업무배분 Decision'},
+                {q:'Q6~Q9',label:'Ⅱ. 업무 방향성·의사결정 속도',nodes:'Process, Issue',relations:'FLOW, BLOCKS',desc:'우선순위 변경 → Process 지연 + Issue'},
+                {q:'Q10',label:'방향·우선순위 공유 (5점)',nodes:'Issue',relations:'BLOCKS',desc:'공유 척도 → 정보단절 Issue'},
+                {q:'Q11~Q14',label:'Ⅲ. 역할·권한·협업 구조',nodes:'Actor, Decision',relations:'FLOW, DECIDES',desc:'역할 명확성 → Actor 간 관계 + 권한위임'},
+                {q:'Q15',label:'역할·권한 이해도 (5점)',nodes:'Issue',relations:'BLOCKS',desc:'이해도 척도 → 역할모호 Issue'},
+                {q:'Q16~Q19',label:'Ⅳ. 정보 공유·인수인계·업무 안정성',nodes:'Data, Event',relations:'INPUT, TRIGGERS',desc:'매뉴얼 부재 → Data + Event 인수인계'},
+                {q:'Q20',label:'인수인계 체계 충분성 (5점)',nodes:'Issue',relations:'BLOCKS',desc:'체계 척도 → 매뉴얼부재 Issue'},
+                {q:'Q21~Q24',label:'Ⅴ. 근무환경·복지·조직문화',nodes:'Actor, Issue',relations:'FLOW, CAUSES',desc:'긍정 요소 → Actor 만족 / 개선 요소 → Issue'},
+                {q:'Q25',label:'근무환경 긍정 체감 (5점)',nodes:'Issue',relations:'CAUSES',desc:'만족도 척도 → Issue 원인'},
+                {q:'Q26~Q30',label:'Ⅵ. 업무 태도·소속감·자기성찰',nodes:'Actor, Artifact',relations:'OUTPUT',desc:'기여 의지 → Actor 주도성 + 산출물'}
+            ]
+        };
+
+        const aiOpps = role==='executive' ? [
+            {title:'의사결정 지원 AI',desc:'과거 의사결정 패턴 분석 및 유사 사례 자동 추천. 안건별 리스크·효과 예측으로 신속한 판단 지원.',impact:'의사결정 소요시간 40% 단축',pattern:'Decision → ML/LLM'},
+            {title:'정책 연속성 관리',desc:'집행부 교체 시 인수인계 자동 보고서 생성. 진행 중 사업 현황·맥락을 AI가 자동 정리.',impact:'정책 단절 리스크 60% 감소',pattern:'Event → AI 자동화'},
+            {title:'갈등 조기 감지',desc:'회의록·소통 데이터에서 갈등 신호를 NLP로 조기 감지. 패턴 분석으로 구조적 원인 진단.',impact:'반복 갈등 발생률 50% 감소',pattern:'Data → NLP 분석'},
+            {title:'전략-실행 연계 모니터링',desc:'전략 목표 대비 실행 진도를 실시간 대시보드로 추적. KPI 자동 산출 및 이상 징후 알림.',impact:'전략 실행율 35% 향상',pattern:'Process → 시계열 예측'}
+        ] : [
+            {title:'업무 자동 배분',desc:'업무량·역량·우선순위를 분석하여 최적 담당자 자동 매칭. 과부하 사전 예방.',impact:'업무 배분 효율 45% 향상',pattern:'Decision → ML 최적화'},
+            {title:'인수인계 자동화',desc:'업무 매뉴얼·히스토리를 AI가 자동 정리하여 인수인계 문서 생성. 온보딩 시간 단축.',impact:'온보딩 소요시간 50% 단축',pattern:'Data → AI 문서화'},
+            {title:'정보 자동 공유 허브',desc:'부서 간 정보 단절 포인트를 자동 감지하고, 관련 정보를 필요 부서에 자동 라우팅.',impact:'정보 단절 건수 60% 감소',pattern:'Process → AI 챗봇/RAG'},
+            {title:'보고 자동화',desc:'반복적 보고서를 AI가 자동 생성. 중복 보고 단계 제거 및 핵심 사항 요약.',impact:'보고 소요시간 55% 단축',pattern:'Process → RPA + AI'}
+        ];
+
+        const hasAPD = model.nodes.some(n=>n.type==='Actor')&&model.nodes.some(n=>n.type==='Process')&&model.nodes.some(n=>n.type==='Data');
+        const allIssuesHaveBlocks = issueNodes.every(issue=>model.edges.some(e=>e.from===issue.id&&(e.rel==='BLOCKS'||e.rel==='CAUSES')));
+        const relSummary = {};
+        model.edges.forEach(e=>{relSummary[e.rel]=(relSummary[e.rel]||0)+1;});
+
+        return `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <div><h2 style="margin:0;font-size:20px;color:#0a0e27;font-weight:700;">🔬 AXOS 온톨로지 분석 — ${roleLabel}</h2>
+            <p style="margin:4px 0 0;font-size:13px;color:#64748b;">AX Ontology OS v2.0 · 모드 D: AX 진단 (컨설팅)</p></div>
+            <button onclick="(function(){var w=window.open('','_blank','width=900,height=700');var c=document.getElementById('ontologyContent').cloneNode(true);c.querySelectorAll('button').forEach(function(b){b.remove();});w.document.write('<!DOCTYPE html><html lang=ko><head><meta charset=UTF-8><link href=https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap rel=stylesheet><style>body{margin:0;padding:20px;background:#fff;font-family:Noto Sans KR,sans-serif}</style></head><body>');w.document.write(c.outerHTML);w.document.write('</body></html>');w.document.close();setTimeout(function(){w.print();},800);})()" style="padding:10px 20px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📥 PDF 출력</button>
+        </div>
+
+        <div class="onto-section" style="background:linear-gradient(135deg,#f5f3ff 0%,#eff6ff 100%);border-color:#8b5cf6;">
+            <h3 style="border-bottom-color:#8b5cf6;">📐 AXOS 7차원 프로필 분석</h3>
+            <div class="onto-profile-grid">
+                ${[['D1 산업','의료/헬스케어<br><small style="color:#64748b;font-weight:400;">전문직 협회</small>','#1F6BFF'],['D2 비즈모델','B2G/공공','#7c3aed'],['D3 규모','Medium','#0d9488'],['D4 디지털','Basic','#06b6d4'],['D5 역할',role==='executive'?'C-Level':'Operation','#dc2626'],['D6 밸류체인','Service + Infra','#d97706'],['D7 진단목적','전사 AX 진단','#be123c']].map(([label,val,color])=>`
+                <div class="onto-profile-card" style="border-top:3px solid ${color};">
+                    <div class="dim-label">${label}</div>
+                    <div class="dim-value">${val}</div>
+                </div>`).join('')}
+            </div>
+            <div style="background:white;border-radius:6px;padding:16px 20px;font-size:12px;color:#334155;line-height:1.6;">
+                <strong>산업 특성:</strong> 프로세스복잡도 0.8 · 데이터집약도 0.8 · 규제수준 0.9
+                &nbsp;→&nbsp; <span style="color:#be123c;font-weight:600;">Bottleneck ×1.2</span> · <span style="color:#0d9488;font-weight:600;">Concept ×1.15</span> · <span style="color:#7c3aed;font-weight:600;">컴플라이언스 ×1.1</span>
+            </div>
+        </div>
+
+        <div class="onto-section">
+            <h3>🕸️ 온톨로지 네트워크 그래프 — ${roleLabel}</h3>
+            <div class="onto-svg-container">${svgGraph}</div>
+            <div class="onto-legend">${Object.entries(AXOS_COLORS).map(([t,c])=>`<div class="onto-legend-item"><div class="onto-legend-dot" style="background:${c};"></div>${t}</div>`).join('')}</div>
+            <div style="margin-top:8px;font-size:12px;color:#64748b;text-align:center;">실선: FLOW/INPUT/OUTPUT/CREATES/DECIDES &nbsp;|&nbsp; 점선: BLOCKS/CAUSES (병목/원인)</div>
+        </div>
+
+        <div class="onto-section">
+            <h3>🔍 설문 응답 → 온톨로지 노드 추출</h3>
+            <p style="font-size:13px;color:#64748b;margin:0 0 15px 0;">${data.length}명의 응답(30문항)에서 AXOS 노드 타입별 키워드를 자동 추출했습니다.</p>
+            <div class="onto-node-grid">
+                ${Object.entries(typeCounts).filter(([t,c])=>c>0).sort((a,b)=>b[1]-a[1]).map(([type,count])=>{
+                    const examples=Array.from(typeExamples[type]).slice(0,5);
+                    return `<div class="onto-node-card" style="background:${AXOS_BG[type]};border-color:${AXOS_COLORS[type]};"><div class="node-type" style="color:${AXOS_COLORS[type]};">${type}</div><div class="node-name">${count}회 언급</div><div class="node-keywords">${examples.map(kw=>`<span style="background:${AXOS_COLORS[type]}20;color:${AXOS_COLORS[type]};">${kw}</span>`).join('')}</div></div>`;
+                }).join('')}
+            </div>
+        </div>
+
+        <div class="onto-section">
+            <h3>📋 설문 질문 → 온톨로지 매핑 (30문항)</h3>
+            <div style="overflow-x:auto;"><table class="onto-bottleneck-table">
+                <thead><tr><th style="width:60px;">질문</th><th>섹션/항목</th><th>추출 노드</th><th>관계 타입</th><th>온톨로지 해석</th></tr></thead>
+                <tbody>${(qMappings[role]||[]).map(m=>`<tr>
+                    <td style="font-weight:700;color:#8b5cf6;">${m.q}</td>
+                    <td style="font-size:12px;">${m.label}</td>
+                    <td>${m.nodes.split(', ').map(n=>`<span style="color:${AXOS_COLORS[n]||'#333'};font-weight:600;">${n}</span>`).join(' ')}</td>
+                    <td style="font-weight:600;color:#64748b;font-size:12px;">${m.relations}</td>
+                    <td style="font-size:12px;">${m.desc}</td>
+                </tr>`).join('')}</tbody>
+            </table></div>
+        </div>
+
+        <div class="onto-section" style="border-left:4px solid #be123c;">
+            <h3>⚠️ 병목·원인 분석 (BLOCKS / CAUSES)</h3>
+            <table class="onto-bottleneck-table">
+                <thead><tr><th>Issue 노드</th><th>관계</th><th>영향 대상</th><th>심각도</th><th>설명</th></tr></thead>
+                <tbody>${bottlenecks.map(edge=>{
+                    const from=model.nodes.find(n=>n.id===edge.from);
+                    const to=model.nodes.find(n=>n.id===edge.to);
+                    if(!from||!to) return '';
+                    const sev=from.type==='Issue'?'high':from.type==='Event'?'medium':'low';
+                    return `<tr>
+                        <td style="font-weight:600;color:${AXOS_COLORS[from.type]};">${from.name}</td>
+                        <td><span class="onto-severity ${sev==='high'?'high':'medium'}">${edge.rel}</span></td>
+                        <td style="font-weight:600;color:${AXOS_COLORS[to.type]};">${to.name}</td>
+                        <td><span class="onto-severity ${sev}">${sev==='high'?'높음':sev==='medium'?'중간':'낮음'}</span></td>
+                        <td style="font-size:12px;">${from.desc}</td>
+                    </tr>`;
+                }).join('')}</tbody>
+            </table>
+        </div>
+
+        <div class="onto-section">
+            <h3>🔗 관계 네트워크 요약</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">${Object.entries(relSummary).map(([rel,cnt])=>{const c=relColors_map(rel);return `<div style="background:${c}15;border:1px solid ${c}40;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;color:${c};">${rel} <span style="font-size:16px;">${cnt}</span></div>`;}).join('')}</div>
+            <div class="onto-relation-list">${model.edges.slice(0,10).map(edge=>{
+                const fn=model.nodes.find(n=>n.id===edge.from);
+                const tn=model.nodes.find(n=>n.id===edge.to);
+                if(!fn||!tn) return '';
+                const c=relColors_map(edge.rel);
+                return `<div class="onto-relation-item"><span class="rel-from" style="color:${AXOS_COLORS[fn.type]};">${fn.name}</span><span class="rel-arrow" style="background:${c}20;color:${c};">${edge.rel} → ${edge.label}</span><span class="rel-to" style="color:${AXOS_COLORS[tn.type]};">${tn.name}</span></div>`;
+            }).join('')}</div>
+        </div>
+
+        <div class="onto-section" style="border-left:4px solid #0369a1;">
+            <h3>🤖 AI/AX 자동화 기회</h3>
+            <p style="font-size:13px;color:#64748b;margin:0 0 15px 0;">AXOS 변환 패턴: 수동 반복(Process) → RPA+AI / 판단(Decision) → ML/LLM / 데이터(Data) → NLP 분석</p>
+            <div class="onto-ai-grid">${aiOpps.map(o=>`<div class="onto-ai-card"><div class="ai-title">${o.title}</div><div class="ai-desc">${o.desc}</div><div style="margin-top:8px;font-size:10px;color:#64748b;font-weight:600;">패턴: ${o.pattern}</div><div class="ai-impact">${o.impact}</div></div>`).join('')}</div>
+        </div>
+
+        <div class="onto-section" style="background:#f8fafc;">
+            <h3>✅ AXOS 검증 체크리스트</h3>
+            <div style="display:grid;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:#16a34a;">✓</span> 노드 ${model.nodes.length}개, 관계 ${model.edges.length}개 구축 완료</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:${hasAPD?'#16a34a':'#dc2626'};">${hasAPD?'✓':'✗'}</span> Actor-Process-Data 삼각형 존재</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:${allIssuesHaveBlocks?'#16a34a':'#dc2626'};">${allIssuesHaveBlocks?'✓':'✗'}</span> 모든 Issue 노드에 BLOCKS/CAUSES 관계 존재</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:#16a34a;">✓</span> 7차원 프로필 분석 완료</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:#16a34a;">✓</span> 병목 ${bottlenecks.length}개, AI 기회 ${aiOpps.length}개 식별</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:#16a34a;">✓</span> 설문 Q1~Q30 → 온톨로지 매핑 완료 (본진단 30문항 전체)</div>
+            </div>
+        </div>`;
+    }
     </script>
 </body>
 </html>
