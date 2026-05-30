@@ -70,7 +70,7 @@
                 <div class="survey-card" id="executive-card">
                     <div class="completion-badge" id="executive-completion">진단 완료: 로드중...</div>
                     <div class="card-icon">👔</div>
-                    <h3>회장단 본진단</h3>
+                    <h3>임원진 본진단</h3>
                     <p>협회 임원진, 위원회 위원 등<br>의사결정 권한을 가진 역할</p>
                     <ul class="card-details">
                         <li>• 협회의 미션과 전략 작동력</li>
@@ -78,7 +78,7 @@
                         <li>• 조직 문화 및 갈등 관리</li>
                         <li>• 30개 문항 (서술형 24개 + 7점 척도 5개)</li>
                     </ul>
-                    <a href="javascript:void(0);" class="survey-link-btn executive-btn" onclick="handleSurvey('executive')">회장단 본진단 시작</a>
+                    <a href="javascript:void(0);" class="survey-link-btn executive-btn" onclick="handleSurvey('executive')">임원진 본진단 시작</a>
                 </div>
 
                 <!-- Staff Survey -->
@@ -430,7 +430,7 @@
 
         function handleSurvey(type) {
             if (type === 'executive') {
-                // 회장단 본진단으로 이동
+                // 임원진 본진단으로 이동
                 window.location.href = 'executive-survey.html';
             } else if (type === 'staff') {
                 // 직원 본진단으로 이동
