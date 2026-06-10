@@ -313,6 +313,15 @@
                     <button type="button" class="btn-download" onclick="downloadData()">📥 다운로드</button>
                     <button type="button" class="btn-reset" onclick="resetForm()">🔄 초기화</button>
                 </div>
+
+                <!-- Pitch Deck Button -->
+                <div style="text-align: center; margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 12px;">
+                    <h3 style="color: white; margin-bottom: 15px; font-size: 22px;">🎯 회장에게 프레젠테이션</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-size: 15px; margin-bottom: 20px;">
+                        모든 단계를 완료하셨다면 피치덱으로 회장에게 발표하세요
+                    </p>
+                    <button type="button" class="btn-pitch" onclick="goToPitchDeck()">🎤 피치덱 보기</button>
+                </div>
             </div>
 
         </div>
@@ -551,6 +560,25 @@
 
         .btn-reset:hover {
             background: #475569;
+        }
+
+        .btn-pitch {
+            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+            color: #7c3aed;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .btn-pitch:hover {
+            background: white;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
         }
 
         .btn-secondary {
@@ -912,6 +940,18 @@
                 localStorage.removeItem(`workshop_team${selectedTeam}`);
                 alert('✅ 초기화되었습니다.');
             }
+        }
+
+        function goToPitchDeck() {
+            if (!selectedTeam) {
+                alert('팀을 먼저 선택해주세요.');
+                return;
+            }
+
+            // 데이터 저장 후 피치덱 페이지로 이동
+            const data = collectFormData();
+            localStorage.setItem(`workshop_team${selectedTeam}`, JSON.stringify(data));
+            window.location.href = `pitch_deck_team${selectedTeam}.html`;
         }
 
         // 모달 외부 클릭 시 닫기

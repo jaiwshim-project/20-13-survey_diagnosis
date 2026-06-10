@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1팀 피치덱 - 의사결정 구조 | 대한치과위생사협회</title>
+    <meta name="description" content="비전워크숍 1팀 회장 프레젠테이션 피치덱">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #0f172a;
+            overflow-x: hidden;
+        }
+
+        .pitch-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Slide Navigation */
+        .slide-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .slide-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .slide-counter {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 8px 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Slides Container */
+        .slides-wrapper {
+            flex: 1;
+            padding-top: 70px;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: calc(100vh - 70px);
+            padding: 60px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Cover Slide */
+        .slide-cover {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            text-align: center;
+        }
+
+        .slide-cover h1 {
+            font-size: 56px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .slide-cover .subtitle {
+            font-size: 28px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+            margin-bottom: 40px;
+        }
+
+        .slide-cover .team-badge {
+            display: inline-block;
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 50px;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 30px;
+        }
+
+        /* Slide Backgrounds */
+        .slide-problem {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        .slide-solution {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+        }
+
+        .slide-action {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        }
+
+        .slide-resources {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .slide-obstacles {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .slide-metrics {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .slide-request {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        }
+
+        /* Slide Content */
+        .slide-content {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .slide-header h2 {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .slide-header p {
+            font-size: 20px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+
+        /* Problem Definition Box */
+        .problem-box {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .problem-box h3 {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .problem-box p {
+            color: rgba(255,255,255,0.95);
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .pitch-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .pitch-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .pitch-card .card-number {
+            font-size: 42px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .pitch-card .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .pitch-card .card-content {
+            font-size: 15px;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.7;
+        }
+
+        /* Priority Box */
+        .priority-box {
+            background: rgba(255,255,255,0.2);
+            border: 3px solid rgba(255,255,255,0.4);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .priority-box h3 {
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .priority-box p {
+            color: rgba(255,255,255,0.95);
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        /* Timeline */
+        .action-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 20px;
+        }
+
+        .timeline-item {
+            flex: 1;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -20px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid rgba(255,255,255,0.3);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-header {
+            font-size: 36px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .timeline-content {
+            font-size: 16px;
+            color: rgba(255,255,255,0.95);
+            line-height: 1.8;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .info-box {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .info-box h3 {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .info-box .info-item {
+            margin-bottom: 12px;
+        }
+
+        .info-box .info-label {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .info-box .info-value {
+            color: white;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* List Style */
+        .candidate-list {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .candidate-list h3 {
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .candidate-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .candidate-list li {
+            color: rgba(255,255,255,0.95);
+            font-size: 16px;
+            line-height: 1.8;
+            padding-left: 25px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .candidate-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: white;
+            font-weight: 700;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 16px;
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 40px 30px;
+            }
+
+            .slide-cover h1 {
+                font-size: 42px;
+            }
+
+            .slide-header h2 {
+                font-size: 36px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .action-timeline, .two-column {
+                flex-direction: column;
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-item::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide-nav {
+                padding: 10px 15px;
+            }
+
+            .slide-title {
+                font-size: 14px;
+            }
+
+            .slide {
+                padding: 30px 20px;
+            }
+
+            .slide-cover h1 {
+                font-size: 32px;
+            }
+
+            .slide-header h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pitch-container">
+        <!-- Navigation -->
+        <nav class="slide-nav">
+            <div class="slide-title">1팀: 의사결정 구조</div>
+            <div class="slide-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">8</span>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevSlide()">◀ 이전</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextSlide()">다음 ▶</button>
+                <button class="nav-btn" onclick="exitPitchDeck()">✕ 나가기</button>
+            </div>
+        </nav>
+
+        <!-- Slides -->
+        <div class="slides-wrapper">
+            <!-- Slide 0: Cover -->
+            <div class="slide slide-cover active" data-slide="0">
+                <h1>의사결정 구조</h1>
+                <div class="subtitle">의견은 충분하게, 결정은 명확하게</div>
+                <div class="team-badge">1팀 최종 발표</div>
+            </div>
+
+            <!-- Slide 1: 문제정의문 & 발생 상황 -->
+            <div class="slide slide-problem" data-slide="1">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>🔍 문제정의문</h2>
+                        <p>우리가 해결하고자 하는 핵심 문제</p>
+                    </div>
+                    <div id="problemDefSection"></div>
+                </div>
+            </div>
+
+            <!-- Slide 2: 핵심 원인 3가지 + 우선순위 -->
+            <div class="slide slide-problem" data-slide="2">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>🎯 핵심 원인 분석</h2>
+                        <p>문제를 발생시키는 3가지 근본 원인</p>
+                    </div>
+                    <div id="rootCauseSection"></div>
+                </div>
+            </div>
+
+            <!-- Slide 3: 해결책 후보 + 최종 선정 -->
+            <div class="slide slide-solution" data-slide="3">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>💡 해결책 도출</h2>
+                        <p>우리가 제안하는 해결 방안</p>
+                    </div>
+                    <div id="solutionSection"></div>
+                </div>
+            </div>
+
+            <!-- Slide 4: 실행 목표 + 30/60/90일 계획 -->
+            <div class="slide slide-action" data-slide="4">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>🚀 실행계획</h2>
+                        <p>90일 안에 완료할 로드맵</p>
+                    </div>
+                    <div id="actionPlanSection"></div>
+                </div>
+            </div>
+
+            <!-- Slide 5: 담당 체계 + 필요 자원 -->
+            <div class="slide slide-resources" data-slide="5">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>👥 담당 체계 & 필요 자원</h2>
+                        <p>누가 무엇을 담당하고 무엇이 필요한가</p>
+                    </div>
+                    <div id="resourceSection"></div>
+                </div>
+            </div>
+
+            <!-- Slide 6: 장애요인 & 대응방안 -->
+            <div class="slide slide-obstacles" data-slide="6">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>⚠️ 장애요인 & 대응방안</h2>
+                        <p>예상되는 문제와 해결 전략</p>
+                    </div>
+                    <div id="obstacleSection"></div>
+                </div>
+            </div>
+
+            <!-- Slide 7: 성과 확인 기준 -->
+            <div class="slide slide-metrics" data-slide="7">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>📊 성과 확인 기준</h2>
+                        <p>무엇이 바뀌면 성공인가</p>
+                    </div>
+                    <div id="metricsSection"></div>
+                </div>
+            </div>
+
+            <!-- Slide 8: 회장에게 요청할 의사결정 -->
+            <div class="slide slide-request" data-slide="8">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>🤝 회장님께 요청 드립니다</h2>
+                        <p>승인 & 지원 & 즉시 결정 필요 사항</p>
+                    </div>
+                    <div id="requestSection"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const totalSlides = 9;
+        let workshopData = null;
+
+        // 페이지 로드 시 데이터 불러오기
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedData = localStorage.getItem('workshop_team1');
+
+            if (!savedData) {
+                alert('⚠️ 저장된 워크숍 데이터가 없습니다. 실습 기록지를 먼저 작성해주세요.');
+                window.location.href = 'workshop_templates_team1.html';
+                return;
+            }
+
+            workshopData = JSON.parse(savedData);
+            renderPitchDeck();
+            updateNavigation();
+        });
+
+        function renderPitchDeck() {
+            // Slide 1: 문제정의문 & 발생 상황
+            document.getElementById('problemDefSection').innerHTML = `
+                <div class="problem-box">
+                    <h3>📝 문제정의문</h3>
+                    <p>${workshopData.problemStatement || '(미작성)'}</p>
+                </div>
+                <div class="problem-box">
+                    <h3>🔍 문제 발생 상황</h3>
+                    <p>${workshopData.problemContext || '(미작성)'}</p>
+                </div>
+            `;
+
+            // Slide 2: 핵심 원인 3가지 + 우선순위
+            document.getElementById('rootCauseSection').innerHTML = `
+                <div class="card-grid">
+                    <div class="pitch-card">
+                        <div class="card-number">01</div>
+                        <div class="card-title">핵심 원인 1</div>
+                        <div class="card-content">${workshopData.rootCause1 || '(미작성)'}</div>
+                    </div>
+                    <div class="pitch-card">
+                        <div class="card-number">02</div>
+                        <div class="card-title">핵심 원인 2</div>
+                        <div class="card-content">${workshopData.rootCause2 || '(미작성)'}</div>
+                    </div>
+                    <div class="pitch-card">
+                        <div class="card-number">03</div>
+                        <div class="card-title">핵심 원인 3</div>
+                        <div class="card-content">${workshopData.rootCause3 || '(미작성)'}</div>
+                    </div>
+                </div>
+                <div class="priority-box">
+                    <h3>⭐ 해결 우선순위</h3>
+                    <p>${workshopData.priority || '(미작성)'}</p>
+                </div>
+            `;
+
+            // Slide 3: 해결책 후보 + 최종 선정
+            const candidates = workshopData.solutionCandidates || '';
+            const candidateList = candidates.split('\n').filter(line => line.trim()).map(line => `<li>${line.replace(/^-\s*/, '')}</li>`).join('');
+
+            document.getElementById('solutionSection').innerHTML = `
+                <div class="candidate-list">
+                    <h3>💡 해결책 후보 목록</h3>
+                    <ul>${candidateList || '<li>(미작성)</li>'}</ul>
+                </div>
+                <div class="card-grid">
+                    <div class="pitch-card">
+                        <div class="card-number">01</div>
+                        <div class="card-title">최종 해결책 1</div>
+                        <div class="card-content">${workshopData.finalSolution1 || '(미작성)'}</div>
+                    </div>
+                    <div class="pitch-card">
+                        <div class="card-number">02</div>
+                        <div class="card-title">최종 해결책 2</div>
+                        <div class="card-content">${workshopData.finalSolution2 || '(미작성)'}</div>
+                    </div>
+                    <div class="pitch-card">
+                        <div class="card-number">03</div>
+                        <div class="card-title">최종 해결책 3</div>
+                        <div class="card-content">${workshopData.finalSolution3 || '(선택사항)'}</div>
+                    </div>
+                </div>
+                <div class="priority-box">
+                    <h3>🚀 우선 실행 해결책</h3>
+                    <p>${workshopData.prioritySolution || '(미작성)'}</p>
+                </div>
+            `;
+
+            // Slide 4: 실행 목표 + 30/60/90일
+            document.getElementById('actionPlanSection').innerHTML = `
+                <div class="problem-box">
+                    <h3>🎯 실행 목표</h3>
+                    <p>${workshopData.goal || '(미작성)'}</p>
+                </div>
+                <div class="action-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">30일</div>
+                        <div class="timeline-content">${workshopData.action30 || '(미작성)'}</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">60일</div>
+                        <div class="timeline-content">${workshopData.action60 || '(미작성)'}</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">90일</div>
+                        <div class="timeline-content">${workshopData.action90 || '(미작성)'}</div>
+                    </div>
+                </div>
+            `;
+
+            // Slide 5: 담당 체계 + 필요 자원
+            document.getElementById('resourceSection').innerHTML = `
+                <div class="two-column">
+                    <div class="info-box">
+                        <h3>👤 담당 체계</h3>
+                        <div class="info-item">
+                            <div class="info-label">주관자 (실제 실행 담당)</div>
+                            <div class="info-value">${workshopData.owner || '(미작성)'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">협조자 (지원 및 협력)</div>
+                            <div class="info-value">${workshopData.collaborator || '(미작성)'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">의사결정자 (최종 승인)</div>
+                            <div class="info-value">${workshopData.decisionMaker || '(미작성)'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">보고 대상</div>
+                            <div class="info-value">${workshopData.reportTo || '(미작성)'}</div>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <h3>📦 필요 자원</h3>
+                        <div class="info-item">
+                            <div class="info-label">필요한 시간</div>
+                            <div class="info-value">${workshopData.timeResource || '(미작성)'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">필요한 인력</div>
+                            <div class="info-value">${workshopData.peopleResource || '(미작성)'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">필요한 예산</div>
+                            <div class="info-value">${workshopData.budgetResource || '(미작성)'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">필요한 자료</div>
+                            <div class="info-value">${workshopData.dataResource || '(미작성)'}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Slide 6: 장애요인 & 대응방안
+            document.getElementById('obstacleSection').innerHTML = `
+                <div class="two-column">
+                    <div class="info-box">
+                        <h3>⚠️ 장애요인 1</h3>
+                        <div class="info-item">
+                            <div class="info-value" style="margin-bottom: 15px;">${workshopData.obstacle1 || '(미작성)'}</div>
+                        </div>
+                        <h3 style="margin-top: 20px;">✅ 대응방안</h3>
+                        <div class="info-item">
+                            <div class="info-value">${workshopData.solution1 || '(미작성)'}</div>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <h3>⚠️ 장애요인 2</h3>
+                        <div class="info-item">
+                            <div class="info-value" style="margin-bottom: 15px;">${workshopData.obstacle2 || '(미작성)'}</div>
+                        </div>
+                        <h3 style="margin-top: 20px;">✅ 대응방안</h3>
+                        <div class="info-item">
+                            <div class="info-value">${workshopData.solution2 || '(미작성)'}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Slide 7: 성과 확인 기준
+            document.getElementById('metricsSection').innerHTML = `
+                <div class="two-column">
+                    <div class="info-box">
+                        <h3>📈 정량 기준</h3>
+                        <div class="info-item">
+                            <div class="info-label">숫자로 측정 가능</div>
+                            <div class="info-value">${workshopData.quantitativeMetric || '(미작성)'}</div>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <h3>💬 정성 기준</h3>
+                        <div class="info-item">
+                            <div class="info-label">체감으로 확인 가능</div>
+                            <div class="info-value">${workshopData.qualitativeMetric || '(미작성)'}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Slide 8: 회장에게 요청
+            document.getElementById('requestSection').innerHTML = `
+                <div class="card-grid">
+                    <div class="pitch-card">
+                        <div class="card-title">✅ 승인 요청 사항</div>
+                        <div class="card-content" style="margin-top: 15px;">${workshopData.approvalRequest || '(미작성)'}</div>
+                    </div>
+                    <div class="pitch-card">
+                        <div class="card-title">🤝 지원 요청 사항</div>
+                        <div class="card-content" style="margin-top: 15px;">${workshopData.supportRequest || '(미작성)'}</div>
+                    </div>
+                    <div class="pitch-card">
+                        <div class="card-title">⚡ 즉시 결정 필요</div>
+                        <div class="card-content" style="margin-top: 15px;">${workshopData.urgentDecision || '(미작성)'}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateNavigation() {
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+            document.getElementById('totalSlides').textContent = totalSlides;
+            document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
+            document.getElementById('nextBtn').disabled = currentSlideIndex === totalSlides - 1;
+        }
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            updateNavigation();
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                showSlide(currentSlideIndex);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                showSlide(currentSlideIndex);
+            }
+        }
+
+        function exitPitchDeck() {
+            if (confirm('피치덱을 종료하고 실습 기록지로 돌아가시겠습니까?')) {
+                window.location.href = 'workshop_templates_team1.html';
+            }
+        }
+
+        // 키보드 네비게이션
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Escape') {
+                exitPitchDeck();
+            }
+        });
+
+        // 터치 스와이프 네비게이션
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                prevSlide();
+            }
+        }
+    </script>
+</body>
+</html>

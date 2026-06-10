@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>샘플 데이터 로딩...</title>
+</head>
+<body>
+    <h1>샘플 데이터를 로딩 중입니다...</h1>
+    <script>
+        // 샘플 데이터 로드
+        const sampleData = {
+            problemStatement: '협회는 의견 수렴은 이루어지고 있으나 결정 기준과 책임 주체가 명확하지 않아 반복 보고와 의사결정 지연이 발생하고 있다.',
+            problemContext: '중요한 사안을 결정해야 할 때, 여러 위원회와 부서가 관련된 사안을 처리할 때, 긴급한 사안에 즉시 대응해야 할 때',
+            rootCause1: '의사결정 기준과 권한 체계가 문서화되어 있지 않다',
+            rootCause2: '사안별 결정권자가 명확하지 않아 여러 사람에게 보고가 반복된다',
+            rootCause3: '승인 단계가 많아 의사결정이 지연되고 실행 시점을 놓친다',
+            priority: '핵심 원인 1 - 의사결정 기준과 권한 체계를 먼저 문서화해야 다른 문제도 해결 가능하다',
+            solutionCandidates: '- 의사결정 유형 분류표 작성 (중요도, 긴급도 기준)\n- 보고·검토·승인 단계 표준화\n- 결정권자 사전 지정 (RACI 매트릭스)\n- 의견수렴 마감기한 설정\n- 결정 후 변경 사유 공유 원칙 마련\n- 긴급 사안 즉시 결정 프로세스',
+            finalSolution1: '의사결정 유형 분류표 작성 - 중요도와 긴급도에 따른 의사결정 권한 명시',
+            finalSolution2: '결정권자 사전 지정 - 업무 시작 전 주관자, 협조자, 승인자 명확화 (RACI 매트릭스)',
+            finalSolution3: '의견수렴 마감기한 설정 - 기한 내 의견 제출, 기한 후 결정 진행',
+            prioritySolution: '최종 선정 해결책 1 - 의사결정 유형 분류표를 먼저 만들어야 권한 체계가 명확해진다',
+            goal: '90일 후 의사결정 유형 분류표가 완성되고 전체 구성원이 이를 숙지하여, 주요 의사결정 시 결정권자가 명확해지고 의사결정 지연이 30% 감소한다.',
+            action30: '의사결정 유형 분류 초안 작성 (중요도/긴급도 매트릭스), 임원진 검토 및 피드백 수렴',
+            action60: '의사결정 유형 분류표 확정, 전체 구성원 교육 및 공유, 시범 적용 시작',
+            action90: '실제 적용 및 피드백 수렴, 필요 시 수정·보완, 최종 버전 확정 및 정착',
+            owner: '사무국장',
+            collaborator: '기획팀, 각 위원회 위원장',
+            decisionMaker: '회장',
+            reportTo: '회장단, 임원진',
+            timeResource: '주 5시간 × 12주',
+            peopleResource: '실무 담당자 2명, 각 위원회 대표 1명씩',
+            budgetResource: '외부 전문가 자문 200만원',
+            dataResource: '타 협회 의사결정 체계 벤치마킹 자료, 기존 의사결정 사례 분석',
+            obstacle1: '기존 의사결정 방식에 익숙한 구성원들의 변화 저항',
+            solution1: '새로운 방식의 필요성을 충분히 설명하고, 시범 적용 기간을 두어 점진적으로 전환. 성공 사례를 조기에 공유하여 신뢰 확보',
+            obstacle2: '리더십 전환기에 따른 불확실성',
+            solution2: '현 회장단의 승인을 받고 차기 회장단에게도 사전 공유하여 연속성 확보. 문서화된 체계로 리더 교체와 무관하게 유지',
+            quantitativeMetric: '의사결정 지연 사례 30% 감소, 반복 보고 건수 50% 감소, 긴급 사안 48시간 내 결정 비율 80% 이상',
+            qualitativeMetric: '구성원 90% 이상이 의사결정 기준이 명확해졌다고 응답, 회의 시간 체감 단축',
+            approvalRequest: '의사결정 유형 분류표 작성 및 전체 적용 승인',
+            supportRequest: '외부 전문가 자문 예산 지원 (200만원), 전체 교육 시간 확보 (2시간)',
+            urgentDecision: '실무 담당자 지정 및 권한 부여, 위원회별 대표 선정'
+        };
+
+        localStorage.setItem('workshop_team1', JSON.stringify(sampleData));
+        console.log('✅ Sample data loaded to localStorage');
+
+        // 피치덱 페이지로 자동 이동
+        setTimeout(() => {
+            window.location.href = 'pitch_deck_team1.html';
+        }, 500);
+    </script>
+</body>
+</html>
