@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>본진단 결과 분석 | 대한치과위생사협회</title>
+    <meta name="description" content="조직진단 본설문 결과 분석">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-modal-content">
+            <h2>🔐 본진단 결과 분석</h2>
+            <p>비밀번호를 입력하세요</p>
+            <input type="password" id="passwordInput" class="password-input" placeholder="비밀번호" autocomplete="off">
+            <div class="password-button-group">
+                <button class="password-btn password-btn-submit" onclick="checkPassword()">접근</button>
+            </div>
+            <div id="passwordError" class="password-error">비밀번호가 올바르지 않습니다</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="../index.html" class="logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="logo-img"><span>조직진단 AI플랫폼</span></a>
+            <ul class="nav-links">
+                <li class="has-dropdown"><a href="kdha.html">대한치과위생사협회</a><ul class="dropdown-menu"><li><a href="main-survey.html">본진단 설문</a></li></ul></li>
+                <li class="has-dropdown"><a href="../index.html">진단</a><ul class="dropdown-menu"><li><a href="../index.html">대한치과위생사협회</a></li><li><a href="../home.html">에스비컨설팅</a></li></ul></li>
+                <li><a href="diagnosis.html">진단시스템</a></li>
+                <li><a href="areas.html">진단영역</a></li>
+                <li class="has-dropdown"><a href="roadmap.html">실행로드맵</a><ul class="dropdown-menu"><li><a href="kdha-roadmap.html">협회 로드맵</a></li><li><a href="workshop.html">워크숍 안내</a></li></ul></li>
+                <li class="has-dropdown"><a href="outcomes.html">산출물</a><ul class="dropdown-menu"><li><a href="report.html">진단 결과 리포트</a></li><li><a href="admin-dashboard.html">📊 관리자 대시보드</a></li><li><a href="main-survey-analysis.html">📊 본진단 분석</a></li><li><a href="ontology-3d.html">🔬 3D 온톨로지</a></li></ul></li>
+                <li><a href="contact.html">문의하기</a></li>
+            </ul>
+            <div class="mobile-menu-btn"><span></span><span></span><span></span></div>
+        </nav>
+    </header>
+
+    <!-- Analysis Section -->
+    <section class="analysis-section">
+        <div class="container">
+            <div class="analysis-header">
+                <h1>본진단 결과 분석</h1>
+                <p>제출된 본진단 응답을 분석합니다.</p>
+            </div>
+
+            <div class="role-tabs">
+                <button class="role-tab active" data-role="executive">👔 임원진 본진단 결과</button>
+                <button class="role-tab" data-role="employee">👩‍💼 직원 본진단 결과</button>
+            </div>
+
+            <div class="response-info" id="responseInfo"><p>데이터 로딩 중...</p></div>
+
+            <div class="analysis-tabs" id="analysisTabs" style="display:none;">
+                <div class="analysis-tab-buttons">
+                    <button class="analysis-tab-btn active" data-tab="input-content">📝 입력 내용</button>
+                    <button class="analysis-tab-btn" data-tab="result-analysis">📊 결과 분석</button>
+                    <button class="analysis-tab-btn" data-tab="report">📑 결과분석 리포트</button>
+                    <button class="analysis-tab-btn" data-tab="insights">🎤 인터뷰 시트</button>
+                    <button class="analysis-tab-btn" data-tab="ontology">🔬 온톨로지 분석</button>
+                </div>
+                <div class="analysis-tab-content active" id="tab-input-content"><div id="analysisContent" class="analysis-content"></div></div>
+                <div class="analysis-tab-content" id="tab-result-analysis"><div id="resultAnalysisContent" class="analysis-content"></div></div>
+                <div class="analysis-tab-content" id="tab-report"><div id="reportContent" class="analysis-content"></div></div>
+                <div class="analysis-tab-content" id="tab-insights"><div id="insightsContent" class="analysis-content"></div></div>
+                <div class="analysis-tab-content" id="tab-ontology"><div id="ontologyContent" class="analysis-content"></div></div>
+            </div>
+
+            <div class="back-link"><a href="main-survey.html">← 본진단 선택으로 돌아가기</a></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-about">
+                <div class="footer-logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="footer-logo-img"><span>조직진단 AI플랫폼</span></div>
+                <p class="footer-desc">전문직 자율성과 공공성을 동시에 작동시키는 협회 전용 조직진단 시스템을 제공합니다.</p>
+            </div>
+            <div class="footer-links"><h4>메뉴</h4><ul><li><a href="kdha.html">대한치과위생사협회</a></li><li><a href="diagnosis.html">진단 시스템</a></li><li><a href="areas.html">진단 영역</a></li><li><a href="kdha-roadmap.html">로드맵</a></li></ul></div>
+            <div class="footer-links"><h4>회사</h4><ul><li><a href="about.html">회사 소개</a></li><li><a href="contact.html">문의하기</a></li><li><a href="../home.html">에스비컨설팅</a></li></ul></div>
+            <div class="footer-links"><h4>연락처</h4><ul><li>이메일: jaiwshim@gmail.com</li><li>전화: 010-2397-5734</li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2025 에스비컨설팅 조직진단. All rights reserved.</p></div>
+    </footer>
+
+    <style>
+        .analysis-section { padding: 60px 30px; background: #f8fafc; min-height: calc(100vh - 200px); }
+        .analysis-header { text-align: center; margin-bottom: 50px; padding-top: 20px; }
+        .analysis-header h1 { font-size: 32px; color: #0a0e27; margin-bottom: 15px; font-weight: 700; }
+        .analysis-header p { font-size: 16px; color: #2d3748; line-height: 1.8; }
+        .role-tabs { display: flex; gap: 20px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+        .role-tab { padding: 14px 32px; font-size: 15px; font-weight: 600; border: 2px solid #e2e8f0; background: white; color: #2d3748; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-family: 'Noto Sans KR', sans-serif; }
+        .role-tab:hover { border-color: #8b5cf6; color: #8b5cf6; }
+        .role-tab.active { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border-color: #8b5cf6; box-shadow: 0 4px 12px rgba(139,92,246,0.3); }
+        .analysis-tabs { max-width: 960px; margin: 0 auto; }
+        .analysis-tab-buttons { display: flex; gap: 15px; border-bottom: 2px solid #e2e8f0; margin-bottom: 30px; flex-wrap: wrap; }
+        .analysis-tab-btn { padding: 12px 24px; background: white; border: none; border-bottom: 3px solid transparent; color: #2d3748; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: 'Noto Sans KR', sans-serif; position: relative; bottom: -2px; }
+        .analysis-tab-btn:hover { color: #8b5cf6; border-bottom-color: #d4c5f9; }
+        .analysis-tab-btn.active { color: #8b5cf6; border-bottom-color: #8b5cf6; }
+        .analysis-tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .analysis-tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .response-info { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 5px solid #2563eb; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .response-info p { margin: 0; font-size: 14px; color: #2d3748; font-weight: 500; }
+        .analysis-content { max-width: 960px; margin: 0 auto; }
+        .question-section { background: white; border-radius: 10px; padding: 30px; margin-bottom: 30px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .question-title { font-size: 16px; font-weight: 600; color: #0a0e27; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #f0f1f3; }
+        .question-title .q-number { display: inline-flex; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; width: 32px; height: 32px; border-radius: 50%; align-items: center; justify-content: center; margin-right: 12px; font-size: 13px; font-weight: 700; }
+        .response-cards { display: grid; gap: 15px; }
+        #insightsContent .response-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .response-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; border-left: 4px solid #8b5cf6; }
+        .response-card p { margin: 0; font-size: 14px; color: #334155; line-height: 1.7; word-break: break-word; }
+        .scale-section { background: white; border-radius: 10px; padding: 30px; margin-bottom: 30px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .scale-title { font-size: 16px; font-weight: 600; color: #0a0e27; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #f0f1f3; }
+        .scale-title .q-number { display: inline-flex; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; width: 32px; height: 32px; border-radius: 50%; align-items: center; justify-content: center; margin-right: 12px; font-size: 13px; font-weight: 700; }
+        .scale-stats { display: grid; gap: 20px; margin-bottom: 25px; }
+        .stat-item { display: flex; align-items: center; gap: 20px; }
+        .stat-label { min-width: 120px; font-size: 14px; font-weight: 600; color: #2d3748; }
+        .stat-value { font-size: 24px; font-weight: 700; color: #10b981; }
+        .scale-distribution { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+        .distribution-title { font-size: 13px; font-weight: 600; color: #2d3748; margin-bottom: 12px; }
+        .distribution-bars { display: grid; gap: 10px; }
+        .distribution-bar { display: flex; align-items: center; gap: 10px; }
+        .bar-label { min-width: 50px; font-size: 12px; color: #64748b; }
+        .bar-chart { flex: 1; height: 24px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, #10b981 0%, #059669 100%); transition: width 0.3s; }
+        .bar-percent { font-size: 12px; color: #64748b; min-width: 60px; text-align: right; }
+        .empty-state { text-align: center; padding: 60px 30px; background: white; border-radius: 10px; border: 2px dashed #cbd5e1; }
+        .empty-state p { font-size: 16px; color: #64748b; margin: 0; }
+        .back-link { text-align: center; margin-top: 50px; }
+        .back-link a { display: inline-block; padding: 12px 24px; color: #2563eb; text-decoration: none; font-weight: 600; border: 2px solid #2563eb; border-radius: 8px; transition: all 0.3s; }
+        .back-link a:hover { background: #2563eb; color: white; }
+        @media (max-width: 768px) {
+            .analysis-section { padding: 40px 20px; }
+            .analysis-header h1 { font-size: 24px; }
+            .role-tabs { gap: 10px; }
+            .role-tab { flex: 1; min-width: 140px; padding: 12px 16px; font-size: 13px; }
+            .question-section, .scale-section { padding: 20px; }
+            #insightsContent .response-cards { grid-template-columns: 1fr; }
+        }
+        .password-modal { display: flex; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 9999; }
+        .password-modal.hidden { display: none; }
+        .password-modal-content { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 90%; text-align: center; }
+        .password-modal-content h2 { color: #333; margin-bottom: 1rem; font-size: 1.5rem; }
+        .password-modal-content p { color: #666; margin-bottom: 1.5rem; }
+        .password-input { width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box; font-family: monospace; letter-spacing: 0.2em; }
+        .password-input:focus { outline: none; border-color: #0066cc; box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
+        .password-button-group { display: flex; gap: 0.5rem; }
+        .password-btn { flex: 1; padding: 0.75rem 1rem; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .password-btn-submit { background: #0066cc; color: white; }
+        .password-btn-submit:hover { background: #0052a3; }
+        .password-error { color: #d32f2f; font-size: 0.9rem; margin-top: 0.5rem; display: none; }
+        .password-error.show { display: block; }
+        /* Ontology Styles */
+        .onto-profile-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px; }
+        .onto-profile-card { background:white;border:1px solid #e2e8f0;border-radius:8px;padding:14px;text-align:center; }
+        .onto-profile-card .dim-label { font-size:11px;color:#64748b;font-weight:600;margin-bottom:6px; }
+        .onto-profile-card .dim-value { font-size:14px;color:#0a0e27;font-weight:700; }
+        .onto-section { background:white;border:1px solid #e2e8f0;border-radius:10px;padding:25px;margin-bottom:25px;box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+        .onto-section h3 { color:#0a0e27;margin:0 0 20px 0;font-size:16px;font-weight:700;padding-bottom:12px;border-bottom:2px solid #f0f1f3; }
+        .onto-node-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px; }
+        .onto-node-card { border-radius:8px;padding:14px;border-left:4px solid; }
+        .onto-node-card .node-type { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px; }
+        .onto-node-card .node-name { font-size:14px;font-weight:600;color:#0a0e27;margin-bottom:4px; }
+        .onto-node-card .node-keywords { margin-top:8px;display:flex;flex-wrap:wrap;gap:4px; }
+        .onto-node-card .node-keywords span { font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600; }
+        .onto-bottleneck-table { width:100%;border-collapse:collapse;font-size:13px; }
+        .onto-bottleneck-table th { background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;color:#2d3748;border-bottom:2px solid #e2e8f0; }
+        .onto-bottleneck-table td { padding:10px 12px;border-bottom:1px solid #f0f1f3;color:#334155;vertical-align:top; }
+        .onto-severity { display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700; }
+        .onto-severity.high { background:#fef2f2;color:#dc2626; }
+        .onto-severity.medium { background:#fffbeb;color:#d97706; }
+        .onto-severity.low { background:#f0fdf4;color:#16a34a; }
+        .onto-relation-list { display:grid;gap:10px; }
+        .onto-relation-item { display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f8fafc;border-radius:6px;font-size:13px; }
+        .onto-relation-item .rel-from { font-weight:600;min-width:80px;text-align:right; }
+        .onto-relation-item .rel-arrow { background:#e2e8f0;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;color:#64748b;white-space:nowrap; }
+        .onto-relation-item .rel-to { font-weight:600;color:#7c3aed; }
+        .onto-ai-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px; }
+        .onto-ai-card { background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1px solid #bae6fd;border-radius:8px;padding:16px; }
+        .onto-ai-card .ai-title { font-size:14px;font-weight:700;color:#0369a1;margin-bottom:8px; }
+        .onto-ai-card .ai-desc { font-size:12px;color:#334155;line-height:1.6; }
+        .onto-ai-card .ai-impact { margin-top:10px;font-size:11px;font-weight:600;color:#059669; }
+        .onto-svg-container { width:100%;overflow-x:auto;margin:0 auto 20px;background:#fafbfc;border-radius:8px;border:1px solid #e2e8f0; }
+        .onto-legend { display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px;padding:10px; }
+        .onto-legend-item { display:flex;align-items:center;gap:6px;font-size:11px;color:#64748b;font-weight:600; }
+        .onto-legend-dot { width:12px;height:12px;border-radius:3px; }
+        @media (max-width:768px) { .onto-profile-grid{grid-template-columns:repeat(2,1fr);} .onto-node-grid{grid-template-columns:1fr;} .onto-ai-grid{grid-template-columns:1fr;} .onto-relation-item{flex-wrap:wrap;} }
+
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            header, footer, .role-tabs, .response-info, .analysis-tab-buttons, .back-link, .password-modal, .report-pdf-btn-wrap { display: none !important; }
+            body { background: white !important; }
+            .analysis-section { padding: 0 !important; }
+            .analysis-header { display: none !important; }
+            .analysis-tabs { max-width: 100% !important; }
+            .analysis-tab-content { display: none !important; }
+            .analysis-tab-content#tab-report { display: block !important; }
+            #reportContent { max-width: 100% !important; }
+            @page { margin: 10mm 12mm 15mm 12mm; }
+            #insightsContent .response-cards { grid-template-columns: 1fr; gap: 4px; }
+        }
+    </style>
+
+    <script>
+    const ADMIN_PASSWORD = '9633';
+    const SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxZnVxbnhsYWZjaWxzb29rbXFtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDI4Mjg1MywiZXhwIjoyMDg5ODU4ODUzfQ.GJs3B7qG_fQHp7jK7CKjEIx7veRMFEEjo-HlV-nrVNE';
+
+    /* ── 문항 레이블 ── */
+    const questionLabels = {
+        executive: {
+            q1:'미션-의사결정 기준 작동 사례', q2:'미션 대비 단기 이슈 우선 경험', q3:'3대 핵심 공공 가치', q4:'잘 작동하는 전략·정책',
+            q5:'장기 미션 실현 중점도 (7점 척도)',
+            q6:'주요 결정 절차', q7:'의사결정 지연 원인', q8:'신속한 결정 성공 사례', q9:'합의 문화 강점과 속도 개선',
+            q10:'의사결정 속도·품질 균형 (7점 척도)',
+            q11:'집행부 교체 리스크', q12:'리더십 교체 후 정책 중단 사례', q13:'리더십 교체에도 지속된 전통', q14:'정책·사업 아카이빙 현황',
+            q15:'리더십 교체 후 연속성 유지 (7점 척도)',
+            q16:'사무처 자율성 수준 평가', q17:'임원 개입 판단 기준', q18:'회장단-사무처 협력 성공 사례', q19:'역할경계 모호로 인한 갈등 사례',
+            q20:'역할·권한·책임 경계 명확성 (7점 척도)',
+            q21:'반복 갈등 유형', q22:'공식 갈등 해결 vs 개인 관계 잔존', q23:'세대 간 기준·방식 차이', q24:'전문성·데이터 vs 정치·관계 의사결정',
+            q25:'의사결정 공정성·신뢰 (7점 척도)',
+            q26:'재설계 필요 구조 1가지', q27:'가장 시급한 병목', q28:'실행 가능 개선 방안 3가지', q29:'3년 후 이상적 운영 모습', q30:'반드시 다루어야 할 민감 이슈'
+        },
+        employee: {
+            q1:'미션과 업무 연결 체감', q2:'가장 보람 있었던 업무 경험', q3:'협회의 긍정적 기여 사례', q4:'의미 있는 업무 vs 의미 체감 어려운 업무',
+            q5:'업무의 미션 기여도 체감 (5점 척도)',
+            q6:'명확한 업무 지시로 효율적 사례', q7:'우선순위 변경으로 어려움 경험', q8:'효과적 의사결정 성공 사례', q9:'의사결정 지연·반복 보고 원인',
+            q10:'업무 방향·우선순위 명확 공유 (5점 척도)',
+            q11:'역할·책임 명확성', q12:'협업 성공 사례와 요인', q13:'역할·권한 불명확 혼선 경험', q14:'책임-권한 불균형 경험',
+            q15:'역할·권한·책임 범위 이해도 (5점 척도)',
+            q16:'인수인계 도움 자료·사례', q17:'기록·매뉴얼 부족 어려움 경험', q18:'조직 지식 축적 방식', q19:'리더십 교체 시 업무 안정화 체계',
+            q20:'업무 기록·인수인계 체계 충분성 (5점 척도)',
+            q21:'긍정적 근무환경 요소', q22:'유지·강화할 복지·자율성·성장 요소', q23:'자부심·소속감 원천', q24:'개선 필요 근무환경·문화 요소',
+            q25:'근무환경·조직문화 긍정적 체감 (5점 척도)',
+            q26:'가장 중요한 업무 태도·기준', q27:'책임감·주인의식 정도와 이유', q28:'협회 발전 기여 가능 영역', q29:'직원-임원 간 상호 기본 원칙',
+            q30:'소속감·책임감으로 기여 의지 (5점 척도)'
+        }
+    };
+
+    /* 척도 문항 정의 */
+    const scaleQuestions = {
+        executive: [ {q:'q5',max:7}, {q:'q10',max:7}, {q:'q15',max:7}, {q:'q20',max:7}, {q:'q25',max:7} ],
+        employee:  [ {q:'q5',max:5}, {q:'q10',max:5}, {q:'q15',max:5}, {q:'q20',max:5}, {q:'q25',max:5}, {q:'q30',max:5} ]
+    };
+
+    /* 섹션 정의 */
+    const sections = {
+        executive: [
+            { title:'Ⅰ. 미션·공공성과 전략 작동력', qs:['q1','q2','q3','q4','q5'] },
+            { title:'Ⅱ. 의사결정 구조와 속도', qs:['q6','q7','q8','q9','q10'] },
+            { title:'Ⅲ. 거버넌스·연속성·조직기억', qs:['q11','q12','q13','q14','q15'] },
+            { title:'Ⅳ. 역할경계·협업·자율성', qs:['q16','q17','q18','q19','q20'] },
+            { title:'Ⅴ. 갈등·세대·신뢰·공정성', qs:['q21','q22','q23','q24','q25'] },
+            { title:'Ⅵ. 미래비전·개선방안·민감이슈', qs:['q26','q27','q28','q29','q30'] }
+        ],
+        employee: [
+            { title:'Ⅰ. 협회의 미션·업무 의미·직무 보람', qs:['q1','q2','q3','q4','q5'] },
+            { title:'Ⅱ. 업무 방향성·우선순위·의사결정 속도', qs:['q6','q7','q8','q9','q10'] },
+            { title:'Ⅲ. 역할·권한·협업 구조', qs:['q11','q12','q13','q14','q15'] },
+            { title:'Ⅳ. 정보 공유·업무 기록·인수인계·업무 안정성', qs:['q16','q17','q18','q19','q20'] },
+            { title:'Ⅴ. 근무환경·복지·사무국 분위기·조직문화', qs:['q21','q22','q23','q24','q25'] },
+            { title:'Ⅵ. 업무 태도·소속감·책임감·자기성찰', qs:['q26','q27','q28','q29','q30'] }
+        ]
+    };
+
+    let currentRole = 'executive';
+    let allData = {};
+
+    /* ── 비밀번호 ── */
+    function checkPassword() {
+        const pw = document.getElementById('passwordInput').value;
+        if (pw === ADMIN_PASSWORD) {
+            sessionStorage.setItem('mainSurveyAnalysisAuth','true');
+            document.getElementById('passwordModal').classList.add('hidden');
+            initializeAnalysis();
+        } else {
+            document.getElementById('passwordError').classList.add('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+    }
+
+    window.addEventListener('load', function() {
+        document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key==='Enter') checkPassword(); });
+        if (!sessionStorage.getItem('mainSurveyAnalysisAuth')) {
+            document.getElementById('passwordInput').focus();
+        } else {
+            document.getElementById('passwordModal').classList.add('hidden');
+            initializeAnalysis();
+        }
+    });
+
+    function initializeAnalysis() { loadData(); }
+
+    /* ── 탭 이벤트 ── */
+    document.querySelectorAll('.role-tab').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentRole = this.dataset.role;
+            document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            renderAnalysis(currentRole);
+        });
+    });
+
+    document.querySelectorAll('.analysis-tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.analysis-tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            document.querySelectorAll('.analysis-tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-'+this.dataset.tab).classList.add('active');
+        });
+    });
+
+    /* ── 데이터 로드 ── */
+    async function loadData() {
+        try {
+            const sb = window.supabase.createClient(SUPABASE_URL, SERVICE_KEY);
+            const [execRes, empRes] = await Promise.all([
+                sb.from('executive_survey').select('*').order('submitted_at', {ascending:false}),
+                sb.from('employee_survey').select('*').order('submitted_at', {ascending:false})
+            ]);
+            allData.executive = execRes.data || [];
+            allData.employee  = empRes.data  || [];
+            renderAnalysis('executive');
+        } catch(err) {
+            document.getElementById('responseInfo').innerHTML = '<p>⚠️ 데이터를 불러올 수 없습니다.</p>';
+        }
+    }
+
+    /* ── 키워드 추출 ── */
+    function extractKeywords(texts) {
+        const stopWords = ['있습니다','합니다','것입니다','않는','있는','하는','되는','경우가','있어','있고','때문에','이러한','대한','위한','통해','따른','대해','수행','필요','생각','부분','현재','보다','매우','다소','실제','충분히','이것을','이에','하여','으로','에서','에게','으로써','그리고','또한','하지만'];
+        const allText = texts.join(' ');
+        const words = allText.match(/[가-힣]{2,}/g) || [];
+        const freq = {};
+        words.forEach(w => { if(w.length>=2 && !stopWords.includes(w)) freq[w]=(freq[w]||0)+1; });
+        return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([word,count])=>({word,count}));
+    }
+
+    /* ── 척도 통계 계산 ── */
+    function calcScaleStats(data, qKey, maxScale) {
+        const vals = data.map(d=>d[qKey]).filter(v=>v!==null&&v!==undefined).map(Number);
+        const avg = vals.length>0 ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : '0.00';
+        const dist = {};
+        for(let i=1;i<=maxScale;i++) dist[i] = vals.filter(v=>v===i).length;
+        return {avg, dist, vals, count:vals.length};
+    }
+
+    /* ── 렌더링 ── */
+    function renderAnalysis(role) {
+        const data   = allData[role] || [];
+        const labels = questionLabels[role];
+        const secs   = sections[role];
+        const sqs    = scaleQuestions[role];
+        const isExec = role==='executive';
+        const roleLabel = isExec ? '임원진' : '직원';
+
+        const infoDiv   = document.getElementById('responseInfo');
+        const tabsDiv   = document.getElementById('analysisTabs');
+        const contentDiv = document.getElementById('analysisContent');
+        const resultDiv  = document.getElementById('resultAnalysisContent');
+        const reportDiv  = document.getElementById('reportContent');
+        const insightsDiv= document.getElementById('insightsContent');
+
+        if(data.length===0) {
+            infoDiv.innerHTML = '<p>응답자: 0명</p>';
+            tabsDiv.style.display = 'none';
+            return;
+        }
+
+        tabsDiv.style.display = 'block';
+        const lastSubmit = new Date(data[0].submitted_at).toLocaleDateString('ko-KR');
+        infoDiv.innerHTML = `<p>✅ 응답자: ${data.length}명 / 마지막 제출: ${lastSubmit}</p>`;
+
+        /* ═══ TAB 1: 입력 내용 ═══ */
+        let inputHtml = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h2 style="margin:0;font-size:18px;color:#0a0e27;font-weight:700;">📝 입력 내용 — ${roleLabel}</h2>
+            <button onclick="window.print()" style="padding:8px 16px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📥 PDF 출력</button>
+        </div>`;
+
+        secs.forEach(sec => {
+            sec.qs.forEach(qKey => {
+                const qNum = parseInt(qKey.replace('q',''));
+                const sq = sqs.find(s=>s.q===qKey);
+                if(sq) {
+                    const {avg,dist,vals} = calcScaleStats(data, qKey, sq.max);
+                    inputHtml += `<div class="scale-section">
+                        <div class="scale-title"><span class="q-number">Q${qNum}</span><span>${labels[qKey]}</span></div>
+                        <div class="scale-stats">
+                            <div class="stat-item"><div class="stat-label">평균값</div><div class="stat-value">${avg} / ${sq.max}</div></div>
+                            <div class="stat-item"><div class="stat-label">응답 수</div><div class="stat-value">${vals.length}명</div></div>
+                        </div>
+                        <div class="scale-distribution"><div class="distribution-title">선택 분포</div>
+                        <div class="distribution-bars">${Array.from({length:sq.max},(_,i)=>i+1).map(lv=>{
+                            const cnt=dist[lv]||0;
+                            const pct=vals.length>0?((cnt/vals.length)*100).toFixed(0):0;
+                            return `<div class="distribution-bar"><div class="bar-label">${lv}점</div><div class="bar-chart"><div class="bar-fill" style="width:${pct}%"></div></div><div class="bar-percent">${cnt}명 (${pct}%)</div></div>`;
+                        }).join('')}</div></div></div>`;
+                } else {
+                    const responses = data.map(d=>d[qKey]).filter(r=>r&&r.trim());
+                    inputHtml += `<div class="question-section">
+                        <div class="question-title"><span class="q-number">Q${qNum}</span><span>${labels[qKey]}</span></div>
+                        <div class="response-cards">${responses.length>0 ? responses.map(r=>`<div class="response-card"><p>${r}</p></div>`).join('') : '<p style="color:#94a3b8;font-size:13px;">응답 없음</p>'}</div>
+                    </div>`;
+                }
+            });
+        });
+
+        contentDiv.innerHTML = inputHtml;
+
+        /* ═══ TAB 2: 결과 분석 ═══ */
+        const allMeaningful = [];
+        for(let i=1;i<=30;i++) {
+            const sq = sqs.find(s=>s.q===`q${i}`);
+            if(!sq) {
+                const vals = data.map(d=>d[`q${i}`]||'').filter(r=>r.trim().length>5);
+                allMeaningful.push(...vals);
+            }
+        }
+        const topKeywords = extractKeywords(allMeaningful);
+
+        const overallScaleAvgs = sqs.map(s=>{
+            const {avg,vals} = calcScaleStats(data,s.q,s.max);
+            return {q:s.q,max:s.max,avg:parseFloat(avg),label:labels[s.q],count:vals.length};
+        }).filter(s=>s.count>0);
+        const overallAvg = overallScaleAvgs.length>0 ?
+            (overallScaleAvgs.reduce((a,b)=>a+b.avg,0)/overallScaleAvgs.length).toFixed(2) : '0.00';
+
+        let resultHtml = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h2 style="margin:0;font-size:18px;color:#0a0e27;font-weight:700;">📊 결과 분석 — ${roleLabel}</h2>
+        </div>`;
+
+        resultHtml += `<div style="background:white;border-radius:12px;padding:25px;margin-bottom:25px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="color:#0a0e27;margin-top:0;">📊 척도 문항 종합 평균</h3>
+            <div style="font-size:42px;font-weight:800;color:#10b981;text-align:center;margin:10px 0;">${overallAvg}</div>
+            <p style="text-align:center;color:#64748b;font-size:13px;">전체 척도 문항 평균 (응답자 ${data.length}명)</p>
+            <div style="margin-top:20px;">${overallScaleAvgs.map(s=>{
+                const pct = (s.avg/s.max*100).toFixed(0);
+                return `<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span style="color:#334155;font-weight:500;">${labels[s.q]}</span><span style="font-weight:700;color:#10b981;">${s.avg.toFixed(2)} / ${s.max}</span></div><div style="height:10px;background:#e2e8f0;border-radius:5px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#10b981,#059669);"></div></div></div>`;
+            }).join('')}</div>
+        </div>`;
+
+        resultHtml += `<div style="background:white;border-radius:12px;padding:25px;margin-bottom:25px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="color:#0a0e27;margin-top:0;">🔑 핵심 키워드 (서술형 응답 기반)</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">${topKeywords.map((kw,i)=>{
+                const colors=['#6d28d9','#1d4ed8','#047857','#b45309','#b91c1c','#be185d','#4338ca','#0f766e'];
+                const bgColors=['#ede9fe','#dbeafe','#d1fae5','#fef3c7','#fee2e2','#fce7f3','#e0e7ff','#ccfbf1'];
+                return `<span style="padding:8px 16px;background:${bgColors[i%8]};color:${colors[i%8]};border:1.5px solid ${colors[i%8]}40;border-radius:20px;font-size:13px;font-weight:700;">${kw.word} (${kw.count})</span>`;
+            }).join('')}</div>
+        </div>`;
+
+        const issuesByRole = {
+            executive:[
+                {rank:1,issue:'의사결정 체계 미비',sev:'🔴',desc:'의사결정 구조 불명확, 합의 과정 과다로 실행 차질 반복',qs:'Q7,Q8'},
+                {rank:2,issue:'거버넌스 연속성 단절',sev:'🔴',desc:'집행부 교체 시 정책·사업 중단, 조직기억 소실',qs:'Q11,Q12'},
+                {rank:3,issue:'역할·권한 경계 모호',sev:'🟠',desc:'회장단-사무처 간 역할 분담 불명확, 중복·공백 발생',qs:'Q16,Q19'},
+                {rank:4,issue:'갈등 반복 구조',sev:'🟠',desc:'세대 간 기준 충돌, 공식 해결 메커니즘 미작동',qs:'Q21,Q22'},
+                {rank:5,issue:'미션-실행 괴리',sev:'🟡',desc:'단기 이슈 대응 우선, 장기 미션 실현 중점도 저하',qs:'Q1,Q2'}
+            ],
+            employee:[
+                {rank:1,issue:'인수인계·매뉴얼 부재',sev:'🔴',desc:'업무 문서화 없음, 리더십 교체 시 업무 연속성 단절',qs:'Q17,Q18'},
+                {rank:2,issue:'의사결정 지연·병목',sev:'🔴',desc:'반복 보고, 대결 체계 미비, 결재 단계 과다',qs:'Q9,Q10'},
+                {rank:3,issue:'역할·권한 불균형',sev:'🔴',desc:'책임은 있으나 권한 부족, 역할 경계 모호',qs:'Q13,Q14'},
+                {rank:4,issue:'복지·처우 개선 필요',sev:'🟠',desc:'성과 평가 기준 불명확, 업무 강도 대비 처우 부족',qs:'Q24,Q25'},
+                {rank:5,issue:'소속감·주인의식 저하',sev:'🟠',desc:'권한 미부여로 주인의식 약화, 미션 연결감 부족',qs:'Q1,Q27'}
+            ]
+        };
+
+        resultHtml += `<div style="background:white;border-radius:12px;padding:25px;margin-bottom:25px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="color:#0a0e27;margin-top:0;">🚨 5대 핵심 이슈</h3>
+            <div style="display:grid;gap:12px;">${(issuesByRole[role]||[]).map(item=>`
+                <div style="display:flex;gap:14px;padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid ${item.sev==='🔴'?'#dc2626':item.sev==='🟠'?'#d97706':'#ca8a04'};">
+                    <div style="min-width:32px;height:32px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#111827;">${item.rank}</div>
+                    <div style="flex:1;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                            <span>${item.sev}</span>
+                            <strong style="font-size:14px;color:#0a0e27;">${item.issue}</strong>
+                            <span style="margin-left:auto;background:#e0e7ff;color:#3730a3;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">${item.qs}</span>
+                        </div>
+                        <p style="margin:0;font-size:13px;color:#374151;line-height:1.6;">${item.desc}</p>
+                    </div>
+                </div>`).join('')}</div>
+        </div>`;
+
+        resultDiv.innerHTML = resultHtml;
+
+        /* ═══ TAB 3: 결과분석 리포트 ═══ */
+        const dateRange = data.length>0 ?
+            `${new Date(data[data.length-1].submitted_at).toLocaleDateString('ko-KR')} ~ ${new Date(data[0].submitted_at).toLocaleDateString('ko-KR')}` : '-';
+
+        const improveByRole = {
+            executive:{
+                short:['의사결정 프로세스 명문화','회장단-사무처 역할 분담 기준 수립','주요 회의체 운영 규칙 정비'],
+                mid:['중장기 전략 수립 체계 구축 (3년 주기)','집행부 교체 인수인계 매뉴얼 개발','갈등 조정 메커니즘 도입'],
+                long:['거버넌스 구조 전면 재설계','정책 연속성 보장 디지털 아카이브 시스템','조직 문화 혁신 프로그램 운영']
+            },
+            employee:{
+                short:['업무별 매뉴얼·체크리스트 정비','인수인계 프로세스 표준화','대결 체계·결재 단계 정비'],
+                mid:['인사관리 시스템 재설계 (임금·평가)','역할·권한·책임 명확화 문서화','신규 직원 온보딩 프로그램 구축'],
+                long:['조직 편제 개편','처우·복지 체계 전면 개편','상호 존중 기반 조직 문화 구축']
+            }
+        };
+        const improve = improveByRole[role]||improveByRole.employee;
+
+        let reportHtml = `<div style="text-align:center;margin-bottom:35px;padding:30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:12px;color:white;">
+            <h2 style="margin:0 0 8px 0;font-size:22px;font-weight:800;color:#fff;">📑 본진단 결과분석 리포트</h2>
+            <p style="margin:0 0 4px 0;font-size:15px;color:#fff;">대한치과위생사협회 조직진단 — ${roleLabel} 응답 분석</p>
+            <p style="margin:0;font-size:13px;color:#e8e0f5;">수집 기간: ${dateRange} | 응답자: ${data.length}명</p>
+        </div>`;
+
+        const avgNum = parseFloat(overallAvg);
+        const satLevel = avgNum>=4.5?'우수':avgNum>=3.5?'보통':avgNum>=2.5?'낮음':'매우 낮음';
+        const satColor = avgNum>=4.5?'#059669':avgNum>=3.5?'#d97706':'#dc2626';
+
+        reportHtml += `<div style="background:white;border-radius:12px;padding:25px;margin-bottom:25px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 20px 0;color:#0a0e27;font-size:17px;">📊 척도 문항 종합 평균</h3>
+            <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+                <div style="text-align:center;min-width:120px;">
+                    <div style="font-size:42px;font-weight:800;color:${satColor};">${overallAvg}</div>
+                    <div style="font-size:13px;color:#374151;font-weight:500;">전체 척도 평균</div>
+                    <div style="margin-top:6px;padding:4px 12px;background:${satColor}20;color:${satColor};border-radius:12px;font-size:12px;font-weight:700;display:inline-block;">${satLevel}</div>
+                </div>
+                <div style="flex:1;min-width:200px;">${overallScaleAvgs.map(s=>{
+                    const pct=(s.avg/s.max*100).toFixed(0);
+                    return `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="color:#374151;font-weight:500;">${labels[s.q]}</span><span style="font-weight:700;color:${satColor};">${s.avg.toFixed(2)}/${s.max}</span></div><div style="height:14px;background:#f1f5f9;border-radius:4px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:${satColor};"></div></div></div>`;
+                }).join('')}</div>
+            </div>
+        </div>`;
+
+        reportHtml += `<div style="background:white;border-radius:12px;padding:25px;margin-bottom:25px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 15px 0;color:#0a0e27;font-size:17px;">🔑 핵심 키워드</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">${topKeywords.map((kw,i)=>{
+                const colors=['#6d28d9','#1d4ed8','#047857','#b45309','#b91c1c','#be185d','#4338ca','#0f766e'];
+                const bgColors=['#ede9fe','#dbeafe','#d1fae5','#fef3c7','#fee2e2','#fce7f3','#e0e7ff','#ccfbf1'];
+                return `<span style="padding:8px 16px;background:${bgColors[i%8]};color:${colors[i%8]};border:1.5px solid ${colors[i%8]}40;border-radius:20px;font-size:13px;font-weight:700;">${kw.word} (${kw.count})</span>`;
+            }).join('')}</div>
+        </div>`;
+
+        reportHtml += `<div style="background:white;border-radius:12px;padding:25px;margin-bottom:25px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 20px 0;color:#0a0e27;font-size:17px;">🚨 5대 핵심 이슈</h3>
+            <div style="display:grid;gap:12px;">${(issuesByRole[role]||[]).map(item=>`
+                <div style="display:flex;gap:14px;padding:16px;background:#f8fafc;border-radius:8px;border-left:4px solid ${item.sev==='🔴'?'#dc2626':item.sev==='🟠'?'#d97706':'#ca8a04'};">
+                    <div style="min-width:32px;height:32px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;">${item.rank}</div>
+                    <div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span>${item.sev}</span><strong style="font-size:14px;color:#0a0e27;">${item.issue}</strong><span style="margin-left:auto;background:#e0e7ff;color:#3730a3;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">${item.qs}</span></div>
+                    <p style="margin:0;font-size:13px;color:#374151;line-height:1.6;">${item.desc}</p></div>
+                </div>`).join('')}</div>
+        </div>`;
+
+        reportHtml += `<div style="background:white;border-radius:12px;padding:25px;margin-bottom:25px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 20px 0;color:#0a0e27;font-size:17px;">📝 문항별 대표 응답</h3>
+            ${secs.map(sec=>{
+                const textQs = sec.qs.filter(q=>!sqs.find(s=>s.q===q));
+                if(!textQs.length) return '';
+                return `<div style="margin-bottom:20px;padding:18px;background:#f8fafc;border-radius:8px;border-left:4px solid #8b5cf6;">
+                    <div style="font-size:13px;font-weight:700;color:#7c3aed;margin-bottom:12px;">${sec.title}</div>
+                    ${textQs.map(qKey=>{
+                        const qNum=parseInt(qKey.replace('q',''));
+                        const resps = data.map(d=>d[qKey]||'').filter(r=>r.trim().length>5);
+                        const rep = [...resps].sort((a,b)=>b.length-a.length)[0]||'';
+                        return rep ? `<div style="margin-bottom:10px;"><div style="font-size:12px;color:#64748b;font-weight:600;margin-bottom:5px;">Q${qNum}. ${labels[qKey]}</div><div style="padding:10px 14px;background:white;border-radius:6px;border:1px solid #e2e8f0;font-size:13px;color:#1a1a1a;line-height:1.7;font-style:italic;">"${rep}"</div></div>` : '';
+                    }).join('')}
+                </div>`;
+            }).join('')}
+        </div>`;
+
+        reportHtml += `<div style="background:white;border-radius:12px;padding:25px;margin-bottom:25px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 20px 0;color:#0a0e27;font-size:17px;">🗺️ 우선 개선 과제 로드맵</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+                <div style="padding:18px;background:#fef2f2;border-radius:8px;border-top:4px solid #ef4444;"><h4 style="margin:0 0 12px 0;color:#991b1b;font-size:14px;">🔥 단기 (즉시)</h4><ul style="margin:0;padding-left:18px;font-size:13px;color:#1e293b;line-height:1.8;">${improve.short.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+                <div style="padding:18px;background:#fffbeb;border-radius:8px;border-top:4px solid #d97706;"><h4 style="margin:0 0 12px 0;color:#78350f;font-size:14px;">📋 중기 (3~6개월)</h4><ul style="margin:0;padding-left:18px;font-size:13px;color:#1e293b;line-height:1.8;">${improve.mid.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+                <div style="padding:18px;background:#f0fdf4;border-radius:8px;border-top:4px solid #059669;"><h4 style="margin:0 0 12px 0;color:#064e3b;font-size:14px;">🏗️ 장기 (6개월~)</h4><ul style="margin:0;padding-left:18px;font-size:13px;color:#1e293b;line-height:1.8;">${improve.long.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+            </div>
+        </div>`;
+
+        reportHtml += `<div style="background:linear-gradient(135deg,#1e293b 0%,#334155 100%);border-radius:12px;padding:28px;color:white;">
+            <h3 style="margin:0 0 15px 0;color:white;font-size:17px;">💡 종합 진단 소견</h3>
+            <div style="font-size:14px;line-height:1.8;color:#f1f5f9;">
+                ${isExec ? `
+                    <p style="margin:0 0 12px 0;">본진단 결과, 임원진 ${data.length}명의 응답을 분석한 결과 전체 척도 평균 ${overallAvg}점으로 조직 운영 전반에 대한 인식 수준을 파악하였습니다.</p>
+                    <p style="margin:0 0 12px 0;">핵심 과제는 <strong style="color:#fca5a5;">①의사결정 체계 명확화</strong>, <strong style="color:#fca5a5;">②거버넌스 연속성 확보</strong>, <strong style="color:#fca5a5;">③역할·권한 경계 정립</strong>으로 요약되며, 협회 특성에 맞는 거버넌스 구조의 체계적 재설계가 필요합니다.</p>
+                    <p style="margin:0;">직원 인식과의 비교를 통해 인식 차이를 파악하고, 실효성 있는 개선 방안을 마련해야 합니다.</p>
+                ` : `
+                    <p style="margin:0 0 12px 0;">본진단 결과, 직원 ${data.length}명의 응답을 분석한 결과 전체 척도 평균 ${overallAvg}점으로 조직 운영에 대한 체감 현황을 파악하였습니다.</p>
+                    <p style="margin:0 0 12px 0;">핵심 문제는 <strong style="color:#fca5a5;">①인수인계·매뉴얼 부재</strong>, <strong style="color:#fca5a5;">②의사결정 지연·병목</strong>, <strong style="color:#fca5a5;">③역할·권한 불균형</strong>으로 압축되며, 이들은 구조적으로 연쇄 영향을 미치고 있습니다.</p>
+                    <p style="margin:0;">임원진 인식과의 비교를 통해 인식 차이를 확인하고, 실질적인 조직 개선 방향을 도출해야 합니다.</p>
+                `}
+            </div>
+        </div>
+        <div class="report-pdf-btn-wrap" style="text-align:center;margin-top:25px;">
+            <button onclick="window.print()" style="padding:12px 28px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;box-shadow:0 4px 12px rgba(37,99,235,0.3);">📥 결과분석 리포트 PDF 출력</button>
+        </div>`;
+
+        reportDiv.innerHTML = reportHtml;
+
+        /* ═══ TAB 4: 인터뷰 시트 ═══ */
+        const interviewData = {
+            executive:[
+                {cat:'🔴 의사결정 구조·속도',qs:[
+                    {q:'의사결정 과정에서 가장 자주 병목이 발생하는 단계는 어디이며, 그 근본 원인은 무엇이라고 보십니까?',purpose:'의사결정 구조의 실제 작동 방식 파악',focus:'• 지연이 주로 발생하는 단계\n• 정보 부족·합의 과다·책임 회피 여부\n• 개선 가능한 즉시 실행 조치'},
+                    {q:'합의 중심 문화의 강점을 유지하면서 속도를 높이기 위한 현실적 방안은 무엇이라고 생각하십니까?',purpose:'합의 문화 개선 방향 도출',focus:'• 사전 공유 체계 여부\n• 권한 위임 기준 명확화\n• 소위원회 운영 가능성'}
+                ]},
+                {cat:'🟠 거버넌스·연속성',qs:[
+                    {q:'집행부 교체 시 사업이 중단되거나 크게 변경된 구체적 사례와, 그것을 방지하기 위해 지금 당장 필요한 것은 무엇입니까?',purpose:'정책 연속성 단절의 실제 피해와 해결책 파악',focus:'• 중단 사례의 구체적 손실\n• 인수인계 프로토콜 유무\n• 아카이빙 체계 현황'},
+                    {q:'리더십이 바뀌어도 흔들리지 않는 협회 운영 기준을 만들기 위해 가장 먼저 해야 할 일은 무엇입니까?',purpose:'거버넌스 구조화의 우선순위 파악',focus:'• 중장기 전략 문서화 수준\n• 운영 기준서 존재 여부\n• 제도화 가능한 첫 번째 과제'}
+                ]},
+                {cat:'🟡 역할경계·자율성',qs:[
+                    {q:'회장단과 사무처의 역할 경계가 가장 모호한 상황은 어떤 경우이며, 이를 명확히 하기 위해 어떤 기준이 필요합니까?',purpose:'역할 분담 기준 도출',focus:'• 중복·공백 발생 상황\n• 임원 개입 기준선\n• 역할 명확화 첫 단계'},
+                    {q:'협회가 3년 후 어떤 모습이 되어야 한다고 생각하십니까? 가장 우선적으로 변화해야 할 구조는 무엇입니까?',purpose:'개선 방향의 공감대 형성',focus:'• 의사결정 구조\n• 조직 문화\n• 공공 가치 실현 방식'}
+                ]}
+            ],
+            employee:[
+                {cat:'🔴 업무 연속성·인수인계',qs:[
+                    {q:'현재 업무 매뉴얼이나 인수인계 자료가 없어서 가장 어려웠던 구체적 상황은 무엇이었습니까?',purpose:'매뉴얼·인수인계 부재의 실제 피해 파악',focus:'• 구체적 손실 사례\n• 온보딩 시 가장 필요했던 정보\n• 당장 만들 수 있는 문서 1가지'},
+                    {q:'새 집행부가 출범할 때 사무처가 업무를 안정적으로 유지하기 위해 가장 필요한 지원은 무엇입니까?',purpose:'업무 안정화 방안 도출',focus:'• 인수인계 기간 충분성\n• 표준 인수인계 문서 필요성\n• 가장 위험한 업무 단절 지점'}
+                ]},
+                {cat:'🟠 역할·권한·의사결정',qs:[
+                    {q:'맡은 업무를 처리할 때 권한이 충분하지 않아서 불필요하게 지연되거나 답답했던 사례를 구체적으로 설명해 주십시오.',purpose:'권한-책임 불균형의 실제 영향 파악',focus:'• 가장 자주 발생하는 권한 부족 상황\n• 결재 단계 중 불필요한 단계\n• 위임받고 싶은 권한 1가지'},
+                    {q:'의사결정이 빠르고 효과적으로 이루어졌던 사례가 있다면, 그때의 조건은 무엇이었습니까?',purpose:'효과적 의사결정의 성공 조건 도출',focus:'• 권한 위임 여부\n• 정보 공유 수준\n• 재현 가능한 요소'}
+                ]},
+                {cat:'🟡 조직문화·소속감',qs:[
+                    {q:'협회에서 일하면서 자부심이나 보람을 느꼈던 순간은 언제였으며, 그 요소를 어떻게 강화할 수 있을까요?',purpose:'긍정 경험의 재현 가능성 파악',focus:'• 보람의 원천\n• 제도화 가능한 요소\n• 조직 문화 개선 방향'},
+                    {q:'직원과 임원이 서로 신뢰하고 협력하기 위해 각자가 지켜야 할 가장 중요한 원칙은 무엇이라고 생각하십니까?',purpose:'상호 신뢰 기반 조직 문화 조건 도출',focus:'• 임원에게 바라는 역할\n• 직원이 지켜야 할 기준\n• 현재 가장 부족한 것'}
+                ]}
+            ]
+        };
+
+        const guides = interviewData[role]||[];
+        let insightsHtml = `<h2 style="font-size:18px;color:#0a0e27;font-weight:700;margin-bottom:20px;">🎤 인터뷰 시트 — ${roleLabel}</h2>`;
+        guides.forEach(sec=>{
+            insightsHtml += `<div style="margin-bottom:25px;"><h4 style="color:#0a0e27;margin:0 0 15px 0;font-size:15px;">${sec.cat}</h4>
+            <div class="response-cards">${sec.qs.map((item,idx)=>`
+                <div class="response-card" style="border-left-color:#a855f7;">
+                    <p style="font-weight:600;color:#0a0e27;font-size:14px;line-height:1.6;margin-bottom:10px;">Q${idx+1}. ${item.q}</p>
+                    <div style="padding:8px 12px;background:white;border-radius:6px;border-left:3px solid #a855f7;margin-bottom:8px;"><p style="margin:0;font-size:12px;color:#64748b;"><strong>인터뷰 의도:</strong> ${item.purpose}</p></div>
+                    <div style="padding:8px 12px;background:#faf5ff;border-radius:6px;"><p style="margin:0;font-size:12px;color:#334155;white-space:pre-wrap;line-height:1.6;"><strong>주요 포인트:</strong>\n${item.focus}</p></div>
+                </div>`).join('')}</div></div>`;
+        });
+        insightsHtml += `<div style="background:#eff6ff;border:2px solid #3b82f6;border-radius:8px;padding:20px;margin-top:30px;">
+            <h4 style="color:#1e40af;margin-top:0;">💡 인터뷰 진행 팁</h4>
+            <ul style="color:#334155;margin:0;padding-left:20px;line-height:1.8;">
+                <li><strong>구체적 사례 확보:</strong> "일반적으로"보다 "최근에 구체적으로"가 있었는지 묻기</li>
+                <li><strong>왜(Why) 반복:</strong> 문제의 표면이 아닌 근본 원인 파악 — "왜 그렇다고 생각하세요?"</li>
+                <li><strong>감정 이입:</strong> 응답자의 답변을 인정하고 심리적 안전감 확보</li>
+                <li><strong>개방형 질문:</strong> "맞나요?"보다 "어떻게 생각하세요?"로 자유 응답 유도</li>
+                <li><strong>해결 아이디어 수집:</strong> 문제만 묻지 말고 "해결하려면 어떻게 해야 할까요?"</li>
+            </ul>
+        </div>`;
+
+        insightsDiv.innerHTML = insightsHtml;
+
+        /* ═══ TAB 5: 온톨로지 분석 ═══ */
+        const ontologyHtml = generateOntologyAnalysis(data, labels, role);
+        document.getElementById('ontologyContent').innerHTML = ontologyHtml;
+    }
+
+    function downloadReportPDF() { window.print(); }
+
+    /* ══════════════════════════════════════════
+       AXOS 온톨로지 분석 (pre-survey-analysis 동일 엔진)
+    ══════════════════════════════════════════ */
+    const AXOS_COLORS = { Actor:'#1F6BFF', Process:'#7c3aed', Data:'#0d9488', System:'#06b6d4', Artifact:'#ea580c', Decision:'#dc2626', Event:'#d97706', Issue:'#be123c' };
+    const AXOS_BG = { Actor:'#eff6ff', Process:'#f5f3ff', Data:'#f0fdfa', System:'#ecfeff', Artifact:'#fff7ed', Decision:'#fef2f2', Event:'#fffbeb', Issue:'#fff1f2' };
+
+    const NODE_KEYWORDS = {
+        Actor:['회장','사무처','직원','이사','집행부','위원회','부서','팀','임원','사무총장','부회장','회장단','리더','담당자','관리자','선출직','상근직'],
+        Process:['의사결정','보고','평가','소통','업무','회의','협의','승인','검토','기획','실행','운영','관리','조정','전달','수행','처리','진행','협업'],
+        Decision:['결정','판단','선택','배분','우선순위','정책','방향','전략','기준','권한'],
+        Data:['정보','데이터','문서','기록','매뉴얼','규정','지침','보고서','자료','이력','아카이빙','인수인계'],
+        Issue:['갈등','지연','비효율','불명확','부족','문제','어려움','반복','중복','혼선','모호','불균형','단절','불만','마찰','충돌','과부하','병목','괴리'],
+        Event:['교체','선거','개편','변화','전환','임기','인수인계','출범','교체','리더십 교체'],
+        System:['시스템','플랫폼','IT','디지털','소프트웨어','도구','드라이브'],
+        Artifact:['계획서','리포트','산출물','제안서','결과물','성과물','매뉴얼','인수인계서']
+    };
+
+    function extractKeywordsFromResponses(data, role) {
+        const typeCounts = {}, typeExamples = {};
+        Object.keys(AXOS_COLORS).forEach(t => { typeCounts[t]=0; typeExamples[t]=new Set(); });
+        const allTexts = [];
+        for(let i=1;i<=30;i++) { data.forEach(item => { const t=item[`q${i}`]||''; if(t.trim()) allTexts.push(t); }); }
+        const fullText = allTexts.join(' ');
+        Object.entries(NODE_KEYWORDS).forEach(([nodeType,keywords]) => {
+            keywords.forEach(kw => {
+                const matches = fullText.match(new RegExp(kw,'g'));
+                if(matches){ typeCounts[nodeType]+=matches.length; typeExamples[nodeType].add(kw); }
+            });
+        });
+        return {typeCounts, typeExamples};
+    }
+
+    function getOntologyModel(role) {
+        if(role==='executive') return {
+            nodes:[
+                {id:'A1',type:'Actor',name:'회장단',desc:'협회 선출직 최고 의사결정 주체'},
+                {id:'A2',type:'Actor',name:'사무처',desc:'상근직 실무 집행 조직'},
+                {id:'A3',type:'Actor',name:'이사회',desc:'정책 심의 및 의결 기구'},
+                {id:'P1',type:'Process',name:'의사결정',desc:'핵심 안건에 대한 판단·결정 프로세스'},
+                {id:'P2',type:'Process',name:'거버넌스',desc:'조직 운영 체계 및 정책 연속성 프로세스'},
+                {id:'P3',type:'Process',name:'역할협업',desc:'회장단-사무처 간 역할 분담·협업 프로세스'},
+                {id:'P4',type:'Process',name:'갈등관리',desc:'이해관계자 간 갈등 조정 프로세스'},
+                {id:'D1',type:'Decision',name:'정책결정',desc:'사업·규정·인사 등 핵심 정책 판단 포인트'},
+                {id:'D2',type:'Decision',name:'자원배분',desc:'예산·인력·시간 배분 판단 포인트'},
+                {id:'DA1',type:'Data',name:'회의록/아카이브',desc:'의사결정 근거 기록 및 정책 문서'},
+                {id:'DA2',type:'Data',name:'인수인계서',desc:'집행부 교체 시 인수인계 문서'},
+                {id:'E1',type:'Event',name:'집행부 교체',desc:'선거를 통한 리더십 전환 이벤트'},
+                {id:'I1',type:'Issue',name:'의사결정 지연',desc:'합의 중심 문화로 인한 결정 지연'},
+                {id:'I2',type:'Issue',name:'역할경계 모호',desc:'회장단-사무처 간 권한·역할 불명확'},
+                {id:'I3',type:'Issue',name:'정책 단절',desc:'집행부 교체 시 정책 연속성 상실'},
+                {id:'I4',type:'Issue',name:'세대 갈등',desc:'세대 간 기준·방식 충돌로 반복 갈등'},
+                {id:'AF1',type:'Artifact',name:'진단 리포트',desc:'조직진단 결과 보고서'}
+            ],
+            edges:[
+                {from:'A1',to:'P1',rel:'FLOW',label:'주도'},
+                {from:'A2',to:'P1',rel:'FLOW',label:'실행지원'},
+                {from:'A3',to:'D1',rel:'DECIDES',label:'심의·의결'},
+                {from:'P1',to:'D1',rel:'FLOW',label:'안건→결정'},
+                {from:'P2',to:'DA1',rel:'CREATES',label:'기록'},
+                {from:'DA1',to:'P1',rel:'INPUT',label:'근거자료'},
+                {from:'D1',to:'P3',rel:'FLOW',label:'실행지시'},
+                {from:'P3',to:'DA2',rel:'CREATES',label:'산출'},
+                {from:'E1',to:'P2',rel:'TRIGGERS',label:'재수립'},
+                {from:'E1',to:'I3',rel:'CAUSES',label:'유발'},
+                {from:'I1',to:'P1',rel:'BLOCKS',label:'지연'},
+                {from:'I2',to:'P3',rel:'BLOCKS',label:'혼선'},
+                {from:'I4',to:'P4',rel:'TRIGGERS',label:'반복발생'},
+                {from:'A1',to:'I2',rel:'CAUSES',label:'경계불명확'},
+                {from:'P4',to:'AF1',rel:'OUTPUT',label:'산출'},
+                {from:'D2',to:'P3',rel:'DECIDES',label:'배분결정'}
+            ]
+        };
+        return {
+            nodes:[
+                {id:'A1',type:'Actor',name:'직원',desc:'사무처 소속 상근 실무 담당자'},
+                {id:'A2',type:'Actor',name:'관리자',desc:'부서/팀 단위 업무 관리 책임자'},
+                {id:'A3',type:'Actor',name:'집행부',desc:'선출직 리더십 (회장단)'},
+                {id:'P1',type:'Process',name:'업무수행',desc:'일상적 업무 실행 프로세스'},
+                {id:'P2',type:'Process',name:'보고/소통',desc:'상향·하향 커뮤니케이션 프로세스'},
+                {id:'P3',type:'Process',name:'인수인계',desc:'담당자 변경 시 업무 인수인계 프로세스'},
+                {id:'P4',type:'Process',name:'역할협업',desc:'부서 간·직급 간 협업 프로세스'},
+                {id:'D1',type:'Decision',name:'업무배분',desc:'업무 할당·우선순위 판단 포인트'},
+                {id:'D2',type:'Decision',name:'권한위임',desc:'직원 자율 판단 허용 범위 결정 포인트'},
+                {id:'DA1',type:'Data',name:'업무매뉴얼',desc:'업무 절차·기준 문서'},
+                {id:'DA2',type:'Data',name:'인수인계서',desc:'담당자 변경 시 인수인계 자료'},
+                {id:'E1',type:'Event',name:'리더십 교체',desc:'선거를 통한 집행부 교체 이벤트'},
+                {id:'I1',type:'Issue',name:'의사결정 병목',desc:'상위 결재 지연으로 업무 정체'},
+                {id:'I2',type:'Issue',name:'역할·권한 모호',desc:'책임은 있으나 권한·기준 부재'},
+                {id:'I3',type:'Issue',name:'매뉴얼 부재',desc:'업무 기록·인수인계 자료 미비'},
+                {id:'I4',type:'Issue',name:'정보 단절',desc:'부서·계층 간 정보 공유 미흡'},
+                {id:'AF1',type:'Artifact',name:'진단 리포트',desc:'조직진단 결과 보고서'}
+            ],
+            edges:[
+                {from:'A3',to:'D1',rel:'DECIDES',label:'지시'},
+                {from:'A2',to:'P1',rel:'FLOW',label:'관리'},
+                {from:'A1',to:'P1',rel:'FLOW',label:'수행'},
+                {from:'D1',to:'P1',rel:'FLOW',label:'업무할당'},
+                {from:'P1',to:'P2',rel:'FLOW',label:'결과보고'},
+                {from:'P2',to:'A2',rel:'OUTPUT',label:'보고'},
+                {from:'D2',to:'P4',rel:'DECIDES',label:'권한부여'},
+                {from:'P3',to:'DA2',rel:'CREATES',label:'산출'},
+                {from:'DA1',to:'P1',rel:'INPUT',label:'기준적용'},
+                {from:'E1',to:'P3',rel:'TRIGGERS',label:'인수인계'},
+                {from:'E1',to:'I3',rel:'CAUSES',label:'유발'},
+                {from:'I1',to:'P1',rel:'BLOCKS',label:'병목'},
+                {from:'I2',to:'P4',rel:'BLOCKS',label:'혼선'},
+                {from:'I3',to:'P3',rel:'BLOCKS',label:'단절'},
+                {from:'I4',to:'P2',rel:'BLOCKS',label:'소통단절'},
+                {from:'P1',to:'AF1',rel:'OUTPUT',label:'산출'}
+            ]
+        };
+    }
+
+    function generateOntologySVG(model) {
+        const W=960,H=700,RW=54,RH=22;
+        const pos={};
+        const layoutRow=(nodes,y,xStart,xEnd)=>{
+            if(!nodes.length) return;
+            if(nodes.length===1){pos[nodes[0].id]={x:(xStart+xEnd)/2,y};return;}
+            const gap=(xEnd-xStart)/(nodes.length-1);
+            nodes.forEach((n,i)=>{pos[n.id]={x:xStart+gap*i,y};});
+        };
+        layoutRow(model.nodes.filter(n=>n.type==='Actor'),75,160,800);
+        layoutRow(model.nodes.filter(n=>n.type==='Process'),220,120,840);
+        layoutRow(model.nodes.filter(n=>n.type==='Artifact'),370,80,80);
+        layoutRow(model.nodes.filter(n=>n.type==='Decision'),370,260,480);
+        layoutRow(model.nodes.filter(n=>n.type==='Data'),370,650,880);
+        layoutRow(model.nodes.filter(n=>n.type==='Event'),500,780,780);
+        layoutRow(model.nodes.filter(n=>n.type==='Issue'),580,100,700);
+
+        const relColors={FLOW:'#7c3aed',INPUT:'#0d9488',OUTPUT:'#ea580c',USES:'#06b6d4',CREATES:'#0d9488',DECIDES:'#dc2626',TRIGGERS:'#d97706',CAUSES:'#be123c',BLOCKS:'#be123c'};
+        let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;">`;
+        svg+=`<defs>`;
+        Object.entries(relColors).forEach(([rel,color])=>{
+            svg+=`<marker id="arr-${rel}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="${color}"/></marker>`;
+        });
+        svg+=`</defs><rect width="${W}" height="${H}" fill="#fafbfc" rx="8"/>`;
+        svg+=`<text x="18" y="78" font-size="12" fill="#94a3b8" font-weight="600" font-family="Noto Sans KR,sans-serif">Actor</text>`;
+        svg+=`<text x="18" y="223" font-size="12" fill="#94a3b8" font-weight="600" font-family="Noto Sans KR,sans-serif">Process</text>`;
+        svg+=`<text x="18" y="373" font-size="12" fill="#94a3b8" font-weight="600" font-family="Noto Sans KR,sans-serif">Decision</text>`;
+        svg+=`<text x="18" y="583" font-size="12" fill="#94a3b8" font-weight="600" font-family="Noto Sans KR,sans-serif">Issue</text>`;
+        [145,295,450,540].forEach(y=>{svg+=`<line x1="50" y1="${y}" x2="${W-30}" y2="${y}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>`;});
+        const edgeIdx={};
+        model.edges.forEach(edge=>{
+            const from=pos[edge.from],to=pos[edge.to];
+            if(!from||!to) return;
+            const color=relColors[edge.rel]||'#94a3b8';
+            const isDashed=edge.rel==='BLOCKS'||edge.rel==='CAUSES';
+            const pairKey=[edge.from,edge.to].sort().join('-');
+            edgeIdx[pairKey]=(edgeIdx[pairKey]||0)+1;
+            const dx=to.x-from.x,dy=to.y-from.y;
+            const dist=Math.sqrt(dx*dx+dy*dy)||1;
+            const fromX=from.x+(dx/dist)*RW,fromY=from.y+(dy/dist)*RH;
+            const toX=to.x-(dx/dist)*RW,toY=to.y-(dy/dist)*RH;
+            const midX=(fromX+toX)/2,midY=(fromY+toY)/2;
+            const mag=25+edgeIdx[pairKey]*15;
+            const cx=midX+(-dy/dist)*mag,cy=midY+(dx/dist)*mag;
+            svg+=`<path d="M${fromX},${fromY} Q${cx},${cy} ${toX},${toY}" fill="none" stroke="${color}" stroke-width="1.5" ${isDashed?'stroke-dasharray="5,3"':''} marker-end="url(#arr-${edge.rel})" opacity="0.6"/>`;
+            const lx=cx*0.5+midX*0.5,ly=cy*0.5+midY*0.5-3;
+            svg+=`<rect x="${lx-20}" y="${ly-8}" width="40" height="14" rx="3" fill="white" fill-opacity="0.85"/>`;
+            svg+=`<text x="${lx}" y="${ly+2}" font-size="10" fill="${color}" text-anchor="middle" font-weight="600" font-family="Noto Sans KR,sans-serif">${edge.label}</text>`;
+        });
+        model.nodes.forEach(node=>{
+            const p=pos[node.id];
+            if(!p) return;
+            const color=AXOS_COLORS[node.type],bg=AXOS_BG[node.type];
+            svg+=`<rect x="${p.x-RW+2}" y="${p.y-RH+2}" width="${RW*2}" height="${RH*2}" rx="6" fill="#00000008"/>`;
+            svg+=`<rect x="${p.x-RW}" y="${p.y-RH}" width="${RW*2}" height="${RH*2}" rx="6" fill="${bg}" stroke="${color}" stroke-width="2"/>`;
+            svg+=`<text x="${p.x}" y="${p.y-1}" font-size="13" fill="${color}" text-anchor="middle" dominant-baseline="middle" font-weight="700" font-family="Noto Sans KR,sans-serif">${node.name}</text>`;
+            svg+=`<text x="${p.x}" y="${p.y+14}" font-size="9" fill="#94a3b8" text-anchor="middle" dominant-baseline="middle" font-family="Noto Sans KR,sans-serif">${node.type}</text>`;
+        });
+        svg+=`</svg>`;
+        return svg;
+    }
+
+    function relColors_map(rel) {
+        const m={FLOW:'#7c3aed',INPUT:'#0d9488',OUTPUT:'#ea580c',USES:'#06b6d4',CREATES:'#0d9488',DECIDES:'#dc2626',TRIGGERS:'#d97706',CAUSES:'#be123c',BLOCKS:'#be123c'};
+        return m[rel]||'#94a3b8';
+    }
+
+    function generateOntologyAnalysis(data, labels, role) {
+        const {typeCounts, typeExamples} = extractKeywordsFromResponses(data, role);
+        const model = getOntologyModel(role);
+        const svgGraph = generateOntologySVG(model);
+        const roleLabel = role==='executive' ? '임원진' : '직원';
+        const issueNodes = model.nodes.filter(n=>n.type==='Issue');
+        const bottlenecks = model.edges.filter(e=>e.rel==='BLOCKS'||e.rel==='CAUSES');
+
+        const qMappings = {
+            executive:[
+                {q:'Q1~Q4',label:'Ⅰ. 미션·공공성과 전략 작동력',nodes:'Issue, Process',relations:'CAUSES, FLOW',desc:'미션-실행 괴리 → Issue 추출 + Process 흐름'},
+                {q:'Q5',label:'장기 미션 실현 중점도 (7점)',nodes:'Decision',relations:'DECIDES',desc:'전략 판단 → Decision 노드'},
+                {q:'Q6~Q9',label:'Ⅱ. 의사결정 구조와 속도',nodes:'Process, Decision',relations:'FLOW, DECIDES',desc:'의사결정 절차·병목 → Process+Decision'},
+                {q:'Q10',label:'의사결정 균형도 (7점)',nodes:'Issue',relations:'BLOCKS',desc:'지연 척도 → Issue BLOCKS 관계'},
+                {q:'Q11~Q14',label:'Ⅲ. 거버넌스·연속성·조직기억',nodes:'Event, Data',relations:'TRIGGERS, CAUSES',desc:'집행부 교체 → Event + 아카이빙 Data'},
+                {q:'Q15',label:'리더십 연속성 (7점)',nodes:'Event',relations:'TRIGGERS',desc:'연속성 척도 → Event 영향'},
+                {q:'Q16~Q19',label:'Ⅳ. 역할경계·협업·자율성',nodes:'Actor, Process',relations:'FLOW, BLOCKS',desc:'역할경계 모호 → Actor 관계 + BLOCKS'},
+                {q:'Q20',label:'역할·권한 명확성 (7점)',nodes:'Issue',relations:'BLOCKS',desc:'명확성 척도 → Issue 영향'},
+                {q:'Q21~Q24',label:'Ⅴ. 갈등·세대·신뢰·공정성',nodes:'Issue, Process',relations:'CAUSES, BLOCKS',desc:'반복 갈등 → Issue + 갈등관리 Process'},
+                {q:'Q25',label:'공정성·신뢰 (7점)',nodes:'Issue',relations:'CAUSES',desc:'신뢰 척도 → Issue 원인'},
+                {q:'Q26~Q30',label:'Ⅵ. 미래비전·개선방안',nodes:'Artifact, Process',relations:'CREATES, OUTPUT',desc:'개선 방안 → 산출물(Artifact) 연결'}
+            ],
+            employee:[
+                {q:'Q1~Q4',label:'Ⅰ. 미션·업무 의미·직무 보람',nodes:'Actor, Process',relations:'FLOW',desc:'미션 연결감 → Actor-Process 흐름'},
+                {q:'Q5',label:'미션 기여도 체감 (5점)',nodes:'Decision',relations:'DECIDES',desc:'기여도 척도 → 업무배분 Decision'},
+                {q:'Q6~Q9',label:'Ⅱ. 업무 방향성·의사결정 속도',nodes:'Process, Issue',relations:'FLOW, BLOCKS',desc:'우선순위 변경 → Process 지연 + Issue'},
+                {q:'Q10',label:'방향·우선순위 공유 (5점)',nodes:'Issue',relations:'BLOCKS',desc:'공유 척도 → 정보단절 Issue'},
+                {q:'Q11~Q14',label:'Ⅲ. 역할·권한·협업 구조',nodes:'Actor, Decision',relations:'FLOW, DECIDES',desc:'역할 명확성 → Actor 간 관계 + 권한위임'},
+                {q:'Q15',label:'역할·권한 이해도 (5점)',nodes:'Issue',relations:'BLOCKS',desc:'이해도 척도 → 역할모호 Issue'},
+                {q:'Q16~Q19',label:'Ⅳ. 정보 공유·인수인계·업무 안정성',nodes:'Data, Event',relations:'INPUT, TRIGGERS',desc:'매뉴얼 부재 → Data + Event 인수인계'},
+                {q:'Q20',label:'인수인계 체계 충분성 (5점)',nodes:'Issue',relations:'BLOCKS',desc:'체계 척도 → 매뉴얼부재 Issue'},
+                {q:'Q21~Q24',label:'Ⅴ. 근무환경·복지·조직문화',nodes:'Actor, Issue',relations:'FLOW, CAUSES',desc:'긍정 요소 → Actor 만족 / 개선 요소 → Issue'},
+                {q:'Q25',label:'근무환경 긍정 체감 (5점)',nodes:'Issue',relations:'CAUSES',desc:'만족도 척도 → Issue 원인'},
+                {q:'Q26~Q30',label:'Ⅵ. 업무 태도·소속감·자기성찰',nodes:'Actor, Artifact',relations:'OUTPUT',desc:'기여 의지 → Actor 주도성 + 산출물'}
+            ]
+        };
+
+        const aiOpps = role==='executive' ? [
+            {title:'의사결정 지원 AI',desc:'과거 의사결정 패턴 분석 및 유사 사례 자동 추천. 안건별 리스크·효과 예측으로 신속한 판단 지원.',impact:'의사결정 소요시간 40% 단축',pattern:'Decision → ML/LLM'},
+            {title:'정책 연속성 관리',desc:'집행부 교체 시 인수인계 자동 보고서 생성. 진행 중 사업 현황·맥락을 AI가 자동 정리.',impact:'정책 단절 리스크 60% 감소',pattern:'Event → AI 자동화'},
+            {title:'갈등 조기 감지',desc:'회의록·소통 데이터에서 갈등 신호를 NLP로 조기 감지. 패턴 분석으로 구조적 원인 진단.',impact:'반복 갈등 발생률 50% 감소',pattern:'Data → NLP 분석'},
+            {title:'전략-실행 연계 모니터링',desc:'전략 목표 대비 실행 진도를 실시간 대시보드로 추적. KPI 자동 산출 및 이상 징후 알림.',impact:'전략 실행율 35% 향상',pattern:'Process → 시계열 예측'}
+        ] : [
+            {title:'업무 자동 배분',desc:'업무량·역량·우선순위를 분석하여 최적 담당자 자동 매칭. 과부하 사전 예방.',impact:'업무 배분 효율 45% 향상',pattern:'Decision → ML 최적화'},
+            {title:'인수인계 자동화',desc:'업무 매뉴얼·히스토리를 AI가 자동 정리하여 인수인계 문서 생성. 온보딩 시간 단축.',impact:'온보딩 소요시간 50% 단축',pattern:'Data → AI 문서화'},
+            {title:'정보 자동 공유 허브',desc:'부서 간 정보 단절 포인트를 자동 감지하고, 관련 정보를 필요 부서에 자동 라우팅.',impact:'정보 단절 건수 60% 감소',pattern:'Process → AI 챗봇/RAG'},
+            {title:'보고 자동화',desc:'반복적 보고서를 AI가 자동 생성. 중복 보고 단계 제거 및 핵심 사항 요약.',impact:'보고 소요시간 55% 단축',pattern:'Process → RPA + AI'}
+        ];
+
+        const hasAPD = model.nodes.some(n=>n.type==='Actor')&&model.nodes.some(n=>n.type==='Process')&&model.nodes.some(n=>n.type==='Data');
+        const allIssuesHaveBlocks = issueNodes.every(issue=>model.edges.some(e=>e.from===issue.id&&(e.rel==='BLOCKS'||e.rel==='CAUSES')));
+        const relSummary = {};
+        model.edges.forEach(e=>{relSummary[e.rel]=(relSummary[e.rel]||0)+1;});
+
+        return `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <div><h2 style="margin:0;font-size:20px;color:#0a0e27;font-weight:700;">🔬 AXOS 온톨로지 분석 — ${roleLabel}</h2>
+            <p style="margin:4px 0 0;font-size:13px;color:#64748b;">AX Ontology OS v2.0 · 모드 D: AX 진단 (컨설팅)</p></div>
+            <button onclick="(function(){var w=window.open('','_blank','width=900,height=700');var c=document.getElementById('ontologyContent').cloneNode(true);c.querySelectorAll('button').forEach(function(b){b.remove();});w.document.write('<!DOCTYPE html><html lang=ko><head><meta charset=UTF-8><link href=https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap rel=stylesheet><style>body{margin:0;padding:20px;background:#fff;font-family:Noto Sans KR,sans-serif}</style></head><body>');w.document.write(c.outerHTML);w.document.write('</body></html>');w.document.close();setTimeout(function(){w.print();},800);})()" style="padding:10px 20px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📥 PDF 출력</button>
+        </div>
+
+        <div class="onto-section" style="background:linear-gradient(135deg,#f5f3ff 0%,#eff6ff 100%);border-color:#8b5cf6;">
+            <h3 style="border-bottom-color:#8b5cf6;">📐 AXOS 7차원 프로필 분석</h3>
+            <div class="onto-profile-grid">
+                ${[['D1 산업','의료/헬스케어<br><small style="color:#64748b;font-weight:400;">전문직 협회</small>','#1F6BFF'],['D2 비즈모델','B2G/공공','#7c3aed'],['D3 규모','Medium','#0d9488'],['D4 디지털','Basic','#06b6d4'],['D5 역할',role==='executive'?'C-Level':'Operation','#dc2626'],['D6 밸류체인','Service + Infra','#d97706'],['D7 진단목적','전사 AX 진단','#be123c']].map(([label,val,color])=>`
+                <div class="onto-profile-card" style="border-top:3px solid ${color};">
+                    <div class="dim-label">${label}</div>
+                    <div class="dim-value">${val}</div>
+                </div>`).join('')}
+            </div>
+            <div style="background:white;border-radius:6px;padding:16px 20px;font-size:12px;color:#334155;line-height:1.6;">
+                <strong>산업 특성:</strong> 프로세스복잡도 0.8 · 데이터집약도 0.8 · 규제수준 0.9
+                &nbsp;→&nbsp; <span style="color:#be123c;font-weight:600;">Bottleneck ×1.2</span> · <span style="color:#0d9488;font-weight:600;">Concept ×1.15</span> · <span style="color:#7c3aed;font-weight:600;">컴플라이언스 ×1.1</span>
+            </div>
+        </div>
+
+        <div class="onto-section">
+            <h3>🕸️ 온톨로지 네트워크 그래프 — ${roleLabel}</h3>
+            <div class="onto-svg-container">${svgGraph}</div>
+            <div class="onto-legend">${Object.entries(AXOS_COLORS).map(([t,c])=>`<div class="onto-legend-item"><div class="onto-legend-dot" style="background:${c};"></div>${t}</div>`).join('')}</div>
+            <div style="margin-top:8px;font-size:12px;color:#64748b;text-align:center;">실선: FLOW/INPUT/OUTPUT/CREATES/DECIDES &nbsp;|&nbsp; 점선: BLOCKS/CAUSES (병목/원인)</div>
+        </div>
+
+        <div class="onto-section">
+            <h3>🔍 설문 응답 → 온톨로지 노드 추출</h3>
+            <p style="font-size:13px;color:#64748b;margin:0 0 15px 0;">${data.length}명의 응답(30문항)에서 AXOS 노드 타입별 키워드를 자동 추출했습니다.</p>
+            <div class="onto-node-grid">
+                ${Object.entries(typeCounts).filter(([t,c])=>c>0).sort((a,b)=>b[1]-a[1]).map(([type,count])=>{
+                    const examples=Array.from(typeExamples[type]).slice(0,5);
+                    return `<div class="onto-node-card" style="background:${AXOS_BG[type]};border-color:${AXOS_COLORS[type]};"><div class="node-type" style="color:${AXOS_COLORS[type]};">${type}</div><div class="node-name">${count}회 언급</div><div class="node-keywords">${examples.map(kw=>`<span style="background:${AXOS_COLORS[type]}20;color:${AXOS_COLORS[type]};">${kw}</span>`).join('')}</div></div>`;
+                }).join('')}
+            </div>
+        </div>
+
+        <div class="onto-section">
+            <h3>📋 설문 질문 → 온톨로지 매핑 (30문항)</h3>
+            <div style="overflow-x:auto;"><table class="onto-bottleneck-table">
+                <thead><tr><th style="width:60px;">질문</th><th>섹션/항목</th><th>추출 노드</th><th>관계 타입</th><th>온톨로지 해석</th></tr></thead>
+                <tbody>${(qMappings[role]||[]).map(m=>`<tr>
+                    <td style="font-weight:700;color:#8b5cf6;">${m.q}</td>
+                    <td style="font-size:12px;">${m.label}</td>
+                    <td>${m.nodes.split(', ').map(n=>`<span style="color:${AXOS_COLORS[n]||'#333'};font-weight:600;">${n}</span>`).join(' ')}</td>
+                    <td style="font-weight:600;color:#64748b;font-size:12px;">${m.relations}</td>
+                    <td style="font-size:12px;">${m.desc}</td>
+                </tr>`).join('')}</tbody>
+            </table></div>
+        </div>
+
+        <div class="onto-section" style="border-left:4px solid #be123c;">
+            <h3>⚠️ 병목·원인 분석 (BLOCKS / CAUSES)</h3>
+            <table class="onto-bottleneck-table">
+                <thead><tr><th>Issue 노드</th><th>관계</th><th>영향 대상</th><th>심각도</th><th>설명</th></tr></thead>
+                <tbody>${bottlenecks.map(edge=>{
+                    const from=model.nodes.find(n=>n.id===edge.from);
+                    const to=model.nodes.find(n=>n.id===edge.to);
+                    if(!from||!to) return '';
+                    const sev=from.type==='Issue'?'high':from.type==='Event'?'medium':'low';
+                    return `<tr>
+                        <td style="font-weight:600;color:${AXOS_COLORS[from.type]};">${from.name}</td>
+                        <td><span class="onto-severity ${sev==='high'?'high':'medium'}">${edge.rel}</span></td>
+                        <td style="font-weight:600;color:${AXOS_COLORS[to.type]};">${to.name}</td>
+                        <td><span class="onto-severity ${sev}">${sev==='high'?'높음':sev==='medium'?'중간':'낮음'}</span></td>
+                        <td style="font-size:12px;">${from.desc}</td>
+                    </tr>`;
+                }).join('')}</tbody>
+            </table>
+        </div>
+
+        <div class="onto-section">
+            <h3>🔗 관계 네트워크 요약</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">${Object.entries(relSummary).map(([rel,cnt])=>{const c=relColors_map(rel);return `<div style="background:${c}15;border:1px solid ${c}40;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;color:${c};">${rel} <span style="font-size:16px;">${cnt}</span></div>`;}).join('')}</div>
+            <div class="onto-relation-list">${model.edges.slice(0,10).map(edge=>{
+                const fn=model.nodes.find(n=>n.id===edge.from);
+                const tn=model.nodes.find(n=>n.id===edge.to);
+                if(!fn||!tn) return '';
+                const c=relColors_map(edge.rel);
+                return `<div class="onto-relation-item"><span class="rel-from" style="color:${AXOS_COLORS[fn.type]};">${fn.name}</span><span class="rel-arrow" style="background:${c}20;color:${c};">${edge.rel} → ${edge.label}</span><span class="rel-to" style="color:${AXOS_COLORS[tn.type]};">${tn.name}</span></div>`;
+            }).join('')}</div>
+        </div>
+
+        <div class="onto-section" style="border-left:4px solid #0369a1;">
+            <h3>🤖 AI/AX 자동화 기회</h3>
+            <p style="font-size:13px;color:#64748b;margin:0 0 15px 0;">AXOS 변환 패턴: 수동 반복(Process) → RPA+AI / 판단(Decision) → ML/LLM / 데이터(Data) → NLP 분석</p>
+            <div class="onto-ai-grid">${aiOpps.map(o=>`<div class="onto-ai-card"><div class="ai-title">${o.title}</div><div class="ai-desc">${o.desc}</div><div style="margin-top:8px;font-size:10px;color:#64748b;font-weight:600;">패턴: ${o.pattern}</div><div class="ai-impact">${o.impact}</div></div>`).join('')}</div>
+        </div>
+
+        <div class="onto-section" style="background:#f8fafc;">
+            <h3>✅ AXOS 검증 체크리스트</h3>
+            <div style="display:grid;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:#16a34a;">✓</span> 노드 ${model.nodes.length}개, 관계 ${model.edges.length}개 구축 완료</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:${hasAPD?'#16a34a':'#dc2626'};">${hasAPD?'✓':'✗'}</span> Actor-Process-Data 삼각형 존재</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:${allIssuesHaveBlocks?'#16a34a':'#dc2626'};">${allIssuesHaveBlocks?'✓':'✗'}</span> 모든 Issue 노드에 BLOCKS/CAUSES 관계 존재</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:#16a34a;">✓</span> 7차원 프로필 분석 완료</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:#16a34a;">✓</span> 병목 ${bottlenecks.length}개, AI 기회 ${aiOpps.length}개 식별</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="color:#16a34a;">✓</span> 설문 Q1~Q30 → 온톨로지 매핑 완료 (본진단 30문항 전체)</div>
+            </div>
+        </div>`;
+    }
+    </script>
+</body>
+</html>
