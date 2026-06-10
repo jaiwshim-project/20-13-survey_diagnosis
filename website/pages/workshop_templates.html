@@ -53,42 +53,45 @@
                 <p class="section-desc">담당하신 팀을 선택해주세요</p>
 
                 <div class="team-selector">
-                    <label class="team-option">
-                        <input type="radio" name="team" value="1" onclick="selectTeam(1)">
+                    <a href="workshop_templates_team1.html" class="team-link">
                         <div class="team-card-selector">
                             <div class="team-number">1팀</div>
                             <div class="team-topic">의사결정 구조</div>
                             <div class="team-subtitle">의견은 충분하게, 결정은 명확하게</div>
                         </div>
-                    </label>
+                    </a>
 
-                    <label class="team-option">
-                        <input type="radio" name="team" value="2" onclick="selectTeam(2)">
+                    <a href="workshop_templates_team2.html" class="team-link">
                         <div class="team-card-selector">
                             <div class="team-number">2팀</div>
                             <div class="team-topic">역할·권한·책임</div>
                             <div class="team-subtitle">책임은 명확하게, 권한은 함께 주기</div>
                         </div>
-                    </label>
+                    </a>
 
-                    <label class="team-option">
-                        <input type="radio" name="team" value="3" onclick="selectTeam(3)">
+                    <a href="workshop_templates_team3.html" class="team-link">
                         <div class="team-card-selector">
                             <div class="team-number">3팀</div>
                             <div class="team-topic">기록·매뉴얼·인수인계</div>
                             <div class="team-subtitle">개인의 기억에서 조직의 자산으로</div>
                         </div>
-                    </label>
+                    </a>
 
-                    <label class="team-option">
-                        <input type="radio" name="team" value="4" onclick="selectTeam(4)">
+                    <a href="workshop_templates_team4.html" class="team-link">
                         <div class="team-card-selector">
                             <div class="team-number">4팀</div>
                             <div class="team-topic">조직문화·소통·존중</div>
                             <div class="team-subtitle">소속감은 살리고, 소통은 건강하게</div>
                         </div>
-                    </label>
+                    </a>
                 </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px;">
+                <p style="font-size: 16px; color: #475569; line-height: 1.8;">
+                    위 팀 카드를 클릭하시면 해당 팀의 전용 실습 기록지로 이동합니다.<br>
+                    각 팀의 토론 결과는 자동으로 저장되며, 언제든지 다시 접속하여 계속 작성할 수 있습니다.
+                </p>
             </div>
 
             <div id="workshopForm" style="display: none;">
@@ -388,14 +391,10 @@
             margin-top: 20px;
         }
 
-        .team-option {
-            position: relative;
+        .team-link {
+            text-decoration: none;
+            display: block;
             cursor: pointer;
-        }
-
-        .team-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
         }
 
         .team-card-selector {
@@ -407,15 +406,11 @@
             text-align: center;
         }
 
-        .team-option input[type="radio"]:checked + .team-card-selector {
+        .team-link:hover .team-card-selector {
             background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
             border-color: #2563eb;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-        }
-
-        .team-card-selector:hover {
-            border-color: #3b82f6;
-            transform: translateY(-2px);
+            transform: translateY(-4px);
         }
 
         .team-number {
