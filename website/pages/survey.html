@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>조직진단 사전설문 | 대한치과위생사협회</title>
+    <meta name="description" content="대한치과위생사협회 조직진단 사전설문">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="../index.html" class="logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="logo-img"><span>조직진단 AI플랫폼</span></a>
+            <ul class="nav-links">
+                <li class="has-dropdown"><a href="kdha.html">대한치과위생사협회</a><ul class="dropdown-menu"><li><a href="survey.html">사전 설문</a></li></ul></li>
+                <li class="has-dropdown">
+                    <a href="../index.html">진단</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="../index.html">대한치과위생사협회</a></li>
+                        <li><a href="../home.html">에스비컨설팅</a></li>
+                    </ul>
+                </li>
+                <li><a href="diagnosis.html">진단시스템</a></li>
+                <li><a href="areas.html">진단영역</a></li>
+                <li class="has-dropdown">
+                    <a href="roadmap.html">실행로드맵</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="roadmap.html">일반 로드맵</a></li>
+                        <li><a href="kdha-roadmap.html">협회 로드맵</a></li>
+                        <li><a href="workshop.html">워크숍 안내</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="outcomes.html">산출물</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="report.html">진단 결과 리포트</a></li>
+                        <li><a href="admin-dashboard.html">📊 관리자 대시보드</a></li>
+                        <li><a href="ontology-3d.html">🔬 3D 온톨로지</a></li>
+                    </ul>
+                </li>
+                <li><a href="contact.html">문의하기</a></li>
+            </ul>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Survey Selection -->
+    <section class="survey-section">
+        <div class="container">
+            <div class="survey-header">
+                <h1>조직진단 사전설문</h1>
+                <p>귀사의 조직 현황을 파악하기 위한 설문조사입니다.<br>해당하는 역할을 선택하여 설문을 진행해주세요.</p>
+                <div class="survey-info">
+                    <p>📋 <strong>설문 기간:</strong> 3월 25(수) ~ 27(금) / 3일간</p>
+                    <p>⏱️ <strong>소요 시간:</strong> 약 10~15분</p>
+                </div>
+            </div>
+
+            <div class="survey-options">
+                <!-- Executive Survey -->
+                <div class="survey-card">
+                    <div class="card-icon">👔</div>
+                    <h3>회장단 설문</h3>
+                    <p>협회 임원진, 위원회 위원 등<br>의사결정 권한을 가진 역할</p>
+                    <ul class="card-details">
+                        <li>• 협회의 방향성 및 정책 결정에 참여</li>
+                        <li>• 사무국과의 협력 관계</li>
+                        <li>• 조직 거버넌스 인식</li>
+                    </ul>
+                    <a href="javascript:void(0);" class="survey-link-btn executive-btn" onclick="handleSurvey('executive')">회장단 설문 시작</a>
+                </div>
+
+                <!-- Staff Survey -->
+                <div class="survey-card">
+                    <div class="card-icon">👩‍💼</div>
+                    <h3>직원 설문</h3>
+                    <p>협회 사무국 및 실무 담당자<br>운영 및 집행 업무 담당</p>
+                    <ul class="card-details">
+                        <li>• 일일 업무 프로세스</li>
+                        <li>• 의사결정 구조 인식</li>
+                        <li>• 조직 문화 및 소통</li>
+                    </ul>
+                    <a href="javascript:void(0);" class="survey-link-btn staff-btn" onclick="handleSurvey('staff')">직원 설문 시작</a>
+                </div>
+            </div>
+
+            <div class="survey-notice">
+                <h4>❓ 설문 관련 문의</h4>
+                <p>설문 중 문의사항이 있으시면 협회 사무국으로 연락주시기 바랍니다.</p>
+            </div>
+
+            <div class="analysis-access">
+                <a href="pre-survey-analysis.html" class="analysis-link-btn">
+                    📊 사전 진단 결과 분석
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-about">
+                <div class="footer-logo"><img src="../images/logo-axbiz.jpg" alt="AX BIZ GROUP" class="footer-logo-img"><span>조직진단 AI플랫폼</span></div>
+                <p class="footer-desc">전문직 자율성과 공공성을 동시에 작동시키는 협회 전용 조직진단 시스템을 제공합니다.</p>
+            </div>
+            <div class="footer-links">
+                <h4>메뉴</h4>
+                <ul>
+                    <li class="has-dropdown"><a href="kdha.html">대한치과위생사협회</a><ul class="dropdown-menu"><li><a href="survey.html">사전 설문</a></li></ul></li>
+                    <li><a href="diagnosis.html">진단 시스템</a></li>
+                    <li><a href="areas.html">진단 영역</a></li>
+                    <li><a href="kdha-roadmap.html">로드맵</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>회사</h4>
+                <ul>
+                    <li><a href="about.html">회사 소개</a></li>
+                    <li><a href="contact.html">문의하기</a></li>
+                    <li><a href="../home.html">에스비컨설팅</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>연락처</h4>
+                <ul>
+                    <li>이메일: jaiwshim@gmail.com</li>
+                    <li>전화: 010-2397-5734</li>
+                    <li>홈페이지: www.sbconsulting.co.kr</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 에스비컨설팅 조직진단. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        /* Survey Section Styles */
+        .survey-section {
+            padding: 80px 30px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .survey-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .survey-header h1 {
+            font-size: 36px;
+            color: #0f2744;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .survey-header p {
+            font-size: 16px;
+            color: #334155;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .survey-info {
+            background: white;
+            border-left: 5px solid #2563eb;
+            padding: 20px 25px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        }
+
+        .survey-info p {
+            margin: 8px 0;
+            font-size: 14px;
+            color: #0f2744;
+            font-weight: 500;
+        }
+
+        /* Survey Cards */
+        .survey-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .survey-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 2px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .survey-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .survey-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.15);
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+        }
+
+        .card-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .survey-card h3 {
+            font-size: 22px;
+            color: #0a0e27;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .survey-card p {
+            font-size: 14px;
+            color: #2d3748;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-details {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .card-details li {
+            font-size: 13px;
+            color: #334155;
+            padding: 8px 0;
+            line-height: 1.6;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-details li:last-child {
+            border-bottom: none;
+        }
+
+        /* Survey Link Buttons */
+        .survey-link-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .executive-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .executive-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .staff-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .staff-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        /* Survey Notice */
+        .survey-notice {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .survey-notice h4 {
+            color: #b45309;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .survey-notice p {
+            color: #78350f;
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 6px 0;
+        }
+
+        /* Analysis Access Button */
+        .analysis-access {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .analysis-link-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        .analysis-link-btn:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .survey-section {
+                padding: 50px 20px;
+            }
+
+            .survey-header h1 {
+                font-size: 28px;
+            }
+
+            .survey-header p {
+                font-size: 14px;
+            }
+
+            .survey-options {
+                gap: 25px;
+            }
+
+            .survey-card {
+                padding: 30px 20px;
+            }
+
+            .card-icon {
+                font-size: 48px;
+            }
+
+            .survey-card h3 {
+                font-size: 18px;
+            }
+        }
+    </style>
+
+    <script>
+        function handleSurvey(type) {
+            if (type === 'executive') {
+                // 회장단 설문으로 이동
+                window.location.href = 'pre-survey-executive.html';
+            } else if (type === 'staff') {
+                // 직원 설문으로 이동
+                window.location.href = 'pre-survey-employee.html';
+            }
+        }
+    </script>
+</body>
+</html>
