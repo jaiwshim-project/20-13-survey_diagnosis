@@ -493,6 +493,34 @@
         </div>
     </section>
 
+    <!-- Town Meeting Photos -->
+    <section style="padding: 60px 30px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+        <div class="container" style="max-width: 1200px;">
+            <div class="section-header">
+                <span class="section-subtitle">WORKSHOP PHOTOS</span>
+                <h2>타운미팅 현장</h2>
+                <p style="color: #64748b; font-size: 16px; margin-top: 15px;">
+                    함께 모여 문제를 공유하고 해결책을 논의하는 타운미팅의 생생한 모습
+                </p>
+            </div>
+
+            <div class="photo-gallery">
+                <div class="photo-item">
+                    <img src="../images/townmeeting1.jpg" alt="타운미팅 1">
+                    <div class="photo-caption">문제 인식 단계</div>
+                </div>
+                <div class="photo-item">
+                    <img src="../images/townmeeting2.jpg" alt="타운미팅 2">
+                    <div class="photo-caption">팀별 토론</div>
+                </div>
+                <div class="photo-item">
+                    <img src="../images/townmeeting3.jpg" alt="타운미팅 3">
+                    <div class="photo-caption">해결책 도출</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA Section -->
     <section class="cta-section" style="background: linear-gradient(135deg, #0f2744 0%, #1e3a5f 100%);">
         <div class="container">
@@ -935,6 +963,47 @@
             font-size: 16px;
         }
 
+        /* Photo Gallery */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .photo-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            color: white;
+            padding: 20px 15px 15px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+
         /* Responsive */
         @media (max-width: 1400px) {
             .team-topics-grid {
@@ -964,6 +1033,15 @@
 
             .checklist-container {
                 grid-template-columns: 1fr;
+            }
+
+            .photo-gallery {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .photo-item img {
+                height: 250px;
             }
 
             .comparison-table {
