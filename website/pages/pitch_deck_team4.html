@@ -132,7 +132,7 @@
 
         .slide-cover .subtitle {
             font-size: 28px;
-            color: rgba(255,255,255,0.9);
+            color: #ef4444;
             font-weight: 600;
             margin-bottom: 40px;
         }
@@ -176,6 +176,10 @@
 
         .slide-request {
             background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        }
+
+        .slide-feedback {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
         }
 
         /* Slide Content */
@@ -594,12 +598,23 @@
                     <div id="requestSection"></div>
                 </div>
             </div>
+
+            <!-- Slide 9: 워크숍 참가 소감 -->
+            <div class="slide slide-feedback" data-slide="9">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>💭 워크숍 참가 소감</h2>
+                        <p>오늘 워크숍에서 느낀 점과 배운 점</p>
+                    </div>
+                    <div id="feedbackSection"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         let currentSlideIndex = 0;
-        const totalSlides = 9;
+        const totalSlides = 10;
         let workshopData = null;
 
         // 페이지 로드 시 데이터 불러오기
@@ -814,6 +829,13 @@
                         <div class="card-title">⚡ 즉시 결정 필요</div>
                         <div class="card-content" style="margin-top: 15px;">${workshopData.urgentDecision || '(미작성)'}</div>
                     </div>
+                </div>
+            `;
+
+            // Slide 9: 워크숍 참가 소감
+            document.getElementById('feedbackSection').innerHTML = `
+                <div class="problem-box" style="background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); padding: 40px; border-radius: 16px; max-width: 900px; margin: 0 auto;">
+                    <div style="font-size: 18px; line-height: 1.8; color: white; white-space: pre-wrap;">${workshopData.workshopFeedback || '(미작성)'}</div>
                 </div>
             `;
         }
