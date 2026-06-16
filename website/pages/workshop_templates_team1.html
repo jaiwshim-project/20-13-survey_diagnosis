@@ -696,12 +696,14 @@
             selectedTeam = teamNumber;
             document.getElementById('workshopForm').style.display = 'block';
             document.getElementById('workshopForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            // 로컬 스토리지에서 저장된 데이터 불러오기
             loadSavedData(teamNumber);
         }
 
-        function saveData() {
+        window.addEventListener('DOMContentLoaded', function() {
+            loadSavedData(selectedTeam);
+        });
+
+        async function saveData() {
             if (!selectedTeam) {
                 alert('팀을 먼저 선택해주세요.');
                 return;
@@ -709,22 +711,48 @@
 
             const data = collectFormData();
             localStorage.setItem(`workshop_team${selectedTeam}`, JSON.stringify(data));
-            alert('✅ 임시 저장되었습니다!');
+
+            try {
+                const response = await fetch('/api/workshop-save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ teamNumber: selectedTeam, data: data })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('✅ 저장되었습니다! (서버 + 로컬)');
+                } else {
+                    alert('⚠️ 로컬에만 저장되었습니다.');
+                }
+            } catch (error) {
+                alert('⚠️ 로컬에만 저장되었습니다.');
+            }
         }
 
-        function loadSavedData(teamNumber) {
+        async function loadSavedData(teamNumber) {
+            try {
+                const response = await fetch(`/api/workshop-load?teamNumber=${teamNumber}`);
+                const result = await response.json();
+                if (result.success && result.data) {
+                    fillFormData(result.data.form_data);
+                    localStorage.setItem(`workshop_team${teamNumber}`, JSON.stringify(result.data.form_data));
+                    return;
+                }
+            } catch (error) {
+                console.error('Server load error:', error);
+            }
+
             const savedData = localStorage.getItem(`workshop_team${teamNumber}`);
             if (savedData) {
-                const data = JSON.parse(savedData);
-                // 폼에 데이터 채우기
-                Object.keys(data).forEach(key => {
-                    const element = document.getElementById(key);
-                    if (element) {
-                        element.value = data[key];
-                    }
-                });
-                alert('💾 저장된 데이터를 불러왔습니다.');
+                fillFormData(JSON.parse(savedData));
             }
+        }
+
+        function fillFormData(data) {
+            Object.keys(data).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) element.value = data[key];
+            });
         }
 
         function collectFormData() {
@@ -943,15 +971,25 @@
             }
         }
 
-        function goToPitchDeck() {
+        async function goToPitchDeck() {
             if (!selectedTeam) {
                 alert('팀을 먼저 선택해주세요.');
                 return;
             }
 
-            // 데이터 저장 후 피치덱 페이지로 이동
             const data = collectFormData();
             localStorage.setItem(`workshop_team${selectedTeam}`, JSON.stringify(data));
+
+            try {
+                await fetch('/api/workshop-save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ teamNumber: selectedTeam, data: data })
+                });
+            } catch (error) {
+                console.error('Save before pitch:', error);
+            }
+
             window.location.href = `pitch_deck_team${selectedTeam}.html`;
         }
 

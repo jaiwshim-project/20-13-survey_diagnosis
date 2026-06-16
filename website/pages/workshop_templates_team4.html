@@ -696,34 +696,85 @@
             document.getElementById('workshopForm').style.display = 'block';
             document.getElementById('workshopForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-            // 로컬 스토리지에서 저장된 데이터 불러오기
+            // Supabase → localStorage 순으로 데이터 불러오기
             loadSavedData(teamNumber);
         }
 
-        function saveData() {
+        // 페이지 로드 시 자동으로 데이터 불러오기
+        window.addEventListener('DOMContentLoaded', function() {
+            loadSavedData(selectedTeam);
+        });
+
+        async function saveData() {
             if (!selectedTeam) {
                 alert('팀을 먼저 선택해주세요.');
                 return;
             }
 
             const data = collectFormData();
+
+            // 1. localStorage에 백업 저장
             localStorage.setItem(`workshop_team${selectedTeam}`, JSON.stringify(data));
-            alert('✅ 임시 저장되었습니다!');
+
+            // 2. Supabase에 저장
+            try {
+                const response = await fetch('/api/workshop-save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        teamNumber: selectedTeam,
+                        data: data
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ 저장되었습니다! (서버 + 로컬)');
+                } else {
+                    console.error('Save error:', result.error);
+                    alert('⚠️ 로컬에만 저장되었습니다. 서버 저장 실패: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('⚠️ 로컬에만 저장되었습니다. 네트워크 오류.');
+            }
         }
 
-        function loadSavedData(teamNumber) {
+        async function loadSavedData(teamNumber) {
+            try {
+                // 1. Supabase에서 먼저 로드 시도
+                const response = await fetch(`/api/workshop-load?teamNumber=${teamNumber}`);
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    const formData = result.data.form_data;
+                    fillFormData(formData);
+                    // Supabase 데이터를 localStorage에도 동기화
+                    localStorage.setItem(`workshop_team${teamNumber}`, JSON.stringify(formData));
+                    console.log('✅ 서버에서 데이터 로드 성공');
+                    return;
+                }
+            } catch (error) {
+                console.error('Server load error:', error);
+            }
+
+            // 2. Supabase 실패 시 localStorage 폴백
             const savedData = localStorage.getItem(`workshop_team${teamNumber}`);
             if (savedData) {
                 const data = JSON.parse(savedData);
-                // 폼에 데이터 채우기
-                Object.keys(data).forEach(key => {
-                    const element = document.getElementById(key);
-                    if (element) {
-                        element.value = data[key];
-                    }
-                });
-                alert('💾 저장된 데이터를 불러왔습니다.');
+                fillFormData(data);
+                console.log('💾 로컬 저장소에서 데이터 로드');
             }
+        }
+
+        function fillFormData(data) {
+            Object.keys(data).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = data[key];
+                }
+            });
         }
 
         function collectFormData() {
@@ -942,7 +993,7 @@
             }
         }
 
-        function goToPitchDeck() {
+        async function goToPitchDeck() {
             if (!selectedTeam) {
                 alert('팀을 먼저 선택해주세요.');
                 return;
@@ -951,6 +1002,21 @@
             // 데이터 저장 후 피치덱 페이지로 이동
             const data = collectFormData();
             localStorage.setItem(`workshop_team${selectedTeam}`, JSON.stringify(data));
+
+            // Supabase에도 저장 시도
+            try {
+                await fetch('/api/workshop-save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        teamNumber: selectedTeam,
+                        data: data
+                    })
+                });
+            } catch (error) {
+                console.error('Save before pitch:', error);
+            }
+
             window.location.href = `pitch_deck_team${selectedTeam}.html`;
         }
 
