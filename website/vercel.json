@@ -1,5 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd website && echo 'Static site ready'",
-  "outputDirectory": "website"
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
 }
