@@ -1,7 +1,13 @@
 {
   "version": 2,
   "buildCommand": "echo 'Static site with API'",
-  "outputDirectory": "website",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/pages/(.*)", "destination": "/website/pages/$1" },
+    { "source": "/css/(.*)", "destination": "/website/css/$1" },
+    { "source": "/js/(.*)", "destination": "/website/js/$1" },
+    { "source": "/images/(.*)", "destination": "/website/images/$1" },
+    { "source": "/(.*)", "destination": "/website/$1" }
+  ]
 }
