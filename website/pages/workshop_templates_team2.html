@@ -306,7 +306,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">💭 워크숍 참가 소감</label>
+                        <label class="form-label" style="color: #8b5cf6;">💭 워크숍 참가 소감</label>
                         <p class="form-hint">오늘 워크숍에 참여하면서 느낀 점, 배운 점, 개선이 필요한 점 등을 자유롭게 작성해주세요.</p>
                         <textarea id="workshopFeedback" class="form-textarea" rows="6"
                             placeholder="예시:&#10;- 문제를 구조적으로 분석하는 방법을 배울 수 있어서 유익했습니다&#10;- 다른 팀의 발표를 보면서 새로운 관점을 얻었습니다&#10;- 실행 계획을 구체화하는 과정이 도움이 되었습니다&#10;- 더 많은 시간이 있었다면 더 깊이 논의할 수 있었을 것 같습니다"></textarea>
@@ -327,7 +327,10 @@
                     <p style="color: rgba(255,255,255,0.9); font-size: 15px; margin-bottom: 20px;">
                         모든 단계를 완료하셨다면 피치덱으로 회장에게 발표하세요
                     </p>
-                    <button type="button" class="btn-pitch" onclick="goToPitchDeck()">🎤 피치덱 보기</button>
+                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <button type="button" class="btn-pitch" onclick="goToPitchDeck()">🎤 피치덱 보기</button>
+                        <button type="button" class="btn-feedback-all" onclick="goToFeedbackAll()" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; padding: 15px 35px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3); transition: all 0.3s ease;">💭 참가소감 모아보기</button>
+                    </div>
                 </div>
             </div>
 
@@ -1004,6 +1007,10 @@
             }
 
             window.location.href = `pitch_deck_team2.html`;
+        }
+
+        function goToFeedbackAll() {
+            window.location.href = 'all_feedback.html';
         }
 
         // 모달 외부 클릭 시 닫기

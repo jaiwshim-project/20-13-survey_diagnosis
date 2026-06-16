@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전체 팀 참가소감 | 대한치과위생사협회 비전워크숍</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #0f172a;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .nav-counter {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 8px 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Slides */
+        .slides-wrapper {
+            flex: 1;
+            padding-top: 70px;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: calc(100vh - 70px);
+            padding: 60px;
+            animation: slideIn 0.5s ease-out;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Team Slides */
+        .slide-team1 {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+
+        .slide-team2 {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        }
+
+        .slide-team3 {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .slide-team4 {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .slide-content {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .slide-header h2 {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            margin: 0 0 15px 0;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .slide-header .subtitle {
+            font-size: 22px;
+            color: #ef4444;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .slide-header .team-label {
+            font-size: 18px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+        }
+
+        .feedback-box {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .feedback-text {
+            font-size: 20px;
+            line-height: 1.9;
+            color: white;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+
+        .empty-message {
+            text-align: center;
+            font-size: 18px;
+            color: rgba(255,255,255,0.6);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+            }
+
+            .slide-header h2 {
+                font-size: 32px;
+            }
+
+            .slide-header .subtitle {
+                font-size: 18px;
+            }
+
+            .feedback-box {
+                padding: 30px 20px;
+            }
+
+            .feedback-text {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <div class="nav-title">💭 워크숍 참가소감 모아보기</div>
+            <div class="nav-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">4</span>
+            </div>
+            <div class="nav-buttons">
+                <button id="prevBtn" class="nav-btn" onclick="prevSlide()">◀ 이전</button>
+                <button id="nextBtn" class="nav-btn" onclick="nextSlide()">다음 ▶</button>
+            </div>
+        </div>
+
+        <!-- Slides -->
+        <div class="slides-wrapper">
+            <!-- Slide 1: 1팀 -->
+            <div class="slide slide-team1 active" data-slide="0">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>💭 워크숍 참가소감</h2>
+                        <div class="subtitle">의견은 충분하게, 결정은 명확하게</div>
+                        <div class="team-label">1팀 - 의사결정 구조</div>
+                    </div>
+                    <div class="feedback-box">
+                        <div id="feedback1" class="feedback-text">(아직 작성되지 않았습니다)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: 2팀 -->
+            <div class="slide slide-team2" data-slide="1">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>💭 워크숍 참가소감</h2>
+                        <div class="subtitle">역할은 명확하게, 협업은 촘촘하게</div>
+                        <div class="team-label">2팀 - 역할과 책임</div>
+                    </div>
+                    <div class="feedback-box">
+                        <div id="feedback2" class="feedback-text">(아직 작성되지 않았습니다)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: 3팀 -->
+            <div class="slide slide-team3" data-slide="2">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>💭 워크숍 참가소감</h2>
+                        <div class="subtitle">알려야 움직이고, 공유해야 연결된다</div>
+                        <div class="team-label">3팀 - 정보 공유와 소통</div>
+                    </div>
+                    <div class="feedback-box">
+                        <div id="feedback3" class="feedback-text">(아직 작성되지 않았습니다)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: 4팀 -->
+            <div class="slide slide-team4" data-slide="3">
+                <div class="slide-content">
+                    <div class="slide-header">
+                        <h2>💭 워크숍 참가소감</h2>
+                        <div class="subtitle">일하는 방식을 바꿔야 결과가 달라진다</div>
+                        <div class="team-label">4팀 - 업무 프로세스</div>
+                    </div>
+                    <div class="feedback-box">
+                        <div id="feedback4" class="feedback-text">(아직 작성되지 않았습니다)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const totalSlides = 4;
+
+        // 페이지 로드 시 데이터 불러오기
+        window.addEventListener('DOMContentLoaded', async function() {
+            await loadAllFeedback();
+            updateNavigation();
+        });
+
+        async function loadAllFeedback() {
+            for (let i = 1; i <= 4; i++) {
+                try {
+                    // 먼저 서버에서 시도
+                    const response = await fetch(`/api/workshop-load?teamNumber=${i}`);
+                    const result = await response.json();
+
+                    if (result.success && result.data && result.data.form_data.workshopFeedback) {
+                        document.getElementById(`feedback${i}`).textContent = result.data.form_data.workshopFeedback;
+                        continue;
+                    }
+                } catch (error) {
+                    console.error(`Server load error for team ${i}:`, error);
+                }
+
+                // 서버 실패 시 localStorage에서 시도
+                const savedData = localStorage.getItem(`workshop_team${i}`);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    if (data.workshopFeedback) {
+                        document.getElementById(`feedback${i}`).textContent = data.workshopFeedback;
+                    }
+                }
+            }
+        }
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            currentSlideIndex = index;
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+            document.getElementById('totalSlides').textContent = totalSlides;
+            document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
+            document.getElementById('nextBtn').disabled = currentSlideIndex === totalSlides - 1;
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                showSlide(currentSlideIndex - 1);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                showSlide(currentSlideIndex + 1);
+            }
+        }
+
+        // 키보드 네비게이션
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') prevSlide();
+            if (event.key === 'ArrowRight') nextSlide();
+        });
+    </script>
+</body>
+</html>
