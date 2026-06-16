@@ -1,7 +1,12 @@
 {
   "version": 2,
-  "buildCommand": "echo 'Static site'",
+  "buildCommand": "echo 'Static site with API'",
   "outputDirectory": "website",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "functions": {
+    "website/api/**/*.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
 }
