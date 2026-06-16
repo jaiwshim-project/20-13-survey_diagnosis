@@ -304,6 +304,13 @@
                                 placeholder="예시: 실무 담당자 지정 및 권한 부여"></textarea>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="form-label">💭 워크숍 참가 소감</label>
+                        <p class="form-hint">오늘 워크숍에 참여하면서 느낀 점, 배운 점, 개선이 필요한 점 등을 자유롭게 작성해주세요.</p>
+                        <textarea id="workshopFeedback" class="form-textarea" rows="6"
+                            placeholder="예시:&#10;- 문제를 구조적으로 분석하는 방법을 배울 수 있어서 유익했습니다&#10;- 다른 팀의 발표를 보면서 새로운 관점을 얻었습니다&#10;- 실행 계획을 구체화하는 과정이 도움이 되었습니다&#10;- 더 많은 시간이 있었다면 더 깊이 논의할 수 있었을 것 같습니다"></textarea>
+                    </div>
                 </div>
 
                 <!-- Action Buttons -->
@@ -787,7 +794,8 @@
                 qualitativeMetric: document.getElementById('qualitativeMetric').value,
                 approvalRequest: document.getElementById('approvalRequest').value,
                 supportRequest: document.getElementById('supportRequest').value,
-                urgentDecision: document.getElementById('urgentDecision').value
+                urgentDecision: document.getElementById('urgentDecision').value,
+                workshopFeedback: document.getElementById('workshopFeedback').value
             };
         }
 
@@ -869,6 +877,9 @@
                 <p><strong>승인 요청:</strong> ${data.approvalRequest || '(미작성)'}</p>
                 <p><strong>지원 요청:</strong> ${data.supportRequest || '(미작성)'}</p>
                 <p><strong>즉시 결정 필요:</strong> ${data.urgentDecision || '(미작성)'}</p>
+
+                <h4>💭 워크숍 참가 소감</h4>
+                <p>${data.workshopFeedback || '(미작성)'}</p>
             `;
 
             document.getElementById('previewContent').innerHTML = html;
@@ -940,7 +951,10 @@
             text += `[회장에게 요청할 의사결정]\n`;
             text += `승인 요청: ${data.approvalRequest || '(미작성)'}\n`;
             text += `지원 요청: ${data.supportRequest || '(미작성)'}\n`;
-            text += `즉시 결정 필요: ${data.urgentDecision || '(미작성)'}\n`;
+            text += `즉시 결정 필요: ${data.urgentDecision || '(미작성)'}\n\n`;
+
+            text += `\n워크숍 참가 소감\n${'='.repeat(80)}\n\n`;
+            text += `${data.workshopFeedback || '(미작성)'}\n`;
 
             const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
